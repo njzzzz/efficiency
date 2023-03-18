@@ -1,4 +1,4 @@
-import { ref, defineComponent, provide, toRefs, watch } from "vue";
+import { ref, defineComponent, provide, toRefs, watch, computed } from "vue";
 import { useHandleInit } from "./useHandleInit";
 import Mix from "./components/Mix";
 import FormItem from "./components/FormItem";
@@ -20,11 +20,14 @@ export default defineComponent({
       model: runtimeModel,
       schema: runtimeSchema,
     });
+    const isIndependentForm = computed(
+      () => schema.value?.independent === true
+    );
     watch(
       model,
       (v) => {
         if (isEqual(v, runtimeModel.value)) return;
-        runtimeModel.value = cloneDeep(v);
+        runtimeModel.value = isIndependentForm.value ? cloneDeep(v) : v;
       },
       { deep: true, immediate: true }
     );
@@ -32,7 +35,7 @@ export default defineComponent({
       schema,
       (v) => {
         if (isEqual(v, runtimeSchema.value)) return;
-        runtimeSchema.value = cloneDeep(v);
+        runtimeSchema.value = isIndependentForm.value ? cloneDeep(v) : v;
       },
       { deep: true, immediate: true }
     );

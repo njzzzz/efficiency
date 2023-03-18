@@ -4,16 +4,18 @@ export function realType(may) {
   return Object.prototype.toString.call(may);
 }
 export function realTypeEqual(may, type) {
-  return realType(may) === `'[object ${type}]'`;
+  return realType(may) === `[object ${type}]`;
 }
 
 export function useConfig() {
   function label({ item, schema }) {
-    return computed(() =>
-      item.value.label
-        ? item.value.label + (item.value.symbol || schema.value.symbol || "：")
-        : ""
-    );
+    realType(item.value.symbol);
+    const symbol = realTypeEqual(item.value.symbol, "Undefined")
+      ? realTypeEqual(schema.value.symbol, "Undefined")
+        ? ":"
+        : schema.value.symbol
+      : item.value.symbol;
+    return computed(() => (item.value.label ? item.value.label + symbol : ""));
   }
   return {
     label,
