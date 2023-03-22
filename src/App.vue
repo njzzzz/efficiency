@@ -4,4 +4,11 @@
   </div>
 </template>
 
-<style lang="scss"></style>
+<style lang="scss">
+.el-form {
+  .el-select,
+  .el-input__inner {
+    width: 100%;
+  }
+}
+</style>

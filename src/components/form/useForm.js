@@ -9,13 +9,17 @@ export function useForm() {
   const EffectForm = defineComponent({
     props: formProps,
     setup(props, { emit }) {
-      return () => (
-        <Form
-          ref={_formRef}
-          props={props}
-          onInput={($event) => emit("input", $event)}
-        ></Form>
-      );
+      return () => {
+        console.count("EffectForm render-times");
+
+        return (
+          <Form
+            ref={_formRef}
+            props={props}
+            onInput={($event) => emit("input", $event)}
+          ></Form>
+        );
+      };
     },
   });
   return [EffectForm, formData, formRef, schema];

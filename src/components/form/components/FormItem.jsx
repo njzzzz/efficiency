@@ -24,16 +24,23 @@ export default defineComponent({
     const formItemProps = computed(() => {
       return {
         ...item.value,
-        label: label({ item, schema }).value,
+        label: label({ item, schema }),
       };
     });
     const innerFormItemProps = computed(() => {
       return {
+        clearable: true,
+        multiple: false,
         ...item.value,
         disabled: item.value.disabled || schema.value.disabled,
         readonly: item.value.readonly || schema.value.readonly,
         value: model.value[item.value.prop],
         size: item.value.size || schema.value.size,
+        props: {
+          clearable: true,
+          multiple: false,
+          ...item.props,
+        },
         on: {
           input(val) {
             set(model.value, item.value.prop, val);

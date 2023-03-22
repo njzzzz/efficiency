@@ -1,4 +1,12 @@
-import { ref, defineComponent, provide, toRefs, watch, computed } from "vue";
+import {
+  ref,
+  defineComponent,
+  provide,
+  toRefs,
+  watch,
+  computed,
+  onRenderTriggered,
+} from "vue";
 import { useHandleInit } from "./useHandleInit";
 import Mix from "./components/Mix";
 import FormItem from "./components/FormItem";
@@ -23,6 +31,12 @@ export default defineComponent({
     const isIndependentForm = computed(
       () => schema.value?.independent === true
     );
+    //---------dev---------------------------------
+    onRenderTriggered((e) => {
+      console.log("elFrom onRenderTriggered", e);
+    });
+    console.count("elFrom setup render-times");
+    //---------dev---------------------------------
     watch(
       model,
       (v) => {
@@ -36,6 +50,9 @@ export default defineComponent({
       (v) => {
         if (isEqual(v, runtimeSchema.value)) return;
         runtimeSchema.value = isIndependentForm.value ? cloneDeep(v) : v;
+        initialing.value = true;
+        init(runtimeSchema.value.list, runtimeModel, elFormRef, runtimeSchema);
+        initialing.value = false;
       },
       { deep: true, immediate: true }
     );
@@ -46,11 +63,7 @@ export default defineComponent({
       },
       { deep: true }
     );
-    if (runtimeSchema.value?.list?.length) {
-      initialing.value = true;
-      init(runtimeSchema.value.list, runtimeModel);
-      initialing.value = false;
-    } else {
+    if (!runtimeSchema.value?.list?.length) {
       return () => null;
     }
     expose({
@@ -58,19 +71,24 @@ export default defineComponent({
       model: runtimeModel,
       schema: runtimeSchema,
     });
-    return () => (
-      <Form
-        ref={elFormRef}
-        props={{ model: runtimeModel.value, ...runtimeSchema.value }}
-      >
-        {runtimeSchema.value.list.map((item) => {
-          if (item.type === "Mix") {
-            return <Mix item={item}></Mix>;
-          } else {
-            return <FormItem item={item}></FormItem>;
-          }
-        })}
-      </Form>
-    );
+    return () => {
+      console.count("ElForm render-times");
+      return (
+        <Form
+          ref={elFormRef}
+          props={{ model: runtimeModel.value, ...runtimeSchema.value }}
+        >
+          {runtimeSchema.value.list.map((item) => {
+            if (item.type === "Mix") {
+              return (
+                <Mix item={item} key={item.prop || item.list[0].prop}></Mix>
+              );
+            } else {
+              return <FormItem item={item} key={item.prop}></FormItem>;
+            }
+          })}
+        </Form>
+      );
+    };
   },
 });

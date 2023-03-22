@@ -39,13 +39,11 @@ export default defineComponent({
         : 24 / noSpanLen;
     };
     return () => (
-      <OriginFormItem
-        props={{ ...item.value, label: label({ item, schema }).value }}
-      >
+      <OriginFormItem props={{ ...item.value, label: label({ item, schema }) }}>
         <Row
           props={{
             gutter: 16,
-            justify: "end",
+            justify: "start",
             ...item.value,
             type: "flex",
           }}
@@ -56,7 +54,12 @@ export default defineComponent({
                 props={{ span: getSpan(item.span), ...item }}
                 key={item.prop}
               >
-                <FormItem item={item}></FormItem>
+                <FormItem
+                  item={item}
+                  style={{
+                    marginBottom: 0,
+                  }}
+                ></FormItem>
               </Col>
             ) : null;
           })}
