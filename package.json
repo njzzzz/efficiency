@@ -41,6 +41,14 @@
   "exports": {
     "import": "./dist/efficiency.umd.min.js",
     "require": "./dist/efficiency.common.js",
-    "types": "./types/index.d.ts"
-  }
+    "types": "./types/components/index.d.ts"
+  },
+  "main": "./dist/efficiency.common.js",
+  "types": "./types/components/index.d.ts",
+  "author": "njzzz",
+  "files": [
+    "./dist",
+    "./types",
+    "./src"
+  ]
 }

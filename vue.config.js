@@ -1,12 +1,11 @@
 const { defineConfig } = require("@vue/cli-service");
 module.exports = defineConfig({
   transpileDependencies: true,
-  configureWebpack: {
-    output: {
-      libraryExport: "default",
-    },
-    externals: {
-      "lodash-es": "_",
-    },
+  configureWebpack(config) {
+    config.externals = {
+      "lodash-es": "lodash-es",
+    };
+
+    return config;
   },
 });
