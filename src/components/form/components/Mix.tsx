@@ -14,7 +14,7 @@ export default defineComponent({
   setup(props) {
     const { item } = toRefs(props);
     const { label } = useConfig();
-    const { schema } = inject(globalProviderKey);
+    const { schema } = inject(globalProviderKey) as any;
     if (item.value?.show === false) {
       return () => null;
     }
@@ -67,4 +67,4 @@ export default defineComponent({
       </OriginFormItem>
     );
   },
-});
+}) as any;

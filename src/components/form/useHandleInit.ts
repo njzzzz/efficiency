@@ -24,7 +24,7 @@ export function useHandleInit() {
       generatorWithObjectValue(item, runtimeModel, runtimeSchema);
       dealWithMixTypeValue(item, runtimeModel);
       generatorOptions(item, runtimeModel);
-      generatorRules(item, runtimeModel, elFormRef);
+      generatorRules(item, runtimeModel, runtimeSchema, elFormRef);
       generatorOptionsByOptionProps(item, runtimeModel, runtimeSchema);
       if (item.list) {
         init(item.list, runtimeModel, elFormRef, runtimeSchema);

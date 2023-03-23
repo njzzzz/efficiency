@@ -1,4 +1,5 @@
 import { computed, watch, set, watchEffect } from "vue";
+import { globalConfig } from "./useFormRegister";
 import {
   convertListValueLabel,
   convertListToMap,
@@ -32,7 +33,7 @@ export function proxyItem(list, index, item, model) {
   const proxyItem = new Proxy(item, {
     get(target, prop) {
       if (
-        functionalProps.includes(prop) &&
+        functionalProps.includes(prop as string) &&
         typeof target[prop] === "function"
       ) {
         return computed(() => target[prop](item, model)).value;
@@ -48,10 +49,10 @@ export function proxyItem(list, index, item, model) {
   list[index] = proxyItem;
 }
 
-export function generatorRules(item, runtimeModel, elFormRef) {
-  const rule = {};
+export function generatorRules(item, runtimeModel, runtimeSchema, elFormRef) {
+  const rule = {} as any;
   rule.trigger = item.trigger || ["change", "blur"];
-  const message = item?.message ?? `请完善${item?.label}项`;
+  const message = item?.message ?? `请完善${item?.label}`;
   const regexp = item.regexp;
   if (item.required) {
     rule.validator = (rule, value, callback) => {
@@ -148,7 +149,74 @@ export function generatorRules(item, runtimeModel, elFormRef) {
       ];
     }
   }
-  item.rules = item.rules || (item.required || item.validator ? [rule] : []);
+  // 配置长度
+  let lengthRule = null;
+  const maxLength =
+    item.maxLength || runtimeSchema.value.maxLength || globalConfig.maxLength;
+  const minLength =
+    item.minLength || runtimeSchema.value.minLength || globalConfig.minLength;
+  let maxValidator = null;
+  let minValidator = null;
+  if (typeof maxLength === "number" || maxLength === 0) {
+    maxValidator = (rule, value, callback, pass = true) => {
+      if (typeof value === "string") {
+        if (value.length > maxLength) {
+          callback(new Error(`最大长度不能超过${maxLength}`));
+        } else {
+          pass && callback();
+        }
+      }
+      pass && callback();
+    };
+  }
+  if (typeof minLength === "number" || minLength === 0) {
+    minValidator = (rule, value, callback) => {
+      if (typeof value === "string") {
+        if (value.length < minLength) {
+          callback(new Error(`最小长度不能短于${maxLength}`));
+        } else {
+          callback();
+        }
+      }
+      callback();
+    };
+  }
+  if (maxLength) {
+    lengthRule = {
+      trigger: rule.trigger,
+      validator(rule, value, callback) {
+        maxValidator(rule, value, callback);
+      },
+    };
+  }
+  if (minLength) {
+    lengthRule = {
+      trigger: rule.trigger,
+      validator(rule, value, callback) {
+        minValidator(rule, value, callback);
+      },
+    };
+  }
+  if (maxLength && minLength) {
+    lengthRule = {
+      trigger: rule.trigger,
+      validator(rule, value, callback) {
+        maxValidator(rule, value, callback, false);
+        minValidator(rule, value, callback);
+      },
+    };
+  }
+
+  if (item.rules) {
+    lengthRule && item.rules.push(lengthRule);
+  }
+  item.rules =
+    item.rules ||
+    (item.required || item.validator
+      ? lengthRule
+        ? [rule, lengthRule]
+        : [rule]
+      : []);
 }
 
 export function generatorDependOn(item, runtimeModel) {
@@ -227,6 +295,7 @@ export function generatorWithObjectValue(item, runtimeModel, runtimeSchema) {
   const withObjectValue = undefinedAndTrueAsTrue([
     item.withObjectValue,
     runtimeSchema.value.withObjectValue,
+    globalConfig.withObjectValue,
   ]);
   const { value = "value", children = "children" } = optionProps || {};
   const { multiple = false } = item;
@@ -269,6 +338,7 @@ export function generatorOptionsByOptionProps(
   const autoOptionProps = undefinedAndTrueAsTrue([
     item.autoOptionProps,
     runtimeSchema.value.autoOptionProps,
+    globalConfig.autoOptionProps,
   ]);
   const {
     value = "value",

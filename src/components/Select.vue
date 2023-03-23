@@ -2,7 +2,8 @@
   <Select
     :value="value"
     placeholder="请选择"
-    clearable
+    :clearable="clearable"
+    :filterable="filterable"
     :multiple="multiple"
     @input="$emit('input', $event)"
   >
@@ -23,6 +24,7 @@ defineProps({
   value: {},
   clearable: {},
   multiple: {},
+  filterable: {},
 });
 onUpdated(() => {
   console.count("updated");

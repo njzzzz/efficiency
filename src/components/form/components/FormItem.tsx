@@ -1,7 +1,8 @@
 import { computed, defineComponent, inject, set, toRefs } from "vue";
 import { globalProviderKey } from "..";
 import { useConfig } from "../useConfig";
-import { renderComponent } from "../useFormRegister";
+import { globalConfig, renderComponent } from "../useFormRegister";
+import { getNotUndefinedValueByOrder } from "../utils";
 
 export default defineComponent({
   props: {
@@ -11,9 +12,9 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { model, schema } = inject(globalProviderKey);
+    const { model, schema } = inject(globalProviderKey) as any;
     const { label } = useConfig();
-    const { item } = toRefs(props);
+    const { item } = toRefs(props) as any;
     const FormItem = renderComponent("FormItem");
     if (item.value?.show === false) {
       return () => null;
@@ -29,18 +30,34 @@ export default defineComponent({
     });
     const innerFormItemProps = computed(() => {
       return {
-        clearable: true,
-        multiple: false,
         ...item.value,
-        disabled: item.value.disabled || schema.value.disabled,
-        readonly: item.value.readonly || schema.value.readonly,
+        clearable: getNotUndefinedValueByOrder([
+          item.value.clearable,
+          schema.value.clearable,
+          globalConfig.clearable,
+        ]),
+        multiple: getNotUndefinedValueByOrder([item.value.multiple, false]),
+        disabled: getNotUndefinedValueByOrder([
+          item.value.disabled,
+          schema.value.disabled,
+          false,
+        ]),
+        readonly: getNotUndefinedValueByOrder([
+          item.value.readonly,
+          schema.value.readonly,
+          false,
+        ]),
         value: model.value[item.value.prop],
-        size: item.value.size || schema.value.size,
-        props: {
-          clearable: true,
-          multiple: false,
-          ...item.props,
-        },
+        size: getNotUndefinedValueByOrder([
+          item.value.size,
+          schema.value.size,
+          globalConfig.size,
+        ]),
+        filterable: getNotUndefinedValueByOrder([
+          item.value.filterable,
+          schema.value.filterable,
+          globalConfig.filterable,
+        ]),
         on: {
           input(val) {
             set(model.value, item.value.prop, val);
@@ -51,8 +68,16 @@ export default defineComponent({
     });
     const InnerFormItem = computed(() =>
       renderComponent(item.value.type, {
-        disabled: item.value.disabled || schema.value.disabled,
-        readonly: item.value.readonly || schema.value.readonly,
+        disabled: getNotUndefinedValueByOrder([
+          item.value.disabled,
+          schema.value.disabled,
+          false,
+        ]),
+        readonly: getNotUndefinedValueByOrder([
+          item.value.readonly,
+          schema.value.readonly,
+          false,
+        ]),
       })
     );
     return () => (
@@ -65,4 +90,4 @@ export default defineComponent({
       </FormItem>
     );
   },
-});
+}) as any;

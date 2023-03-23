@@ -1,5 +1,14 @@
-import ReadonlyComponent from "./ReadonlyComponent.jsx";
-const components = {};
+import ReadonlyComponent from "./ReadonlyComponent";
+export const components = {};
+export const globalConfig = {
+  maxLength: 50,
+  minLength: false,
+  withObjectValue: true,
+  autoOptionProps: true,
+  filterable: true,
+  clearable: true,
+  size: "small",
+};
 export function registerComponents(components = []) {
   components.forEach(({ name, component }) => {
     registerComponent({ name, component });
@@ -32,10 +41,23 @@ export function registerComponent({ name, component, ...rest }) {
     ...rest,
   };
 }
+interface globalConfig {
+  maxLength: number | false;
+  minLength: number | false;
+  withObjectValue: boolean;
+  autoOptionProps: boolean;
+  filterable: boolean;
+  clearable: boolean;
+  size: string;
+}
+export function setGlobalConfig(config: Partial<globalConfig> = {}) {
+  Object.assign(globalConfig, config);
+}
 export function useFormRegister() {
   return {
     registerComponent,
     registerComponents,
     renderComponent,
+    setGlobalConfig,
   };
 }

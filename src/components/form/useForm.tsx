@@ -1,5 +1,5 @@
-import { computed, defineComponent, ref } from "vue";
-import Form from "./";
+import { computed, defineComponent, ref, ComputedRef } from "vue";
+import Form from ".";
 import { formProps } from "./formProps";
 export function useForm() {
   const _formRef = ref();
@@ -22,5 +22,10 @@ export function useForm() {
       };
     },
   });
-  return [EffectForm, formData, formRef, schema];
+  return [EffectForm, formData, formRef, schema] as [
+    any,
+    ComputedRef<any>,
+    ComputedRef<any>,
+    ComputedRef<any>
+  ];
 }

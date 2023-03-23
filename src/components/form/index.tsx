@@ -21,8 +21,8 @@ export default defineComponent({
     const elFormRef = ref();
     const Form = renderComponent("Form");
     const { model, schema } = toRefs(props);
-    const runtimeModel = ref({});
-    const runtimeSchema = ref({});
+    const runtimeModel = ref<any>({});
+    const runtimeSchema = ref<any>({});
     const { init } = useHandleInit();
     provide(globalProviderKey, {
       model: runtimeModel,
@@ -91,4 +91,4 @@ export default defineComponent({
       );
     };
   },
-});
+}) as any;
