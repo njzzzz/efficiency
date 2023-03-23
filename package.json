@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "build:lib": "vue-cli-service build --target lib --name efficiency ./src/components/index.ts && vue-tsc"
+    "build:lib": "npx rimraf ./types ./dist && vue-cli-service build --target lib --name efficiency ./src/components/index.ts && vue-tsc"
   },
   "dependencies": {
     "core-js": "^3.8.3",
@@ -32,6 +32,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^8.0.3",
     "prettier": "^2.4.1",
+    "rimraf": "^4.4.1",
     "sass": "^1.32.7",
     "sass-loader": "^12.0.0",
     "typescript": "^5.0.2",
@@ -39,7 +40,7 @@
   },
   "exports": {
     "import": "./dist/efficiency.umd.min.js",
-    "require": "./dist/efficiency.umd.min.js",
+    "require": "./dist/efficiency.common.js",
     "types": "./types/index.d.ts"
   }
 }
