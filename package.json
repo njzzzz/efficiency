@@ -1,11 +1,11 @@
 {
-  "name": "@one/efficiency",
+  "name": "@slacking/form",
   "version": "0.0.1",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "build:lib": "npx rimraf ./types ./dist && vue-cli-service build --target lib --name efficiency ./src/components/index.ts && vue-tsc"
+    "build:lib": "npx rimraf ./types ./dist && vue-cli-service build --target lib --name slacking-form ./src/components/index.ts && vue-tsc"
   },
   "dependencies": {
     "core-js": "^3.8.3",
@@ -38,11 +38,11 @@
     "vue-template-compiler": "^2.6.14"
   },
   "exports": {
-    "import": "./dist/efficiency.umd.min.js",
-    "require": "./dist/efficiency.common.js",
+    "import": "./dist/slacking-form.umd.min.js",
+    "require": "./dist/slacking-form.common.js",
     "types": "./types/components/index.d.ts"
   },
-  "main": "./dist/efficiency.common.js",
+  "main": "./dist/slacking-form.common.js",
   "types": "./types/components/index.d.ts",
   "author": "njzzz",
   "files": [
