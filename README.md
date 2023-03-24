@@ -34,7 +34,7 @@ import {
 } from "element-ui";
 import ReadonlySelect from "@/components/ReadonlySelect.vue";
 import DisabledSelect from "@/components/DisabledSelect.vue";
-import { useFormRegister } from "@slacking/efficiency";
+import { useFormRegister } from "@slacking/form";
 const { registerComponents } = useFormRegister();
 
 registerComponents([
@@ -60,7 +60,7 @@ registerComponents([
 ```jsx
 import { defineComponent, reactive, ref, watch } from "vue";
 import { Button } from "element-ui";
-import { defineFormSchema, useForm } from "@slacking/efficiency";
+import { defineFormSchema, useForm } from "@slacking/form";
 const schema = reactive(
   defineFormSchema({
     name: "表单名称",
