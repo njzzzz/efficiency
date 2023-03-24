@@ -8,7 +8,7 @@
 
 ### 使用方式
 
-### 一、安装
+#### 一、安装
 
 ```bash
 npm i @slacking/form
