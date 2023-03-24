@@ -1,7 +1,8 @@
 import { computed, defineComponent, inject, toRefs } from "vue";
 import { globalProviderKey } from "..";
 import { useConfig } from "../useConfig";
-import { renderComponent } from "../useFormRegister";
+import { globalConfig, renderComponent } from "../useFormRegister";
+import { getNotUndefinedValueByOrder } from "../utils";
 import FormItem from "./FormItem";
 export default defineComponent({
   name: "mix",
@@ -15,9 +16,6 @@ export default defineComponent({
     const { item } = toRefs(props);
     const { label } = useConfig();
     const { schema } = inject(globalProviderKey) as any;
-    if (item.value?.show === false) {
-      return () => null;
-    }
     const Row = renderComponent("Row");
     const Col = renderComponent("Col");
     const OriginFormItem = renderComponent("FormItem");
@@ -38,33 +36,36 @@ export default defineComponent({
         ? (24 - totalSpan.value) / noSpanLen
         : 24 / noSpanLen;
     };
-    return () => (
-      <OriginFormItem props={{ ...item.value, label: label({ item, schema }) }}>
-        <Row
-          props={{
-            gutter: 16,
-            justify: "start",
-            ...item.value,
-            type: "flex",
-          }}
+    return () =>
+      item.value?.show ? (
+        <OriginFormItem
+          props={{ ...item.value, label: label({ item, schema }) }}
         >
-          {item.value.list.map((item) => {
-            return item.show !== false ? (
-              <Col
-                props={{ span: getSpan(item.span), ...item }}
-                key={item.prop}
-              >
-                <FormItem
-                  item={item}
-                  style={{
-                    marginBottom: 0,
-                  }}
-                ></FormItem>
-              </Col>
-            ) : null;
-          })}
-        </Row>
-      </OriginFormItem>
-    );
+          <Row
+            props={{
+              gutter: 16,
+              justify: "start",
+              ...item.value,
+              type: "flex",
+            }}
+          >
+            {item.value.list.map((item) => {
+              return item.show !== false ? (
+                <Col
+                  props={{ span: getSpan(item.span), ...item }}
+                  key={item.prop}
+                >
+                  <FormItem
+                    item={item}
+                    style={{
+                      marginBottom: 0,
+                    }}
+                  ></FormItem>
+                </Col>
+              ) : null;
+            })}
+          </Row>
+        </OriginFormItem>
+      ) : null;
   },
 }) as any;

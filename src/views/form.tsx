@@ -23,7 +23,7 @@ const schema = reactive(
         prop: "name",
         label: "姓名",
         minLength: 3,
-        maxLength: 3,
+        // maxLength: 3,
         defaultValue: "xxx",
         // regexp: /[\s\S]*/,
         required: true,
@@ -33,7 +33,16 @@ const schema = reactive(
         //   callback(new Error("请输入姓名"));
         // },
       },
-      { type: "AnyInput", prop: "sex", label: "性别" },
+      {
+        type: "AnyInput",
+        prop: "sex",
+        label: "性别",
+        dependOn: {
+          name(val, model, item) {
+            item.show = val === "xxx1";
+          },
+        },
+      },
       {
         type: "AnySelect",
         prop: "lover",
@@ -92,7 +101,7 @@ const schema = reactive(
                 item,
                 oldVal
               );
-              model.value.sex = val;
+              model.value.sex = Math.random();
               item.show = Math.random() > 0.5;
             },
             immediate: false,
@@ -115,10 +124,9 @@ const schema = reactive(
             type: "AnySelect",
             prop: "name1",
             span: 3,
-            defaultValue: [],
             filterable: true,
             clearable: false,
-            multiple: true,
+            multiple: false,
             async asyncOptions() {
               return [
                 { value: "1", label: "吃" },
@@ -132,6 +140,11 @@ const schema = reactive(
             type: "AnyInput",
             prop: "sex1",
             required: false,
+            dependOn: {
+              name1(val, model, item, oldVal) {
+                item.show = val === "2";
+              },
+            },
           },
         ],
       },

@@ -8,6 +8,8 @@ export const globalConfig = {
   filterable: true,
   clearable: true,
   size: "small",
+  deleteValueOnHidden: true,
+  resetShowWithDefaultValue: true,
 };
 export function registerComponents(components = []) {
   components.forEach(({ name, component }) => {
@@ -44,11 +46,17 @@ export function registerComponent({ name, component, ...rest }) {
 interface globalConfig {
   maxLength: number | false;
   minLength: number | false;
+  // 带有options数组类型的表单，同时抛出选中的对象
   withObjectValue: boolean;
+  // 使用配置的optionProps 自动转换options
   autoOptionProps: boolean;
   filterable: boolean;
   clearable: boolean;
   size: string;
+  // 表单隐藏时删除值
+  deleteValueOnHidden: boolean;
+  // 表单被隐藏后再展示的时候使用defaultValue,如果设置为false则置为null如果多选则置为[]
+  resetShowWithDefaultValue: boolean;
 }
 export function setGlobalConfig(config: Partial<globalConfig> = {}) {
   Object.assign(globalConfig, config);

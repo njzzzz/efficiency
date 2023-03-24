@@ -77,6 +77,8 @@ interface Form {
   withObjectValue: boolean; // 带options的表单项是否需要抛出完整的值以_${prop}为键名
   independent: boolean; // 是否深克隆model和schema，这样会使相同引用数据的form互不影响
   list: any[];
+  deleteValueOnHidden: boolean; // 在表单隐藏时是否删除键
+  resetShowWithDefaultValue: boolean;
   // 兜底
   [key: string]: unknown;
 }
@@ -102,6 +104,8 @@ interface FormItem {
   minLength?: number | false; // 最小长度 默认false
   align?: string;
   justify?: string;
+  resetShowWithDefaultValue?: boolean;
+  deleteValueOnHidden?: boolean;
   validator?: (
     rule: any,
     value: any,

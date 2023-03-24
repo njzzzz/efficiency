@@ -1,4 +1,10 @@
-import { computed, defineComponent, ref, ComputedRef } from "vue";
+import {
+  computed,
+  defineComponent,
+  ref,
+  ComputedRef,
+  onRenderTriggered,
+} from "vue";
 import Form from ".";
 import { formProps } from "./formProps";
 export function useForm() {
@@ -9,9 +15,11 @@ export function useForm() {
   const EffectForm = defineComponent({
     props: formProps,
     setup(props, { emit }) {
+      onRenderTriggered((e) => {
+        console.log("EffectForm", e);
+      });
       return () => {
         console.count("EffectForm render-times");
-
         return (
           <Form
             ref={_formRef}

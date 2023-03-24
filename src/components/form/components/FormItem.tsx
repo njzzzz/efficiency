@@ -1,4 +1,4 @@
-import { computed, defineComponent, inject, set, toRefs } from "vue";
+import { computed, defineComponent, inject, set, toRefs, watch } from "vue";
 import { globalProviderKey } from "..";
 import { useConfig } from "../useConfig";
 import { globalConfig, renderComponent } from "../useFormRegister";
@@ -16,9 +16,6 @@ export default defineComponent({
     const { label } = useConfig();
     const { item } = toRefs(props) as any;
     const FormItem = renderComponent("FormItem");
-    if (item.value?.show === false) {
-      return () => null;
-    }
     if (!item.value?.type) {
       console.log(`未知类型${item.value?.type}`);
     }
@@ -80,14 +77,15 @@ export default defineComponent({
         ]),
       })
     );
-    return () => (
-      <FormItem props={formItemProps.value} key={item.value.prop}>
-        <InnerFormItem.value
-          props={innerFormItemProps.value}
-          key={item.value.prop}
-          on={innerFormItemProps.value.on}
-        ></InnerFormItem.value>
-      </FormItem>
-    );
+    return () =>
+      item.value?.show ? (
+        <FormItem props={formItemProps.value} key={item.value.prop}>
+          <InnerFormItem.value
+            props={innerFormItemProps.value}
+            key={item.value.prop}
+            on={innerFormItemProps.value.on}
+          ></InnerFormItem.value>
+        </FormItem>
+      ) : null;
   },
 }) as any;

@@ -1,9 +1,10 @@
-import { computed, watch, set, watchEffect } from "vue";
+import { computed, watch, set, watchEffect, del, ref } from "vue";
 import { globalConfig } from "./useFormRegister";
 import {
   convertListValueLabel,
   convertListToMap,
   undefinedAndTrueAsTrue,
+  getNotUndefinedValueByOrder,
 } from "./utils";
 const functionalProps = ["label"];
 export function realType(may) {
@@ -12,6 +13,24 @@ export function realType(may) {
 
 export function realTypeEqual(may, type) {
   return realType(may) === `[object ${type}]`;
+}
+export function getDefaultValue(
+  item,
+  runtimeModel,
+  runtimeSchema,
+  withDefaultValue = true,
+  withModelValue = true
+) {
+  const { multiple = false } = item;
+  const values = [];
+  if (withModelValue) {
+    values.push(runtimeModel.value[item.prop]);
+  }
+  if (withDefaultValue) {
+    values.push(item.defaultValue);
+  }
+  values.push(multiple ? [] : null);
+  return getNotUndefinedValueByOrder(values);
 }
 
 export function useConfig() {
@@ -218,9 +237,14 @@ export function generatorRules(item, runtimeModel, runtimeSchema, elFormRef) {
         : [rule]
       : []);
 }
-
-export function generatorDependOn(item, runtimeModel) {
+export function generatorDependOn(
+  item,
+  runtimeModel,
+  runtimeSchema,
+  deleteValueOnHiddenFunc
+) {
   const unWatches = [];
+  // 收集所有callback 在后续做展示隐藏功能时，需要等所有watch都执行完成才能进行展示隐藏的判断
   if (item.dependOn) {
     const keys = Object.keys(item.dependOn);
     for (let index = 0; index < keys.length; index++) {
@@ -230,7 +254,11 @@ export function generatorDependOn(item, runtimeModel) {
         const unWatch = watch(
           () => runtimeModel.value[key],
           (val, oldVal) => {
-            dependOnOptions(val, runtimeModel, item, oldVal);
+            Promise.resolve(
+              dependOnOptions(val, runtimeModel, item, oldVal)
+            ).then(() => {
+              deleteValueOnHiddenFunc(item, runtimeModel, runtimeSchema);
+            });
           },
           { immediate: true, deep: true }
         );
@@ -240,7 +268,11 @@ export function generatorDependOn(item, runtimeModel) {
         const unWatch = watch(
           () => runtimeModel.value[key],
           (val, oldVal) => {
-            handler(val, runtimeModel, item, oldVal);
+            Promise.resolve(handler(val, runtimeModel, item, oldVal)).then(
+              () => {
+                deleteValueOnHiddenFunc(item, runtimeModel, runtimeSchema);
+              }
+            );
           },
           { immediate: true, deep: false, ...options }
         );
@@ -248,7 +280,9 @@ export function generatorDependOn(item, runtimeModel) {
       }
     }
   }
-  return unWatches;
+  return {
+    unWatches,
+  };
 }
 
 export function generatorOptions(item, runtimeModel) {
@@ -259,18 +293,17 @@ export function generatorOptions(item, runtimeModel) {
   }
 }
 
-export function generatorReactiveModelPropsDefaultValue(item, runtimeModel) {
-  const { multiple = false } = item;
-  function getDefaultValue() {
-    return realTypeEqual(runtimeModel.value[item.prop], "Undefined")
-      ? realTypeEqual(item.defaultValue, "Undefined")
-        ? multiple
-          ? []
-          : null
-        : item.defaultValue
-      : runtimeModel.value[item.prop];
-  }
-  item.prop && set(runtimeModel.value, item.prop, getDefaultValue());
+export function generatorReactiveModelPropsDefaultValue(
+  item,
+  runtimeModel,
+  runtimeSchema
+) {
+  item.prop &&
+    set(
+      runtimeModel.value,
+      item.prop,
+      getDefaultValue(item, runtimeModel, runtimeSchema)
+    );
 }
 
 export function dealWithMixTypeValue(item, runtimeModel) {
@@ -278,7 +311,9 @@ export function dealWithMixTypeValue(item, runtimeModel) {
   watchEffect(() => {
     runtimeModel.value[item.prop] = item.list.reduce((acc, config) => {
       const { prop } = config;
-      acc[prop] = runtimeModel.value[prop];
+      if (config.show) {
+        acc[prop] = runtimeModel.value[prop];
+      }
       return acc;
     }, {});
   });
@@ -287,6 +322,9 @@ export function dealWithMixTypeValue(item, runtimeModel) {
 export function patchReactiveProps(item) {
   if (!Reflect.has(item, "options")) {
     set(item, "options", []);
+  }
+  if (!Reflect.has(item, "show")) {
+    set(item, "show", true);
   }
 }
 // 将select, cascader等选项的数组或者对象值使用下划线透出
@@ -356,4 +394,50 @@ export function generatorOptionsByOptionProps(
       }
     });
   }
+}
+
+export const deleteValueOnHiddenFunc = (item, runtimeModel, runtimeSchema) => {
+  const deleteValueOnHidden = getNotUndefinedValueByOrder([
+    item.deleteValueOnHidden,
+    runtimeSchema.value.deleteValueOnHidden,
+    globalConfig.deleteValueOnHidden,
+    true,
+  ]);
+  if (item.show === false) {
+    if (deleteValueOnHidden) {
+      del(runtimeModel.value, item.prop);
+      if (item.prop && item.list && item.type === "Mix")
+        item.list.forEach((conf) => {
+          del(runtimeModel.value, conf.prop);
+        });
+    }
+  } else {
+    const resetShowWithDefaultValue = getNotUndefinedValueByOrder([
+      item.resetShowWithDefaultValue,
+      runtimeSchema.value.resetShowWithDefaultValue,
+      globalConfig.resetShowWithDefaultValue,
+      true,
+    ]);
+    set(
+      runtimeModel.value,
+      item.prop,
+      getDefaultValue(
+        item,
+        runtimeModel,
+        runtimeSchema,
+        resetShowWithDefaultValue,
+        true
+      )
+    );
+  }
+};
+export function dealWithDeleteValueOnHidden(item, runtimeModel, runtimeSchema) {
+  if (realTypeEqual(item.prop, "Undefined")) return;
+  watch(
+    () => [item.show],
+    () => {
+      deleteValueOnHiddenFunc(item, runtimeModel, runtimeSchema);
+    },
+    { immediate: true, deep: true }
+  );
 }
