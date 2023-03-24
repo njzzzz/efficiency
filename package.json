@@ -1,7 +1,6 @@
 {
-  "name": "efficiency",
-  "version": "0.1.0",
-  "private": false,
+  "name": "@one/efficiency",
+  "version": "0.0.1",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -50,5 +49,14 @@
     "./dist",
     "./types",
     "./src"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/njzzzz/efficiency.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/njzzzz/efficiency/issues"
+  },
+  "homepage": "https://github.com/njzzzz/efficiency#readme"
 }

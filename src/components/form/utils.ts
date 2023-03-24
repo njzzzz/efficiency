@@ -77,6 +77,8 @@ interface Form {
   withObjectValue: boolean; // 带options的表单项是否需要抛出完整的值以_${prop}为键名
   independent: boolean; // 是否深克隆model和schema，这样会使相同引用数据的form互不影响
   list: any[];
+  // 兜底
+  [key: string]: unknown;
 }
 interface DependOnOptions {
   handler: (val: any, model: Ref<any>, item: any, oldVal: any) => any;
@@ -110,7 +112,7 @@ interface FormItem {
   dependOn?: Record<string, DependOnOptions["handler"] | DependOnOptions>;
   list?: FormItem[];
   // 兜底
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface Schema extends Partial<Form> {

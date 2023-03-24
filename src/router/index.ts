@@ -9,6 +9,11 @@ const routes = [
     name: "form",
     component: () => import("@/views/form"),
   },
+  {
+    path: "/table",
+    name: "table",
+    component: () => import("@/views/table"),
+  },
 ];
 
 const router = new VueRouter({
