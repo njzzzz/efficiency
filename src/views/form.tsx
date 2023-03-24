@@ -183,11 +183,15 @@ export default defineComponent({
     const modSchema = () => {
       schema.list[0].label = "111111";
     };
+    const validate = () => {
+      console.log(formData);
+      formRef.value.validate();
+    };
     return () => (
       <div>
         <Button onClick={modSchema}>修改schema</Button>
-        <EffectForm props={{ schema, model: model }}></EffectForm>
-        {/* <AnotherEffectForm props={{ schema, model: model }}></AnotherEffectForm> */}
+        <Button onClick={validate}>表单验证</Button>
+        <EffectForm props={{ schema, model }}></EffectForm>
       </div>
     );
   },

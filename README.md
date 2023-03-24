@@ -8,7 +8,14 @@
 
 ### 使用方式
 
-#### 一、注册组件
+### 一、安装
+
+```bash
+npm i @slacking/form
+yarn add @slacking/form
+```
+
+#### 二、注册组件
 
 一般在入口文件中做全局注册，注册时必须提供 Form、FormItem、Row、Col 为了兼容不同的组件库  
 默认配置的属性都会被传入表单项中， 自定义的表单项需要抛出 input 事件以更新表单 model 值
@@ -27,7 +34,7 @@ import {
 } from "element-ui";
 import ReadonlySelect from "@/components/ReadonlySelect.vue";
 import DisabledSelect from "@/components/DisabledSelect.vue";
-import { useFormRegister } from "@one/efficiency";
+import { useFormRegister } from "@slacking/efficiency";
 const { registerComponents } = useFormRegister();
 
 registerComponents([
@@ -48,12 +55,12 @@ registerComponents([
 ]);
 ```
 
-### 二、使用 Form 组件
+### 三、使用 Form 组件
 
 ```jsx
 import { defineComponent, reactive, ref, watch } from "vue";
 import { Button } from "element-ui";
-import { defineFormSchema, useForm } from "@one/efficiency";
+import { defineFormSchema, useForm } from "@slacking/efficiency";
 const schema = reactive(
   defineFormSchema({
     name: "表单名称",
@@ -195,6 +202,7 @@ const schema = reactive(
 
 export default defineComponent({
   setup() {
+    // formData为表单值，在开启independent模式下不会修改model和schema，提交请使用formData和schema
     const [EffectForm, formData, formRef, schema] = useForm();
     const model = ref({
       age: 0,
@@ -202,9 +210,13 @@ export default defineComponent({
     const modSchema = () => {
       schema.list[0].label = "111111";
     };
+    const validate = () => {
+      formRef.value.validate();
+    };
     return () => (
       <div>
         <Button onClick={modSchema}>修改schema</Button>
+        <Button onClick={validate}>表单验证</Button>
         <EffectForm props={{ schema, model }}></EffectForm>
       </div>
     );
