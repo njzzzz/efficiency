@@ -10,6 +10,7 @@ module.exports = {
           functional: true,
           injectH: true,
         },
+        useBuiltIns: false,
       },
     ],
   ],

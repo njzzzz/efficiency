@@ -223,3 +223,14 @@ export default defineComponent({
   },
 });
 ```
+
+### 兼容性
+
+支持到 es6(es2015)，需要支持更旧的浏览器，请 include 到项目环境中编译  
+如 vue-cli
+
+```js
+{
+  transpileDependencies: ["@slacking/form"];
+}
+```
