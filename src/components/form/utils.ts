@@ -1,9 +1,19 @@
-import { Ref, WatchOptionsWithHandler } from "vue";
+import { Ref } from "vue";
 
 export const convertListValueLabel = (
   list = [],
-  from = { value: "value", label: "label", children: "children" },
-  to = { value: "value", label: "label", children: "children" }
+  from = {
+    value: "value",
+    label: "label",
+    children: "children",
+    disabled: "disabled",
+  },
+  to = {
+    value: "value",
+    label: "label",
+    children: "children",
+    disabled: "disabled",
+  }
 ) => {
   let stack = [...list];
   let item = stack.pop();
@@ -11,6 +21,7 @@ export const convertListValueLabel = (
     item[to.value] = item[from.value];
     item[to.label] = item[from.label];
     item[to.children] = item[from.children];
+    item[to.disabled] = item[from.disabled];
     if (item[from.children]) {
       stack = [...stack, ...item[from.children]];
     }
@@ -58,6 +69,12 @@ export function undefinedAndNotNullValueAsTrue(val) {
 export function defineFormSchema(schema: Schema) {
   return schema;
 }
+interface OptionProps {
+  value: string;
+  label: string;
+  children: string;
+  disabled: string;
+}
 interface Form {
   name: string;
   readonly: boolean;
@@ -79,6 +96,7 @@ interface Form {
   list: any[];
   deleteValueOnHidden: boolean; // 在表单隐藏时是否删除键
   resetShowWithDefaultValue: boolean;
+  optionProps: Partial<OptionProps>;
   // 兜底
   [key: string]: unknown;
 }
@@ -106,6 +124,12 @@ interface FormItem {
   justify?: string;
   resetShowWithDefaultValue?: boolean;
   deleteValueOnHidden?: boolean;
+  asyncOptions?: (model: Ref<any>, item: any) => unknown;
+  optionProps?: Partial<OptionProps>;
+  on?: Record<
+    string,
+    (val: any, model: Ref<any>, item: Ref<any>, schema: Ref<Schema>) => unknown
+  >;
   validator?: (
     rule: any,
     value: any,

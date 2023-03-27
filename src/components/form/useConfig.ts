@@ -382,6 +382,7 @@ export function generatorOptionsByOptionProps(
     value = "value",
     label = "label",
     children = "children",
+    disabled = "disabled",
   } = optionProps || {};
   if (optionProps && autoOptionProps) {
     watchEffect(() => {
@@ -390,6 +391,7 @@ export function generatorOptionsByOptionProps(
           value,
           label,
           children,
+          disabled,
         });
       }
     });

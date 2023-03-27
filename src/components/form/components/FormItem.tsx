@@ -26,6 +26,13 @@ export default defineComponent({
       };
     });
     const innerFormItemProps = computed(() => {
+      const ons = item.value?.on ?? {};
+      Object.keys(ons).forEach((key) => {
+        const originOn = ons[key];
+        ons[key] = (...resets) => {
+          originOn(...resets, model, item, schema);
+        };
+      });
       return {
         ...item.value,
         clearable: getNotUndefinedValueByOrder([
@@ -59,7 +66,7 @@ export default defineComponent({
           input(val) {
             set(model.value, item.value.prop, val);
           },
-          ...(item.value?.on ?? {}),
+          ...ons,
         },
       };
     });

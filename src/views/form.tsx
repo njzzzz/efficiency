@@ -29,6 +29,12 @@ const schema = reactive(
         required: true,
         // trigger: ["change", "blur"],
         message: "请输入姓名",
+        on: {
+          // 不要在此处监听change事件，因为在input的时候修改model不会触发此处的change
+          blur(val, model, item, schema) {
+            console.log("【LOG】  val ---->", val);
+          },
+        },
         // validator(rule, value, callback, item, model) {
         //   callback(new Error("请输入姓名"));
         // },
