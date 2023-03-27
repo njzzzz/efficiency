@@ -18,7 +18,13 @@
 <script setup>
 import { Select, Option } from "element-ui";
 import { cloneDeep } from "lodash-es";
-import { onMounted, onUpdated, defineProps, onRenderTriggered } from "vue";
+import {
+  onMounted,
+  onUpdated,
+  defineProps,
+  onRenderTriggered,
+  useAttrs,
+} from "vue";
 defineProps({
   options: {},
   value: {},
@@ -26,6 +32,8 @@ defineProps({
   multiple: {},
   filterable: {},
 });
+const attrs = useAttrs();
+console.log("【LOG】  attrs ---->", attrs);
 onUpdated(() => {
   console.count("updated");
 });

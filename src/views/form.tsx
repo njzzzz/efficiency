@@ -53,6 +53,8 @@ const schema = reactive(
         type: "AnySelect",
         prop: "lover",
         label: "爱好",
+        a: 1,
+        b: 2,
         // async asyncOptions() {
         //   return [
         //     { value: "1", label: "吃" },

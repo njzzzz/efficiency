@@ -88,6 +88,7 @@ export default defineComponent({
       item.value?.show ? (
         <FormItem props={formItemProps.value} key={item.value.prop}>
           <InnerFormItem.value
+            {...{ attrs: innerFormItemProps.value }}
             props={innerFormItemProps.value}
             key={item.value.prop}
             on={innerFormItemProps.value.on}
