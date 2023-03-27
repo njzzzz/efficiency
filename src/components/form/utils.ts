@@ -116,6 +116,9 @@ interface FormItem {
   message?: string;
   gutter?: number;
   filterable?: boolean;
+  readonly?: boolean;
+  disabled?: boolean;
+  show?: boolean;
   clearable?: boolean;
   multiple?: boolean;
   maxLen?: number | false; //最大长度 默认100
