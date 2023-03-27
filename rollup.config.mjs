@@ -16,7 +16,7 @@ export default defineConfig({
   plugins: [
     typescript({
       declaration: false,
-      sourceMap: true,
+      sourceMap: false,
     }),
     vue(),
     babel({
