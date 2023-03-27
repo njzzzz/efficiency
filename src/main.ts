@@ -11,6 +11,7 @@ import {
   Col,
   Table,
   TableColumn,
+  Cascader,
 } from "element-ui";
 import Select from "@/components/Select.vue";
 import App from "./App.vue";
@@ -24,6 +25,7 @@ registerComponents([
   { name: "AnyInputNumber", component: InputNumber },
   { name: "AnyRadio", component: Radio },
   { name: "AnySelect", component: Select },
+  { name: "AnyCascader", component: Cascader },
   // 以下name不可以修改
   { name: "Form", component: Form },
   { name: "FormItem", component: FormItem },

@@ -1,8 +1,8 @@
 import ReadonlyComponent from "./ReadonlyComponent";
 export const components = {};
 export const globalConfig = {
-  maxLength: 50,
-  minLength: false,
+  maxLen: 100,
+  minLen: false,
   withObjectValue: true,
   autoOptionProps: true,
   filterable: true,
@@ -44,8 +44,8 @@ export function registerComponent({ name, component, ...rest }) {
   };
 }
 interface globalConfig {
-  maxLength: number | false;
-  minLength: number | false;
+  maxLen: number | false;
+  minLen: number | false;
   // 带有options数组类型的表单，同时抛出选中的对象
   withObjectValue: boolean;
   // 使用配置的optionProps 自动转换options

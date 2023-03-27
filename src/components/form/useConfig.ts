@@ -70,12 +70,20 @@ export function proxyItem(list, index, item, model) {
 
 export function generatorRules(item, runtimeModel, runtimeSchema, elFormRef) {
   const rule = {} as any;
+  const multiple = getNotUndefinedValueByOrder([
+    item.multiple,
+    item.prop?.multiple,
+    false,
+  ]);
   rule.trigger = item.trigger || ["change", "blur"];
   const message = item?.message ?? `请完善${item?.label}`;
   const regexp = item.regexp;
   if (item.required) {
     rule.validator = (rule, value, callback) => {
-      if ([null, undefined, ""].includes(value)) {
+      if (
+        [null, undefined, ""].includes(value) ||
+        (Array.isArray(value) && !value.length)
+      ) {
         callback(new Error(message));
       } else {
         if (regexp) {
@@ -170,37 +178,53 @@ export function generatorRules(item, runtimeModel, runtimeSchema, elFormRef) {
   }
   // 配置长度
   let lengthRule = null;
-  const maxLength =
-    item.maxLength || runtimeSchema.value.maxLength || globalConfig.maxLength;
-  const minLength =
-    item.minLength || runtimeSchema.value.minLength || globalConfig.minLength;
+  const maxLen = getNotUndefinedValueByOrder([
+    item.maxLen,
+    runtimeSchema.value.maxLen,
+    globalConfig.maxLen,
+    100,
+  ]);
+  const minLen = getNotUndefinedValueByOrder([
+    item.minLen,
+    runtimeSchema.value.minLen,
+    globalConfig.minLen,
+    false,
+  ]);
   let maxValidator = null;
   let minValidator = null;
-  if (typeof maxLength === "number" || maxLength === 0) {
+  if (typeof maxLen === "number" || maxLen === 0) {
     maxValidator = (rule, value, callback, pass = true) => {
-      if (typeof value === "string") {
-        if (value.length > maxLength) {
-          callback(new Error(`最大长度不能超过${maxLength}`));
+      if (multiple) {
+        if (value?.length > maxLen) {
+          callback(new Error(`最多只能选择${maxLen}个`));
         } else {
           pass && callback();
         }
+      } else {
+        if (value?.length > maxLen) {
+          callback(new Error(`值最大长度不能超过${maxLen}`));
+        }
+        pass && callback();
       }
-      pass && callback();
     };
   }
-  if (typeof minLength === "number" || minLength === 0) {
+  if (typeof minLen === "number" || minLen === 0) {
     minValidator = (rule, value, callback) => {
-      if (typeof value === "string") {
-        if (value.length < minLength) {
-          callback(new Error(`最小长度不能短于${maxLength}`));
+      if (multiple) {
+        if (value?.length < minLen) {
+          callback(new Error(`最少需要选择${minLen}条`));
         } else {
           callback();
         }
+      } else {
+        if (value?.length < minLen) {
+          callback(new Error(`最小长度不能短于${minLen}`));
+        }
+        callback();
       }
-      callback();
     };
   }
-  if (maxLength) {
+  if (maxLen) {
     lengthRule = {
       trigger: rule.trigger,
       validator(rule, value, callback) {
@@ -208,7 +232,7 @@ export function generatorRules(item, runtimeModel, runtimeSchema, elFormRef) {
       },
     };
   }
-  if (minLength) {
+  if (minLen) {
     lengthRule = {
       trigger: rule.trigger,
       validator(rule, value, callback) {
@@ -216,7 +240,7 @@ export function generatorRules(item, runtimeModel, runtimeSchema, elFormRef) {
       },
     };
   }
-  if (maxLength && minLength) {
+  if (maxLen && minLen) {
     lengthRule = {
       trigger: rule.trigger,
       validator(rule, value, callback) {

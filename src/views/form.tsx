@@ -2,6 +2,8 @@ import { defineComponent, reactive, ref, watch } from "vue";
 import { useForm } from "@/components/form/useForm";
 import { Button } from "element-ui";
 import { defineFormSchema } from "@/components";
+import { useConfig } from "./config";
+const { cascaderOptions } = useConfig();
 const schema = reactive(
   defineFormSchema({
     name: "表单名称",
@@ -22,8 +24,8 @@ const schema = reactive(
         type: "AnyInput",
         prop: "name",
         label: "姓名",
-        minLength: 3,
-        // maxLength: 3,
+        minLen: 3,
+        maxLen: 3,
         defaultValue: "xxx",
         // regexp: /[\s\S]*/,
         required: true,
@@ -115,6 +117,18 @@ const schema = reactive(
             immediate: false,
           },
         },
+      },
+      {
+        type: "AnyCascader",
+        label: "设计原则",
+        prop: "yz",
+        required: true,
+        maxLen: 10,
+        minLen: 2,
+        props: {
+          multiple: true,
+        },
+        options: cascaderOptions,
       },
       {
         type: "Mix",

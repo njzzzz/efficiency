@@ -82,8 +82,8 @@ interface Form {
   coreVersion: string;
   labelPosition: string;
   labelWidth: string;
-  maxLength: number | false; // 全局值（plain value）最大长度 默认20
-  minLength: number | false; // 全局值（plain value）最小长度 默认false
+  maxLen: number | false; // 全局值（plain value）最大长度 默认100
+  minLen: number | false; // 全局值（plain value）最小长度 默认false
   autoOptionProps: boolean;
   size: string; //medium / small / mini
   inline: boolean;
@@ -118,14 +118,15 @@ interface FormItem {
   filterable?: boolean;
   clearable?: boolean;
   multiple?: boolean;
-  maxLength?: number | false; //最大长度 默认20
-  minLength?: number | false; // 最小长度 默认false
+  maxLen?: number | false; //最大长度 默认100
+  minLen?: number | false; // 最小长度 默认false
   align?: string;
   justify?: string;
   resetShowWithDefaultValue?: boolean;
   deleteValueOnHidden?: boolean;
   asyncOptions?: (model: Ref<any>, item: any) => unknown;
   optionProps?: Partial<OptionProps>;
+  options?: any[];
   on?: Record<
     string,
     (val: any, model: Ref<any>, item: Ref<any>, schema: Ref<Schema>) => unknown
