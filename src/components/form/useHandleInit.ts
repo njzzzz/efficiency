@@ -37,7 +37,7 @@ export function useHandleInit() {
       generatorOptions(item, runtimeModel);
       generatorRules(item, runtimeModel, runtimeSchema, elFormRef);
       generatorOptionsByOptionProps(item, runtimeModel, runtimeSchema);
-      // dealWithDeleteValueOnHidden(item, runtimeModel, runtimeSchema);
+      dealWithDeleteValueOnHidden(item, runtimeModel, runtimeSchema);
       if (item.list) {
         init(item.list, runtimeModel, elFormRef, runtimeSchema);
       }
