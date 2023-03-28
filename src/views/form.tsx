@@ -42,6 +42,59 @@ const schema = reactive(
         // },
       },
       {
+        type: "TimeSelect",
+        prop: "TimeSelect",
+        label: "TimeSelect",
+        required: true,
+      },
+      {
+        type: "SelectTree",
+        prop: "SelectTree",
+        label: "SelectTree",
+        required: true,
+        options: cascaderOptions,
+        multiple: true,
+      },
+      {
+        type: "DatePicker",
+        prop: "DatePicker",
+        label: "DatePicker",
+        required: true,
+      },
+      {
+        type: "DatePicker",
+        prop: "DatePickerDateTimeRange",
+        label: "DatePickerDateTimeRange",
+        required: true,
+        props: {
+          type: "datetimerange",
+        },
+      },
+      {
+        type: "Slider",
+        prop: "Slider",
+        label: "Slider",
+        required: true,
+      },
+      {
+        type: "ColorPicker",
+        prop: "ColorPicker",
+        label: "ColorPicker",
+        required: true,
+      },
+      {
+        type: "Rate",
+        prop: "Rate",
+        label: "Rate",
+        required: true,
+      },
+      {
+        type: "Switch",
+        prop: "Switch",
+        label: "Switch",
+        required: true,
+      },
+      {
         type: "AnyInput",
         prop: "sex",
         label: "性别",
@@ -119,15 +172,13 @@ const schema = reactive(
         },
       },
       {
-        type: "AnyCascader",
+        type: "Cascader",
         label: "设计原则",
         prop: "yz",
         required: true,
         maxLen: 10,
         minLen: 2,
-        props: {
-          multiple: true,
-        },
+        multiple: true,
         options: cascaderOptions,
       },
       {

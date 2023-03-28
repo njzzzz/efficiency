@@ -17,7 +17,7 @@ import Select from "@/components/Select.vue";
 import App from "./App.vue";
 import router from "./router";
 import { useFormRegister } from "./components/form/useFormRegister";
-
+import "./components/advance-form";
 Vue.config.productionTip = false;
 const { registerComponents } = useFormRegister();
 registerComponents([
@@ -27,10 +27,6 @@ registerComponents([
   { name: "AnySelect", component: Select },
   { name: "AnyCascader", component: Cascader },
   // 以下name不可以修改
-  { name: "Form", component: Form },
-  { name: "FormItem", component: FormItem },
-  { name: "Row", component: Row },
-  { name: "Col", component: Col },
   { name: "Table", component: Table },
   { name: "TableColumn", component: TableColumn },
 ]);

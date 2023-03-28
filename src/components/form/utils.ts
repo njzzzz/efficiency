@@ -31,17 +31,25 @@ export const convertListValueLabel = (
 };
 export const convertListToMap = (
   list = [],
-  { value = "value", children = "children" }
+  { value = "value", children = "children" },
+  result = {},
+  parent = null
 ) => {
-  const result = {};
-  let stack = [...list];
-  let item = stack.pop();
-  while (item) {
-    result[item[value]] = item;
-    if (item[children]) {
-      stack = [...stack, ...item[children]];
+  if (list?.length) {
+    for (let index = 0; index < list.length; index++) {
+      const item = list[index];
+      item.__parent = parent;
+      item.__path = item.__parent
+        ? [...item.__parent.__path, item[value]]
+        : [item[value]];
+      result[item[value]] = item;
+      if (item[children]) {
+        convertListToMap(item[children], { value, children }, result, item);
+      } else {
+        parent = item?.__parent ?? null;
+        list = item.__parent?.[children] ?? [];
+      }
     }
-    item = stack.pop();
   }
   return result;
 };
@@ -130,6 +138,7 @@ interface FormItem {
   asyncOptions?: (model: Ref<any>, item: any) => unknown;
   optionProps?: Partial<OptionProps>;
   options?: any[];
+  props?: Record<string, any>;
   on?: Record<
     string,
     (val: any, model: Ref<any>, item: Ref<any>, schema: Ref<Schema>) => unknown
