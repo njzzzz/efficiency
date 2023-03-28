@@ -1,5 +1,5 @@
 import { computed, watch, set, watchEffect, del, ref } from "vue";
-import { globalConfig } from "./useFormRegister";
+import { getGlobalConfig } from "./useFormRegister";
 import {
   convertListValueLabel,
   convertListToMap,
@@ -7,6 +7,7 @@ import {
   getNotUndefinedValueByOrder,
 } from "./utils";
 const functionalProps = ["label"];
+const globalConfig = getGlobalConfig();
 export function realType(may) {
   return Object.prototype.toString.call(may);
 }

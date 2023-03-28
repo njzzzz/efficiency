@@ -1,8 +1,7 @@
 import { computed, defineComponent, inject, toRefs } from "vue";
 import { globalProviderKey } from "..";
 import { useConfig } from "../useConfig";
-import { globalConfig, renderComponent } from "../useFormRegister";
-import { getNotUndefinedValueByOrder } from "../utils";
+import { renderComponent } from "../useFormRegister";
 import FormItem from "./FormItem";
 export default defineComponent({
   name: "mix",

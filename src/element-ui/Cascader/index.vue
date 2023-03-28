@@ -45,4 +45,3 @@ const runtimeListeners = computed(() => {
   };
 });
 </script>
-<style lang="scss"></style>

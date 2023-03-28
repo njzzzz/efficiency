@@ -1,7 +1,6 @@
-import { defineComponent, reactive, ref, watch } from "vue";
-import { useForm } from "@/components/form/useForm";
+import { defineComponent, reactive, ref } from "vue";
+import { useForm, defineFormSchema } from "@slacking/form";
 import { Button } from "element-ui";
-import { defineFormSchema } from "@/components";
 import { useConfig } from "./config";
 const { cascaderOptions } = useConfig();
 const schema = reactive(
@@ -21,7 +20,7 @@ const schema = reactive(
     independent: true, // 是否深克隆model和schema，这样会使相同引用数据的form互不影响
     list: [
       {
-        type: "AnyInput",
+        type: "Input",
         prop: "name",
         label: "姓名",
         minLen: 3,
@@ -95,7 +94,7 @@ const schema = reactive(
         required: true,
       },
       {
-        type: "AnyInput",
+        type: "Input",
         prop: "sex",
         label: "性别",
         dependOn: {
@@ -105,7 +104,7 @@ const schema = reactive(
         },
       },
       {
-        type: "AnySelect",
+        type: "Select",
         prop: "lover",
         label: "爱好",
         a: 1,
@@ -134,7 +133,7 @@ const schema = reactive(
         },
       },
       {
-        type: "AnyInputNumber",
+        type: "InputNumber",
         prop: "age",
         label: "年龄",
         dependOn: {
@@ -144,14 +143,14 @@ const schema = reactive(
               const random = Math.random();
               model.value.sex = val;
               item.label = random.toString();
-              item.type = random > 0.5 ? "AnyInputNumber" : "AnyInput";
+              item.type = random > 0.5 ? "InputNumber" : "Input";
             },
             immediate: false,
           },
         },
       },
       {
-        type: "AnyInput",
+        type: "Input",
         prop: "remark",
         label: "备注",
         dependOn: {
@@ -194,7 +193,7 @@ const schema = reactive(
         // },
         list: [
           {
-            type: "AnySelect",
+            type: "Select",
             prop: "name1",
             span: 3,
             filterable: true,
@@ -210,7 +209,7 @@ const schema = reactive(
             },
           },
           {
-            type: "AnyInput",
+            type: "Input",
             prop: "sex1",
             required: false,
             dependOn: {
@@ -228,13 +227,13 @@ const schema = reactive(
         justify: "end",
         list: [
           {
-            type: "AnyInput",
+            type: "Input",
             prop: "column1",
             label: "同一行-1",
             required: true,
           },
           {
-            type: "AnyInput",
+            type: "Input",
             prop: "column2",
             label: "同一行-2",
             required: true,

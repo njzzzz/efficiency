@@ -1,9 +1,9 @@
 import { computed, defineComponent, inject, set, toRefs, watch } from "vue";
 import { globalProviderKey } from "..";
 import { useConfig } from "../useConfig";
-import { globalConfig, renderComponent } from "../useFormRegister";
+import { renderComponent, getGlobalConfig } from "../useFormRegister";
 import { getNotUndefinedValueByOrder } from "../utils";
-
+const globalConfig = getGlobalConfig();
 export default defineComponent({
   props: {
     item: {

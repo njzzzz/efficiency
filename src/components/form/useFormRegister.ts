@@ -1,6 +1,6 @@
 import ReadonlyComponent from "./ReadonlyComponent";
-export const components = {};
-export const globalConfig = {
+const components = {};
+const globalConfig = {
   maxLen: 100,
   minLen: false,
   withObjectValue: true,
@@ -11,11 +11,10 @@ export const globalConfig = {
   deleteValueOnHidden: true,
   resetShowWithDefaultValue: true,
 };
-export function registerComponents(components = []) {
-  components.forEach(({ name, component }) => {
-    registerComponent({ name, component });
+export function registerComponents(componentsRegister = []) {
+  componentsRegister.forEach(({ name, component, ...reset }) => {
+    registerComponent({ name, component, ...reset });
   });
-  console.log("components", components);
 }
 export function renderComponent(
   name,
@@ -30,9 +29,16 @@ export function renderComponent(
     ? components[name].readonlyComponent ?? ReadonlyComponent
     : components[name].component;
 }
-export function registerComponent({ name, component, ...rest }) {
-  if (components[name]) {
-    throw new Error(`组件名称${name}已经被注册`);
+export function registerComponent({
+  name,
+  component,
+  override = false,
+  ...rest
+}) {
+  if (components[name] && !override) {
+    throw new Error(
+      `组件名称${name}已经被注册, 如果需要覆盖已注册组件请设置override属性为true`
+    );
   }
   if (!component) {
     throw new Error(`组件名称${name}的组件为空`);
@@ -42,6 +48,13 @@ export function registerComponent({ name, component, ...rest }) {
     component,
     ...rest,
   };
+}
+export function getGlobalConfig() {
+  return globalConfig;
+}
+
+export function getRegisterComponents() {
+  return components;
 }
 interface globalConfig {
   maxLen: number | false;
