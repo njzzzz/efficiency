@@ -234,3 +234,30 @@ export default defineComponent({
   transpileDependencies: ["@slacking/form"];
 }
 ```
+
+### 快速使用内置的 element-ui 注册组件
+
+```js
+import { elementUiRegister } from "@slacking/form/src/element-ui";
+elementUiRegister();
+
+// 相当于注册了以下类型组件
+registerComponents([
+  { name: "Input", component: Input },
+  { name: "InputNumber", component: InputNumber },
+  { name: "Radio", component: Radio },
+  { name: "Select", component: Select },
+  { name: "Cascader", component: Cascader },
+  { name: "SelectTree", component: SelectTree },
+  { name: "TimeSelect", component: TimeSelect },
+  { name: "DatePicker", component: DatePicker },
+  { name: "Switch", component: Switch },
+  { name: "Slider", component: Slider },
+  { name: "Rate", component: Rate },
+  { name: "ColorPicker", component: ColorPicker },
+  { name: "Form", component: Form },
+  { name: "FormItem", component: FormItem },
+  { name: "Row", component: Row },
+  { name: "Col", component: Col },
+]);
+```

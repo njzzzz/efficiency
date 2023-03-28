@@ -32,9 +32,9 @@ export const convertListValueLabel = (
 export const convertListToMap = (
   list = [],
   { value = "value", children = "children" },
-  result = {},
   parent = null
 ) => {
+  const result = {};
   if (list?.length) {
     for (let index = 0; index < list.length; index++) {
       const item = list[index];
@@ -44,10 +44,10 @@ export const convertListToMap = (
         : [item[value]];
       result[item[value]] = item;
       if (item[children]) {
-        convertListToMap(item[children], { value, children }, result, item);
-      } else {
-        parent = item?.__parent ?? null;
-        list = item.__parent?.[children] ?? [];
+        Object.assign(
+          result,
+          convertListToMap(item[children], { value, children }, item)
+        );
       }
     }
   }

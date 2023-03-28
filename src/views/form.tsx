@@ -3,6 +3,13 @@ import { useForm, defineFormSchema } from "@slacking/form";
 import { Button } from "element-ui";
 import { useConfig } from "./config";
 const { cascaderOptions } = useConfig();
+const sleep = (res = [], timing = 2000) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(res);
+    }, timing);
+  });
+};
 const schema = reactive(
   defineFormSchema({
     name: "表单名称",
@@ -19,6 +26,25 @@ const schema = reactive(
     withObjectValue: true, // 带options的表单项是否需要抛出完整的值以_${prop}为键名
     independent: true, // 是否深克隆model和schema，这样会使相同引用数据的form互不影响
     list: [
+      {
+        type: "Select",
+        label: "Select",
+        prop: "Select",
+        required: true,
+        optionProps: {
+          value: "a",
+          label: "b",
+        },
+        async asyncOptions() {
+          const data = await sleep([
+            { a: 1, b: 1 },
+            { a: 2, b: 2 },
+            { a: 3, b: 3 },
+            { a: 4, b: 4 },
+          ]);
+          return data;
+        },
+      },
       {
         type: "Input",
         prop: "name",
