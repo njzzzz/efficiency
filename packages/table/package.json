@@ -1,0 +1,32 @@
+{
+  "name": "@slacking/table",
+  "version": "0.0.1",
+  "scripts": {},
+  "keywords": [],
+  "author": "njzzz",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/njzzzz/efficiency.git"
+  },
+  "bugs": {
+    "url": "https://github.com/njzzzz/efficiency/issues"
+  },
+  "homepage": "https://github.com/njzzzz/efficiency#readme",
+  "main": "./dist/slacking-table.umd.js",
+  "types": "./types/index.d.ts",
+  "module": "./dist/slacking-table.es.js",
+  "unpkg": "./dist/slacking-table.min.js",
+  "exports": {
+    ".": {
+      "import": "./dist/slacking-table.es.js",
+      "require": "./dist/slacking-table.umd.js",
+      "types": "./types/index.d.ts"
+    },
+    "./dist/*": "./dist/*"
+  },
+  "description": "",
+  "devDependencies": {
+    "@slacking/shared": "workspace:^0.0.1"
+  }
+}

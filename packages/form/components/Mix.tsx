@@ -1,7 +1,7 @@
 import { computed, defineComponent, inject, toRefs } from "vue";
 import { globalProviderKey } from "../core";
 import { useConfig } from "../core/useConfig";
-import { renderComponent } from "../core/useFormRegister";
+import { renderComponent } from "@slacking/shared";
 import FormItem from "./FormItem";
 export default defineComponent({
   name: "mix",

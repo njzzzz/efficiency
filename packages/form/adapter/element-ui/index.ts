@@ -16,7 +16,7 @@ import Cascader from "./Cascader/index.vue";
 import SelectTree from "./SelectTree/index.vue";
 import TimeSelect from "./TimeSelect/index.vue";
 import DatePicker from "./DatePicker/index.vue";
-import { useFormRegister } from "@slacking/form";
+import { useFormRegister } from "@slacking/shared";
 
 export function elementUiRegister() {
   const { registerComponents } = useFormRegister();

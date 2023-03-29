@@ -1,0 +1,32 @@
+{
+  "name": "@slacking/shared",
+  "version": "0.0.1",
+  "scripts": {},
+  "keywords": [],
+  "author": "njzzz",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/njzzzz/efficiency.git"
+  },
+  "bugs": {
+    "url": "https://github.com/njzzzz/efficiency/issues"
+  },
+  "homepage": "https://github.com/njzzzz/efficiency#readme",
+  "main": "./dist/slacking-shared.umd.js",
+  "types": "./types/index.d.ts",
+  "module": "./dist/slacking-shared.es.js",
+  "unpkg": "./dist/slacking-shared.min.js",
+  "exports": {
+    ".": {
+      "import": "./dist/slacking-shared.es.js",
+      "require": "./dist/slacking-shared.umd.js",
+      "types": "./types/index.d.ts"
+    },
+    "./dist/*": "./dist/*"
+  },
+  "description": "",
+  "devDependencies": {
+    "@slacking/shared": "workspace:^0.0.1"
+  }
+}

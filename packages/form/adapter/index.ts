@@ -1,1 +1,1 @@
-export * from "./element-ui"
+export * from "./element-ui";

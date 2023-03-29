@@ -7,7 +7,7 @@ export function useOverrideProps() {
   const attrs = useAttrs();
   const runtimeAttrs = computed(() => {
     const { type, ...otherProps } = attrs;
-    const coveredProps = otherProps.props ?? {} as any;
+    const coveredProps = otherProps.props ?? ({} as any);
     return { ...otherProps, ...coveredProps };
   });
 

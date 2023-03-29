@@ -1,6 +1,6 @@
 import ReadonlyComponent from "./ReadonlyComponent";
 const components = {};
-const globalConfig = {
+const globalFormConfig = {
   maxLen: 100,
   minLen: false,
   withObjectValue: true,
@@ -49,14 +49,14 @@ export function registerComponent({
     ...rest,
   };
 }
-export function getGlobalConfig() {
-  return globalConfig;
+export function getGlobalFormConfig() {
+  return globalFormConfig;
 }
 
 export function getRegisterComponents() {
   return components;
 }
-interface globalConfig {
+interface globalFormConfig {
   maxLen: number | false;
   minLen: number | false;
   // 带有options数组类型的表单，同时抛出选中的对象
@@ -71,14 +71,14 @@ interface globalConfig {
   // 表单被隐藏后再展示的时候使用defaultValue,如果设置为false则置为null如果多选则置为[]
   resetShowWithDefaultValue: boolean;
 }
-export function setGlobalConfig(config: Partial<globalConfig> = {}) {
-  Object.assign(globalConfig, config);
+export function setGlobalFormConfig(config: Partial<globalFormConfig> = {}) {
+  Object.assign(globalFormConfig, config);
 }
 export function useFormRegister() {
   return {
     registerComponent,
     registerComponents,
     renderComponent,
-    setGlobalConfig,
+    setGlobalFormConfig,
   };
 }

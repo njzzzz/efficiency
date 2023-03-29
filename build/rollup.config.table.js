@@ -6,7 +6,7 @@ import vue from "@vitejs/plugin-vue2";
 import terser from "@rollup/plugin-terser";
 import typescript from "@rollup/plugin-typescript";
 import postcss from "rollup-plugin-postcss";
-import pkg from "../packages/form/package.json" assert { type: "json" };
+import pkg from "../packages/table/package.json" assert { type: "json" };
 import path, { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
@@ -19,7 +19,7 @@ const globals = {
   "@slacking/table": "SlackingTable",
   "@slacking/shared": "SlackingShared",
 };
-const pkgDir = resolve(__dirname, "../packages/form");
+const pkgDir = resolve(__dirname, "../packages/table");
 export default defineConfig([
   {
     input: resolve(pkgDir, "index.ts"),
@@ -51,7 +51,7 @@ export default defineConfig([
     ],
     output: [
       {
-        name: "SlackingForm",
+        name: "SlackingTable",
         format: "umd",
         file: resolve(pkgDir, pkg.main),
         globals,
@@ -62,7 +62,7 @@ export default defineConfig([
         globals,
       },
       {
-        name: "SlackingForm",
+        name: "SlackingTable",
         file: resolve(pkgDir, pkg.unpkg),
         format: "umd",
         plugins: [terser()],

@@ -32,5 +32,8 @@
     "url": "https://github.com/njzzzz/efficiency/issues"
   },
   "homepage": "https://github.com/njzzzz/efficiency#readme",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@slacking/shared": "workspace:^0.0.1"
+  }
 }

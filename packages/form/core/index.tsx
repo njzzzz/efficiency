@@ -10,7 +10,7 @@ import {
 import { useHandleInit } from "./useHandleInit";
 import Mix from "../components/Mix";
 import FormItem from "../components/FormItem";
-import { renderComponent } from "./useFormRegister";
+import { renderComponent } from "@slacking/shared";
 import { formProps } from "./formProps";
 import { cloneDeep, isEqual } from "lodash-es";
 export const globalProviderKey = Symbol();

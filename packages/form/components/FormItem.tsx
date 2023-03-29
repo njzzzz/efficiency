@@ -1,9 +1,9 @@
 import { computed, defineComponent, inject, set, toRefs } from "vue";
 import { globalProviderKey } from "../core";
 import { useConfig } from "../core/useConfig";
-import { renderComponent, getGlobalConfig } from "../core/useFormRegister";
+import { renderComponent, getGlobalFormConfig } from "@slacking/shared";
 import { getNotUndefinedValueByOrder } from "../core/utils";
-const globalConfig = getGlobalConfig();
+const globalConfig = getGlobalFormConfig();
 export default defineComponent({
   props: {
     item: {
