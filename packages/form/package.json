@@ -1,0 +1,36 @@
+{
+  "name": "@slacking/form",
+  "version": "0.0.10",
+  "description": "",
+  "keywords": [],
+  "author": "njzzz",
+  "files": [
+    "dist",
+    "components",
+    "adapter",
+    "core",
+    "types",
+    "index.ts"
+  ],
+  "main": "./dist/slacking-form.umd.js",
+  "types": "./types/index.d.ts",
+  "module": "./dist/slacking-form.es.js",
+  "unpkg": "./dist/slacking-form.min.js",
+  "exports": {
+    ".": {
+      "import": "./dist/slacking-form.es.js",
+      "require": "./dist/slacking-form.umd.js",
+      "types": "./types/index.d.ts"
+    },
+    "./dist/*": "./dist/*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/njzzzz/efficiency.git"
+  },
+  "bugs": {
+    "url": "https://github.com/njzzzz/efficiency/issues"
+  },
+  "homepage": "https://github.com/njzzzz/efficiency#readme",
+  "license": "MIT"
+}

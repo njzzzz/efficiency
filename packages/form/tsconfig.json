@@ -1,0 +1,26 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./types",
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "allowJs": true,
+    "strict": false,
+    "checkJs": false,
+    "jsx": "preserve",
+    "jsxFactory": "h",
+    "noImplicitAny": false,
+    "sourceMap": true
+  },
+  "include": [
+    "../../src/shims-vue.d.ts",
+    "../../src/shims-tsx.d.ts",
+    "components/**/*.ts",
+    "components/**/*.tsx",
+    "components/**/*.vue",
+    "adapter/**/*.vue",
+    "adapter/**/*.ts",
+    "adapter/**/*.tsx",
+    "index.ts"
+  ]
+}
