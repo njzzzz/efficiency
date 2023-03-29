@@ -1,12 +1,12 @@
 {
-  "name": "@slacking/form",
   "version": "0.0.10",
+  "type": "module",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "build:lib": "rimraf ./types ./dist && rollup -c ./rollup.config.mjs && vue-tsc"
+    "build:form": "rimraf ./types ./dist && rollup -c ./build/rollup.config.form.js && tsc -p ./packages/form/tsconfig.json"
   },
   "peerDependencies": {
     "element-ui": "2.x",
@@ -16,15 +16,17 @@
   "devDependencies": {
     "@babel/core": "^7.12.16",
     "@babel/eslint-parser": "^7.12.16",
+    "@babel/plugin-transform-runtime": "^7.21.0",
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-commonjs": "^24.0.1",
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@rollup/plugin-terser": "^0.4.0",
     "@rollup/plugin-typescript": "^11.0.0",
-    "@slacking/form": "file:../../../.es-cli/node_modules/@slacking/form",
+    "@slacking/form": "link:/Users/tsjr/.es-cli/node_modules/@slacking/form",
     "@types/node": "^18.15.11",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
+    "@vitejs/plugin-vue2": "^2.2.0",
     "@vue/babel-helper-vue-jsx-merge-props": "^1.4.0",
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-eslint": "~5.0.0",
@@ -42,44 +44,14 @@
     "prettier": "^2.4.1",
     "rimraf": "^4.4.1",
     "rollup": "^3.20.2",
-    "rollup-plugin-vue": "^6.0.0",
+    "rollup-plugin-postcss": "^4.0.2",
     "sass": "^1.32.7",
     "sass-loader": "^12.0.0",
     "tslib": "^2.5.0",
     "typescript": "^5.0.2",
     "vue": "2.7.x",
     "vue-router": "^3.5.1",
-    "vue-template-compiler": "^2.6.14",
-    "vue-tsc": "^1.2.0"
+    "vue-template-compiler": "^2.6.14"
   },
-  "exports": {
-    ".": {
-      "import": "./dist/slacking-form.es.js",
-      "require": "./dist/slacking-form.umd.js",
-      "types": "./types/components/index.d.ts"
-    },
-    "./*": {
-      "import": "./*/index.js",
-      "require": "./*/index.js"
-    }
-  },
-  "main": "./dist/slacking-form.umd.js",
-  "types": "./types/components/index.d.ts",
-  "module": "./dist/slacking-form.es.js",
-  "unpkg": "./dist/slacking-form.min.js",
-  "author": "njzzz",
-  "files": [
-    "./dist",
-    "./types",
-    "./src"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/njzzzz/efficiency.git"
-  },
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/njzzzz/efficiency/issues"
-  },
-  "homepage": "https://github.com/njzzzz/efficiency#readme"
+  "author": "njzzz"
 }

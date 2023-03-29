@@ -1,38 +1,24 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2015",
-    "module": "esnext",
-    "strict": false,
-    "checkJs": false,
-    "jsx": "preserve",
-    "moduleResolution": "node",
-    "jsxFactory": "h",
-    "noImplicitAny": false,
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "outDir": "./types",
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "useDefineForClassFields": true,
-    "sourceMap": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     },
-    "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+    "allowJs": true,
+    "strict": false,
+    "checkJs": false,
+    "jsx": "preserve",
+    "jsxFactory": "h",
+    "noImplicitAny": false,
+    "noEmit": true
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
     "src/**/*.vue",
+    "src/**/*.ts",
+    "src/**/*.js",
+    "src/**/*.tsx",
     "tests/**/*.ts",
     "tests/**/*.tsx"
-  ],
-  "exclude": ["node_modules"],
-  "vueCompilerOptions": {
-    "target": 2.7
-  }
+  ]
 }
