@@ -1,6 +1,6 @@
 import ReadonlyComponent from "./ReadonlyComponent";
 const components = {};
-const globalFormConfig = {
+const globalFormConfig: GlobalFormConfig = {
   maxLen: 100,
   minLen: false,
   withObjectValue: true,
@@ -10,6 +10,11 @@ const globalFormConfig = {
   size: "small",
   deleteValueOnHidden: true,
   resetShowWithDefaultValue: true,
+  defaultRender: "Input",
+};
+const globalTableConfig: GlobalTableConfig = {
+  // 设置表格列默认使用的渲染组件，需要通过registerComponent注册
+  defaultRender: "Input",
 };
 export function registerComponents(componentsRegister = []) {
   componentsRegister.forEach(({ name, component, ...reset }) => {
@@ -52,11 +57,14 @@ export function registerComponent({
 export function getGlobalFormConfig() {
   return globalFormConfig;
 }
+export function getGlobalTableConfig() {
+  return globalTableConfig;
+}
 
 export function getRegisterComponents() {
   return components;
 }
-interface globalFormConfig {
+interface GlobalFormConfig {
   maxLen: number | false;
   minLen: number | false;
   // 带有options数组类型的表单，同时抛出选中的对象
@@ -70,9 +78,17 @@ interface globalFormConfig {
   deleteValueOnHidden: boolean;
   // 表单被隐藏后再展示的时候使用defaultValue,如果设置为false则置为null如果多选则置为[]
   resetShowWithDefaultValue: boolean;
+  // 默认渲染组件
+  defaultRender: string;
 }
-export function setGlobalFormConfig(config: Partial<globalFormConfig> = {}) {
+interface GlobalTableConfig {
+  defaultRender: string;
+}
+export function setGlobalFormConfig(config: Partial<GlobalFormConfig> = {}) {
   Object.assign(globalFormConfig, config);
+}
+export function setGlobalTableConfig(config: Partial<GlobalTableConfig> = {}) {
+  Object.assign(globalTableConfig, config);
 }
 export function useFormRegister() {
   return {

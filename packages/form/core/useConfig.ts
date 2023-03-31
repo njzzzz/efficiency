@@ -107,7 +107,7 @@ export function generatorRules(item, runtimeModel, runtimeSchema, elFormRef) {
   // 只处理Mix类型的多对一格式，如果未配置prop择按照正常表单执行，只处理布局
   if (item.type === "Mix" && item.prop) {
     // 子表单指定 required 为 false，则不会触发验证
-    if (item.required !== false) {
+    if (item.required) {
       item.list.map((child) => {
         child.trigger = child.trigger || item.trigger;
         child.validator = child.validator
@@ -344,12 +344,23 @@ export function dealWithMixTypeValue(item, runtimeModel) {
   });
 }
 
-export function patchReactiveProps(item) {
+export function patchReactiveProps(item, runtimeSchema) {
   if (!Reflect.has(item, "options")) {
     set(item, "options", []);
   }
   if (!Reflect.has(item, "show")) {
     set(item, "show", true);
+  }
+  if (!Reflect.has(item, "type")) {
+    set(
+      item,
+      "type",
+      getNotUndefinedValueByOrder([
+        runtimeSchema.value.defaultRender,
+        globalConfig.defaultRender,
+        "Input",
+      ])
+    );
   }
 }
 // 将select, cascader等选项的数组或者对象值使用下划线透出

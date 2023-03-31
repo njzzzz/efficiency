@@ -2,8 +2,8 @@ import { computed, defineComponent, inject, toRefs } from "vue";
 import { globalProviderKey } from "../core";
 import { useConfig } from "../core/useConfig";
 import { renderComponent } from "@slacking/shared";
-import FormItem from "./FormItem";
-export default defineComponent({
+import FormItemWithMix from "./FormItemWithMix";
+const Mix = defineComponent({
   name: "mix",
   props: {
     item: {
@@ -54,12 +54,12 @@ export default defineComponent({
                   props={{ span: getSpan(item.span), ...item }}
                   key={item.prop}
                 >
-                  <FormItem
+                  <FormItemWithMix
                     item={item}
                     style={{
                       marginBottom: 0,
                     }}
-                  ></FormItem>
+                  ></FormItemWithMix>
                 </Col>
               ) : null;
             })}
@@ -68,3 +68,4 @@ export default defineComponent({
       ) : null;
   },
 }) as any;
+export default Mix;

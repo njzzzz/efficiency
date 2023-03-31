@@ -10,6 +10,8 @@ import {
   Slider,
   Rate,
   ColorPicker,
+  Table,
+  TableColumn,
 } from "element-ui";
 import Select from "./Select/index.vue";
 import Cascader from "./Cascader/index.vue";
@@ -38,5 +40,7 @@ export function elementUiRegister() {
     { name: "FormItem", component: FormItem },
     { name: "Row", component: Row },
     { name: "Col", component: Col },
+    { name: "Table", component: Table },
+    { name: "TableColumn", component: TableColumn },
   ]);
 }

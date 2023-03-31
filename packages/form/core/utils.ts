@@ -77,13 +77,13 @@ export function undefinedAndNotNullValueAsTrue(val) {
 export function defineFormSchema(schema: Schema) {
   return schema;
 }
-interface OptionProps {
+export interface OptionProps {
   value: string;
   label: string;
   children: string;
   disabled: string;
 }
-interface Form {
+export interface Form {
   name: string;
   readonly: boolean;
   disabled: boolean;
@@ -101,20 +101,21 @@ interface Form {
   clearable: boolean;
   withObjectValue: boolean; // 带options的表单项是否需要抛出完整的值以_${prop}为键名
   independent: boolean; // 是否深克隆model和schema，这样会使相同引用数据的form互不影响
-  list: any[];
   deleteValueOnHidden: boolean; // 在表单隐藏时是否删除键
   resetShowWithDefaultValue: boolean;
   optionProps: Partial<OptionProps>;
+  renderItemByCustom: boolean;
+  defaultRender: string;
   // 兜底
   [key: string]: unknown;
 }
-interface DependOnOptions {
+export interface DependOnOptions {
   handler: (val: any, model: Ref<any>, item: any, oldVal: any) => any;
   immediate?: boolean;
   deep?: boolean;
 }
-interface FormItem {
-  type: string;
+export interface FormItem {
+  type?: string;
   prop?: string;
   label?: string;
   defaultValue?: any;

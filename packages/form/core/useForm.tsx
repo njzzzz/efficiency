@@ -4,6 +4,7 @@ import {
   ref,
   ComputedRef,
   onRenderTriggered,
+  useSlots,
 } from "vue";
 import Form from ".";
 import { formProps } from "./formProps";
@@ -15,15 +16,16 @@ export function useForm() {
   const EffectForm = defineComponent({
     props: formProps,
     setup(props, { emit }) {
+      const slots = useSlots();
       onRenderTriggered((e) => {
         console.log("EffectForm", e);
       });
       return () => {
-        console.count("EffectForm render-times");
         return (
           <Form
             ref={_formRef}
             props={props}
+            scopedSlots={slots}
             onInput={($event) => emit("input", $event)}
           ></Form>
         );
