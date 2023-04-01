@@ -22,10 +22,10 @@ export default defineComponent({
   props: formProps,
   setup(props, { expose, emit }) {
     const slots = useSlots();
-    console.log("【LOG】  slot11111s ---->", slots);
     const initialing = ref(false);
     const elFormRef = ref();
     const Form = renderComponent("Form");
+    const subFormItemRenderMap = ref({});
     const { model, schema } = toRefs(props);
     const runtimeModel = ref<any>({});
     const runtimeSchema = ref<any>({});
@@ -33,15 +33,16 @@ export default defineComponent({
     provide(globalProviderKey, {
       model: runtimeModel,
       schema: runtimeSchema,
+      subFormItemRenderMap: subFormItemRenderMap,
     });
     const isIndependentForm = computed(
       () => schema.value?.independent === true
     );
     //---------dev---------------------------------
     onRenderTriggered((e) => {
-      console.log("elFrom onRenderTriggered", e);
+      // console.log("elFrom onRenderTriggered", e);
     });
-    console.count("elFrom setup render-times");
+    // console.count("elFrom setup render-times");
     //---------dev---------------------------------
     watch(
       model,
@@ -72,7 +73,6 @@ export default defineComponent({
     if (!runtimeSchema.value?.list?.length) {
       return () => null;
     }
-    const subFormItemRenderMap = ref({});
     const FormItemWithMixRender = computed<any>(() => {
       return defineComponent({
         setup() {
@@ -83,11 +83,6 @@ export default defineComponent({
               key={attrs.item?.prop || attrs.item?.list?.[0]?.prop}
               scopedSlots={{
                 render({ item, render }) {
-                  console.log(
-                    "【LOG】  item, render  ---->",
-                    item.label,
-                    render
-                  );
                   if (item.prop) {
                     set(subFormItemRenderMap.value, item.prop, render);
                   }
@@ -99,20 +94,8 @@ export default defineComponent({
         },
       });
     });
-    const formItemRenderMap = computed(() => {
-      return runtimeSchema.value.list.reduce((acc, item) => {
-        if (item.prop !== undefined) {
-          acc[item.prop] = () => (
-            <FormItemWithMixRender.value
-              item={item}
-            ></FormItemWithMixRender.value>
-          );
-        }
-        return acc;
-      }, {});
-    });
     const totalFormItemRenderMap = computed(() => {
-      return { ...subFormItemRenderMap.value, ...formItemRenderMap.value };
+      return { ...subFormItemRenderMap.value };
     });
     expose({
       elFormRef,

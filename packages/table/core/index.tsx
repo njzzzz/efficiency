@@ -26,6 +26,7 @@ const TableRender = defineComponent({
     const slots = useSlots() as any;
     return () => (
       <Table {...{ attrs }} scopedSlots={slots}>
+        {/* 此处触发表单渲染，之后在表单中做prop和相应render的收集 */}
         {attrs.initRender()}
         {attrs?.columns?.length &&
           attrs.columns.map((column) => {
@@ -36,8 +37,8 @@ const TableRender = defineComponent({
                 }}
                 scopedSlots={{
                   default({ column: realColumn, subIndex }, realData) {
-                    const realRow = realData.row ?? {};
-                    const subDeep = realData.column.level - 1;
+                    let subDeep = realData.column.level - 2;
+                    subDeep = subDeep < 0 ? null : subDeep;
                     const dataIndex = realData.$index;
                     const realProp = attrs.formSchemaMap[realColumn.prop] ?? [];
                     let schemaIndex = null;
@@ -46,10 +47,10 @@ const TableRender = defineComponent({
                     );
                     if (sameSubDeepItem?.length) {
                       // 作为多级表头的字节点
-                      schemaIndex = sameSubDeepItem[0]?.schemaIndex;
+                      schemaIndex = sameSubDeepItem[0]?.schemaIndex ?? null;
                     } else {
                       //作为正常表格列
-                      schemaIndex = realProp[0]?.schemaIndex;
+                      schemaIndex = realProp[0]?.schemaIndex ?? null;
                     }
                     // schemaIndex 都一样直接获取第一个就行
                     const virtualProp = genVirtualProp({
@@ -60,9 +61,9 @@ const TableRender = defineComponent({
                       subIndex,
                       changeConfig: false,
                     });
-                    console.log(attrs.formItemRenderMap);
-                    const Render = attrs.formItemRenderMap[virtualProp]?.value;
-                    return Render ? <Render></Render> : null;
+                    // 获取到每一项表单的render在此处渲染
+                    const Render = attrs.formItemRenderMap[virtualProp];
+                    return <Render></Render>;
                   },
                   ...column.scopedSlots,
                 }}

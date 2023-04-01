@@ -60,6 +60,22 @@ const _columns = defineTableColumns([
             prop: "name",
             label: "姓名3-2",
             width: 300,
+            list: [
+              {
+                prop: "name3-2-1",
+                label: "姓名3-2-1",
+                width: 300,
+                defaultValue: 11,
+                required: true,
+              },
+              {
+                prop: "name3-2-2",
+                label: "姓名3-2-2",
+                width: 300,
+                defaultValue: 11,
+                required: true,
+              },
+            ],
           },
         ],
       },
@@ -132,6 +148,7 @@ export default defineComponent({
     const schema = ref(
       defineTableSchema({
         readonly: false,
+        labelPosition: "top",
         list: _columns,
       })
     );

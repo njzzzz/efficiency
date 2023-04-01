@@ -1,4 +1,4 @@
-import { computed, defineComponent, inject, toRefs } from "vue";
+import { computed, defineComponent, inject, toRefs, set } from "vue";
 import { globalProviderKey } from "../core";
 import { useConfig } from "../core/useConfig";
 import { renderComponent } from "@slacking/shared";
@@ -14,7 +14,7 @@ const Mix = defineComponent({
   setup(props) {
     const { item } = toRefs(props);
     const { label } = useConfig();
-    const { schema } = inject(globalProviderKey) as any;
+    const { schema, subFormItemRenderMap } = inject(globalProviderKey) as any;
     const Row = renderComponent("Row");
     const Col = renderComponent("Col");
     const OriginFormItem = renderComponent("FormItem");
@@ -58,6 +58,14 @@ const Mix = defineComponent({
                     item={item}
                     style={{
                       marginBottom: 0,
+                    }}
+                    scopedSlots={{
+                      render({ item, render }) {
+                        if (item.prop) {
+                          set(subFormItemRenderMap.value, item.prop, render);
+                        }
+                        return <render.value></render.value>;
+                      },
                     }}
                   ></FormItemWithMix>
                 </Col>

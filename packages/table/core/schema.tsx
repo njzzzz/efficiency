@@ -5,7 +5,8 @@ interface TableSchema extends Form {
 interface TableColumn extends FormItem {
   scopedSlots: any;
   type: string;
-  list: Partial<TableColumn>[];
+  list: Partial<FormItem>[];
+  subHeaders: Partial<TableColumn>[];
 }
 
 export function defineTableSchema(schema: Partial<TableSchema>) {

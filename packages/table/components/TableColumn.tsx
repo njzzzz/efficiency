@@ -5,8 +5,6 @@ const InnerTableColumn = defineComponent({
   setup() {
     const attrs = useAttrs();
     const slots = useSlots();
-    console.log("【LOG】  attrs ---->", attrs.label, slots);
-
     const subHeaders = computed(() => (attrs?.list as any) ?? []);
     const genCommonSlots = (column, subIndex = null) => {
       // 多级表头嵌套多级表头，只会渲染最后一个多级表头
