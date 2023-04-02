@@ -5,15 +5,20 @@ const InnerTableColumn = defineComponent({
   setup() {
     const attrs = useAttrs();
     const slots = useSlots();
-    const subHeaders = computed(() => (attrs?.list as any) ?? []);
+    const subHeaders = computed(() => (attrs?.subHeaders as any) ?? []);
     const genCommonSlots = (column, subIndex = null) => {
-      // 多级表头嵌套多级表头，只会渲染最后一个多级表头
-      if (column.list?.length) {
+      // 本身配置了插槽则使用自身插槽
+      if (attrs.scopedSlots) {
+        return attrs.scopedSlots;
+      }
+      // 多级表头嵌套多级表头，只会渲染最后一个多级表头，故这里
+      if (column.subHeaders?.length) {
         return slots;
       }
       return {
         ...slots,
         default(...reset) {
+          // 多级表头会传递多层，只取最后一个参数（默认插槽的参数）
           const args = reset.at(-1);
           return slots.default(
             {

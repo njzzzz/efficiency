@@ -11,7 +11,7 @@ const _columns = defineTableColumns([
     fixed: true,
     sortable: true,
     width: 1500,
-    list: [
+    subHeaders: [
       {
         prop: "name",
         label: "姓名-1",
@@ -48,13 +48,22 @@ const _columns = defineTableColumns([
         label: "姓名-3",
         width: 600,
         required: true,
-        list: [
+        subHeaders: [
           {
             prop: "name",
             label: "姓名3-1",
             width: 300,
             defaultValue: 11,
             required: false,
+            scopedSlots: {
+              default() {
+                return (
+                  <span>
+                    是的舒服是的是的是谁的是谁的是谁说是的舒服是的是的是谁的是谁的是谁说是的舒服是的是的是谁的是谁的是谁说
+                  </span>
+                );
+              },
+            },
           },
           {
             prop: "name",

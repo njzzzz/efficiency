@@ -127,8 +127,28 @@ function genVirtualConfig({
       formSchemaMap[originProp] = [virtualConfig.__prop];
     }
   }
-  if (virtualConfig.list) {
+  if (virtualConfig.subHeaders && virtualConfig.list) {
+    throw new Error("subHeaders和list属性只能配置一个");
+  }
+  if (virtualConfig.subHeaders || virtualConfig.list) {
     subDeep = subDeep === null ? 0 : subDeep + 1;
+  }
+  if (virtualConfig.subHeaders) {
+    // 带子节点的必为Mix类型, 如果不带prop则说明是单纯布局类型，带prop则说明是组合类型， 此处修改subHeaders的类型，用于渲染
+    virtualConfig.type = "Mix";
+    virtualConfig.list = virtualConfig.subHeaders =
+      virtualConfig.subHeaders.map((subConfig, subIndex) =>
+        genVirtualConfig({
+          config: subConfig,
+          schemaIndex,
+          dataIndex,
+          subDeep,
+          subIndex,
+          formSchemaMap,
+        })
+      );
+  } else if (virtualConfig.list) {
+    // subDeep = subDeep === null ? 0 : subDeep + 1;
     // 带子节点的必为Mix类型, 如果不带prop则说明是单纯布局类型，带prop则说明是组合类型
     virtualConfig.type = "Mix";
     virtualConfig.list = virtualConfig.list.map((subConfig, subIndex) =>
@@ -142,6 +162,9 @@ function genVirtualConfig({
       })
     );
   }
+  // if (virtualConfig.scopedSlots) {
+  //   virtualConfig.show = false;
+  // }
   return virtualConfig;
 }
 export function createVirtualSchema(model, schema) {

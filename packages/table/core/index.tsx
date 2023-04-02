@@ -46,7 +46,7 @@ const TableRender = defineComponent({
                       (item) => item.subDeep === subDeep
                     );
                     if (sameSubDeepItem?.length) {
-                      // 作为多级表头的字节点
+                      // 作为多级表头的子节点
                       schemaIndex = sameSubDeepItem[0]?.schemaIndex ?? null;
                     } else {
                       //作为正常表格列
@@ -121,10 +121,6 @@ export function useTable() {
             }}
             scopedSlots={{
               render(initRender, formItemRenderMap) {
-                console.log(
-                  "【LOG】  formItemRenderMap ---->",
-                  formItemRenderMap
-                );
                 return (
                   <TableRender
                     {...{ attrs }}
