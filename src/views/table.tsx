@@ -10,7 +10,7 @@ const _columns = defineTableColumns([
     label: "姓名",
     fixed: true,
     sortable: true,
-    width: 1500,
+    width: 1800,
     subHeaders: [
       {
         prop: "name",
@@ -46,7 +46,7 @@ const _columns = defineTableColumns([
       },
       {
         label: "姓名-3",
-        width: 600,
+        width: 900,
         required: true,
         subHeaders: [
           {
@@ -68,17 +68,17 @@ const _columns = defineTableColumns([
           {
             prop: "name",
             label: "姓名3-2",
-            width: 300,
+            width: 600,
             list: [
               {
-                prop: "name3-2-1",
+                prop: "name",
                 label: "姓名3-2-1",
                 width: 300,
                 defaultValue: 11,
                 required: true,
               },
               {
-                prop: "name3-2-2",
+                prop: "name",
                 label: "姓名3-2-2",
                 width: 300,
                 defaultValue: 11,
@@ -128,11 +128,11 @@ const _columns = defineTableColumns([
     prop: "lover",
     label: "爱好",
     minWidth: 200,
-    scopedSlots: {
-      default(item) {
-        return <div>xxxx</div>;
-      },
-    },
+    // scopedSlots: {
+    //   default(item) {
+    //     return <div>xxxx</div>;
+    //   },
+    // },
   },
   {
     prop: "lover",

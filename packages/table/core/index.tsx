@@ -37,21 +37,9 @@ const TableRender = defineComponent({
                 }}
                 scopedSlots={{
                   default({ column: realColumn, subIndex }, realData) {
-                    let subDeep = realData.column.level - 2;
-                    subDeep = subDeep < 0 ? null : subDeep;
                     const dataIndex = realData.$index;
-                    const realProp = attrs.formSchemaMap[realColumn.prop] ?? [];
-                    let schemaIndex = null;
-                    const sameSubDeepItem = realProp.filter(
-                      (item) => item.subDeep === subDeep
-                    );
-                    if (sameSubDeepItem?.length) {
-                      // 作为多级表头的子节点
-                      schemaIndex = sameSubDeepItem[0]?.schemaIndex ?? null;
-                    } else {
-                      //作为正常表格列
-                      schemaIndex = realProp[0]?.schemaIndex ?? null;
-                    }
+                    const { schemaIndex = null, subDeep = null } =
+                      realColumn.__prop ?? {};
                     // schemaIndex 都一样直接获取第一个就行
                     const virtualProp = genVirtualProp({
                       config: realColumn,
@@ -63,6 +51,8 @@ const TableRender = defineComponent({
                     });
                     // 获取到每一项表单的render在此处渲染
                     const Render = attrs.formItemRenderMap[virtualProp];
+                    console.log(attrs.formItemRenderMap, virtualProp, Render);
+
                     return <Render></Render>;
                   },
                   ...column.scopedSlots,

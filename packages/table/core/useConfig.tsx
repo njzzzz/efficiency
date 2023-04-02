@@ -127,6 +127,11 @@ function genVirtualConfig({
       formSchemaMap[originProp] = [virtualConfig.__prop];
     }
   }
+  // 记录schemaIndex，subDeep 后续使用
+  config.__prop = {
+    schemaIndex,
+    subDeep,
+  };
   if (virtualConfig.subHeaders && virtualConfig.list) {
     throw new Error("subHeaders和list属性只能配置一个");
   }
@@ -162,6 +167,7 @@ function genVirtualConfig({
       })
     );
   }
+
   // if (virtualConfig.scopedSlots) {
   //   virtualConfig.show = false;
   // }
