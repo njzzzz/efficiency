@@ -36,6 +36,7 @@ const InnerTableColumn = defineComponent({
         },
         header() {
           const hideHeaderRequiredAsterisk = getNotUndefinedValueByOrder([
+            column.hideHeaderRequiredAsterisk,
             (attrs.formSchema as any).hideHeaderRequiredAsterisk,
             false,
           ]);

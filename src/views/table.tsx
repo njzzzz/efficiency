@@ -13,7 +13,7 @@ const _columns = defineTableColumns([
     width: 200,
     prop: "name",
     required: true,
-
+    hideLabelText: false,
     // subHeaders: [
     //   {
     //     prop: "name-1",
