@@ -36,9 +36,11 @@ const TableRender = defineComponent({
               return (
                 <TableColumn
                   {...{
-                    attrs: column,
+                    attrs: {
+                      ...column,
+                      formSchema: attrs.formSchema,
+                    },
                   }}
-                  formSchema={attrs.formSchema}
                   key={column.columnIndex}
                   scopedSlots={{
                     default({ column }, { $index, row }) {

@@ -10,96 +10,38 @@ const _columns = defineTableColumns([
     label: "姓名",
     fixed: true,
     sortable: true,
-    width: 200,
+    width: 400,
     prop: "name",
     required: true,
     hideLabelText: false,
-    // subHeaders: [
-    //   {
-    //     prop: "name-1",
-    //     label: "姓名-1",
-    //     defaultValue: 1111,
-    //     // showOverflowTooltip: false,
-    //     width: 100,
-    //     ons: {
-    //       input(val, a) {
-    //         console.log("out input args", val, a);
-    //       },
-    //     },
-    //     // scopedSlots: {
-    //     //   default() {
-    //     //     return (
-    //     //       <span>
-    //     //         是的舒服是的是的是谁的是谁的是谁说是的舒服是的是的是谁的是谁的是谁说是的舒服是的是的是谁的是谁的是谁说
-    //     //       </span>
-    //     //     );
-    //     //   },
-    //     // },
-    //   },
-    //   {
-    //     prop: "name-2",
-    //     label: "姓名-2",
-    //     defaultValue: 1111,
-    //     // showOverflowTooltip: false,
-    //     width: 100,
-    //     scopedSlots: {
-    //       default(...args) {
-    //         return (
-    //           <span>
-    //             是的舒服是的是的是谁的是谁的是谁说是的舒服是的是的是谁的是谁的是谁说是的舒服是的是的是谁的是谁的是谁说
-    //           </span>
-    //         );
-    //       },
-    //     },
-    //   },
-    //   {
-    //     label: "姓名-3",
-    //     width: 500,
-    //     required: true,
-    //     subHeaders: [
-    //       {
-    //         prop: "name3-1",
-    //         label: "姓名3-1",
-    //         width: 100,
-    //         defaultValue: 11,
-    //         required: false,
-    //         scopedSlots: {
-    //           default() {
-    //             return (
-    //               <span>
-    //                 是的舒服是的是的是谁的是谁的是谁说是的舒服是的是的是谁的是谁的是谁说是的舒服是的是的是谁的是谁的是谁说
-    //               </span>
-    //             );
-    //           },
-    //         },
-    //       },
-    //       {
-    //         label: "姓名3-2",
-    //         width: 400,
-    //         gap: "50px",
-    //         list: [
-    //           {
-    //             prop: "name3-2-1",
-    //             label: "姓名3-2-1",
-    //             defaultValue: 11,
-    //             required: true,
-    //           },
-    //           {
-    //             prop: "name3-2-2",
-    //             label: "姓名3-2-2",
-    //             defaultValue: 11,
-    //             required: true,
-    //           },
-    //         ],
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     prop: "name-4",
-    //     label: "姓名-4",
-    //     width: 100,
-    //   },
-    // ],
+    subHeaders: [
+      {
+        prop: "name-1",
+        label: "姓名-1",
+        width: 200,
+        required: true,
+        type: "Select",
+        options: [
+          { value: "1", label: "吃" },
+          { value: "2", label: "喝" },
+          { value: "3", label: "玩" },
+          { value: "4", label: "乐" },
+        ],
+      },
+      {
+        prop: "name-2",
+        label: "姓名-2",
+        required: true,
+        defaultValue: 1111,
+        // showOverflowTooltip: false,
+        width: 200,
+        ons: {
+          input(val, a) {
+            console.log("out input args", val, a);
+          },
+        },
+      },
+    ],
   },
   {
     prop: "age",
@@ -214,24 +156,25 @@ export default defineComponent({
       })
     );
     const click = () => {
-      model.value = [
-        { name: 1, age: "2" },
-        { name: 1, age: "2" },
-        { name: 1, age: "2" },
-        { name: 1, age: "2" },
-        { name: 1, age: "2" },
-        { name: 1, age: "2" },
-        { name: 1, age: "2" },
-        { name: 1, age: "2" },
-        { name: 1, age: "2" },
-        { name: 1, age: "2" },
-        { name: 1, age: "2" },
-      ];
+      formRef.value.validate();
+      // model.value = [
+      //   { name: 1, age: "2" },
+      //   { name: 1, age: "2" },
+      //   { name: 1, age: "2" },
+      //   { name: 1, age: "2" },
+      //   { name: 1, age: "2" },
+      //   { name: 1, age: "2" },
+      //   { name: 1, age: "2" },
+      //   { name: 1, age: "2" },
+      //   { name: 1, age: "2" },
+      //   { name: 1, age: "2" },
+      //   { name: 1, age: "2" },
+      // ];
     };
 
     return () => (
       <div>
-        <div onClick={click}>{model.value.length}</div>
+        <div onClick={click}>表单验证</div>
         <Table
           props={{
             model: model.value,

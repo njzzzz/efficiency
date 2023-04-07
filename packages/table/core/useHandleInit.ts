@@ -1,6 +1,5 @@
 import { Ref } from "vue";
 import { genRuntimeFormProp } from "./useConfig";
-import { URLSearchParams } from "url";
 
 export function useHandleInit() {
   function generatorOns(item, runtimeTableModel, dataIndex, columnIndex) {

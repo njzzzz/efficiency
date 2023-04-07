@@ -1,12 +1,7 @@
 import { computed, defineComponent, useAttrs, useSlots } from "vue";
-import {
-  getNotUndefinedValueByOrder,
-  renderComponent,
-  getGlobalTableConfig,
-} from "@slacking/shared";
+import { getNotUndefinedValueByOrder, renderComponent } from "@slacking/shared";
 const TableColumn = renderComponent("TableColumn");
 const OriginFormItem = renderComponent("FormItem");
-const globalTableConfig = getGlobalTableConfig();
 const InnerTableColumn = defineComponent({
   setup() {
     const attrs = useAttrs();
@@ -16,10 +11,6 @@ const InnerTableColumn = defineComponent({
       // 本身配置了插槽则使用自身插槽
       if (attrs.scopedSlots) {
         return attrs.scopedSlots;
-      }
-      // 多级表头嵌套多级表头，只会渲染最后一个多级表头，故这里直接用传入的插槽
-      if (column.subHeaders?.length) {
-        return slots;
       }
       return {
         ...slots,
@@ -35,9 +26,23 @@ const InnerTableColumn = defineComponent({
           );
         },
         header() {
+          if (column.subHeaders) {
+            return (
+              <OriginFormItem
+                class="slacking-form-asterisk-header"
+                label={column.label}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  marginBottom: 0,
+                  verticalAlign: "middle",
+                }}
+              ></OriginFormItem>
+            );
+          }
           const hideHeaderRequiredAsterisk = getNotUndefinedValueByOrder([
             column.hideHeaderRequiredAsterisk,
-            (attrs.formSchema as any).hideHeaderRequiredAsterisk,
+            (attrs.formSchema as any)?.hideHeaderRequiredAsterisk,
             false,
           ]);
           return hideHeaderRequiredAsterisk ? (
@@ -69,9 +74,7 @@ const InnerTableColumn = defineComponent({
         {subHeaders.value.map((item, index) => {
           return (
             <InnerTableColumn
-              {...{
-                attrs: item,
-              }}
+              {...{ attrs: { ...item, formSchema: attrs.formSchema } }}
               key={item.prop || item.columnIndex}
               scopedSlots={genCommonSlots(item, index)}
             ></InnerTableColumn>
