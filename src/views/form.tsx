@@ -10,7 +10,7 @@ const sleep = (res = [], timing = 2000) => {
     }, timing);
   });
 };
-const schema = reactive(
+const schema = ref(
   defineFormSchema({
     name: "表单名称",
     readonly: false,
@@ -24,7 +24,6 @@ const schema = reactive(
     gutter: 16,
     symbol: "：",
     withObjectValue: true, // 带options的表单项是否需要抛出完整的值以_${prop}为键名
-    independent: true, // 是否深克隆model和schema，这样会使相同引用数据的form互不影响
     list: [
       {
         type: "Select",
@@ -56,7 +55,7 @@ const schema = reactive(
         required: true,
         // trigger: ["change", "blur"],
         message: "请输入姓名",
-        on: {
+        ons: {
           // 不要在此处监听change事件，因为在input的时候修改model不会触发此处的change
           blur(val, model, item, schema) {
             console.log("【LOG】  val ---->", val);
@@ -251,6 +250,7 @@ const schema = reactive(
         align: "bottom",
         gutter: 30,
         justify: "end",
+        prop: "111",
         list: [
           {
             type: "Input",
@@ -279,7 +279,10 @@ export default defineComponent({
       age: 0,
     });
     const modSchema = () => {
-      schema.list[0].label = "111111";
+      schema.value.list[0].label = "111111";
+    };
+    const modFormData = () => {
+      // model.value.name = "122";
     };
     const validate = () => {
       console.log(formData);
@@ -288,8 +291,17 @@ export default defineComponent({
     return () => (
       <div>
         <Button onClick={modSchema}>修改schema</Button>
+        <Button onClick={modFormData}>修改姓名</Button>
         <Button onClick={validate}>表单验证</Button>
-        <EffectForm props={{ schema, model }}></EffectForm>
+        <EffectForm
+          props={{ schema: schema.value, model }}
+          onInput={(v) => {
+            model.value = v;
+          }}
+          onUpdateSchema={(v) => {
+            schema.value = v;
+          }}
+        ></EffectForm>
       </div>
     );
   },

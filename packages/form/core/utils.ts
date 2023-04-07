@@ -100,12 +100,16 @@ export interface Form {
   filterable: boolean;
   clearable: boolean;
   withObjectValue: boolean; // 带options的表单项是否需要抛出完整的值以_${prop}为键名
-  independent: boolean; // 是否深克隆model和schema，这样会使相同引用数据的form互不影响
+  // independent: boolean; // 是否深克隆model和schema，这样会使相同引用数据的form互不影响
   deleteValueOnHidden: boolean; // 在表单隐藏时是否删除键
   resetShowWithDefaultValue: boolean;
   optionProps: Partial<OptionProps>;
+  // 在自定义插槽的情况下，是否生成formItem的renderMap集合供外部任意挂载
+  genRenderMap: boolean;
   renderItemByCustom: boolean;
+  hideLabelText?: boolean;
   defaultRender: string;
+  hideRequiredAsterisk: boolean;
   // 兜底
   [key: string]: unknown;
 }
@@ -113,6 +117,7 @@ export interface DependOnOptions {
   handler: (val: any, model: Ref<any>, item: any, oldVal: any) => any;
   immediate?: boolean;
   deep?: boolean;
+  flush?: "pre" | "post" | "sync";
 }
 export interface FormItem {
   type?: string;
@@ -139,8 +144,9 @@ export interface FormItem {
   asyncOptions?: (model: Ref<any>, item: any) => unknown;
   optionProps?: Partial<OptionProps>;
   options?: any[];
+  hideLabelText?: boolean;
   props?: Record<string, any>;
-  on?: Record<
+  ons?: Record<
     string,
     (val: any, model: Ref<any>, item: Ref<any>, schema: Ref<Schema>) => unknown
   >;

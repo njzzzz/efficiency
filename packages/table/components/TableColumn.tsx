@@ -44,6 +44,7 @@ const InnerTableColumn = defineComponent({
               {...{
                 attrs: item,
               }}
+              key={item.prop || item.columnIndex}
               scopedSlots={genCommonSlots(item, index)}
             ></InnerTableColumn>
           );

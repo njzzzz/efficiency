@@ -19,7 +19,7 @@
         ref="treeRef"
         class="slacking-form-tree-select-tree"
         v-bind="{ ...runtimeTreeProps, ...$attrs }"
-        v-on="{ ...runtimeTreeListeners, ...$listeners }"
+        v-on="{ ...runtimeTreeListeners }"
       />
     </Option>
     <!-- 仅仅用于select展示 -->
@@ -42,8 +42,10 @@ import {
   watch,
   defineEmits,
   defineProps,
+  useListeners,
 } from "vue";
 import { Tree, Select, Option } from "element-ui";
+const listeners = useListeners();
 const props = defineProps({
   options: {
     type: Array,
@@ -67,6 +69,7 @@ const props = defineProps({
   },
 });
 const attrs = useAttrs();
+const { input, ...listenersWithoutInput } = attrs;
 const emit = defineEmits(["input"]);
 const treeRef = ref();
 const selectRef = ref();
@@ -169,6 +172,7 @@ const runtimeTreeListeners = computed(() => {
   return {
     ...commonListeners,
     ...specialListeners,
+    ...listenersWithoutInput,
   };
 });
 

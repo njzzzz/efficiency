@@ -1,5 +1,5 @@
 <template>
-  <Select v-bind="$attrs" v-on="$listeners" @input="$emit('input', $event)">
+  <Select v-bind="$attrs" v-on="$listeners">
     <Option
       v-for="item in $attrs.options"
       v-bind="item"

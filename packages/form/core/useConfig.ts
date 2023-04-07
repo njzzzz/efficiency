@@ -24,18 +24,25 @@ export function getDefaultValue(
 ) {
   const { multiple = false } = item;
   const values = [];
+  let changedByDefault = false;
   if (withModelValue) {
     values.push(runtimeModel.value[item.prop]);
   }
   if (withDefaultValue) {
+    if (values[0] === undefined) {
+      changedByDefault = true;
+    }
     values.push(item.defaultValue);
   }
   values.push(multiple ? [] : null);
-  return getNotUndefinedValueByOrder(values);
+  return {
+    value: getNotUndefinedValueByOrder(values),
+    changedByDefault,
+  };
 }
 
-export function useConfig() {
-  function label({ item, schema }) {
+export function useConfig({ item, schema }) {
+  const label = computed(() => {
     realType(item.value.symbol);
     const symbol = realTypeEqual(item.value.symbol, "Undefined")
       ? realTypeEqual(schema.value.symbol, "Undefined")
@@ -43,7 +50,7 @@ export function useConfig() {
         : schema.value.symbol
       : item.value.symbol;
     return item.value.label ? item.value.label + symbol : "";
-  }
+  });
   return {
     label,
   };
@@ -310,10 +317,20 @@ export function generatorDependOn(
   };
 }
 
-export function generatorOptions(item, runtimeModel) {
+export function generatorOptions(item, runtimeModel, runtimeSchema) {
+  const { autoOptionProps, optionProps, value, label, children, disabled } =
+    dealOptionProps(item, runtimeSchema);
   if (item.asyncOptions) {
     item.asyncOptions(runtimeModel, item).then((opts) => {
-      item.options = opts;
+      item.options =
+        autoOptionProps && optionProps
+          ? convertListValueLabel(opts, {
+              value,
+              label,
+              children,
+              disabled,
+            })
+          : opts;
     });
   }
 }
@@ -323,24 +340,29 @@ export function generatorReactiveModelPropsDefaultValue(
   runtimeModel,
   runtimeSchema
 ) {
-  item.prop &&
-    set(
-      runtimeModel.value,
-      item.prop,
-      getDefaultValue(item, runtimeModel, runtimeSchema)
-    );
+  if (item.prop) {
+    const defaultValue = getDefaultValue(item, runtimeModel, runtimeSchema);
+    set(runtimeModel.value, item.prop, defaultValue.value);
+    if (defaultValue.changedByDefault && item.ons?.defaultValue) {
+      item.ons.defaultValue(defaultValue.value);
+    }
+  }
 }
 
 export function dealWithMixTypeValue(item, runtimeModel) {
   if (item.type !== "Mix" || !item.prop) return;
   watchEffect(() => {
-    runtimeModel.value[item.prop] = item.list.reduce((acc, config) => {
+    const mixTypeWithPropValue = item.list.reduce((acc, config) => {
       const { prop } = config;
-      if (config.show) {
+      if (config.show && prop !== undefined) {
         acc[prop] = runtimeModel.value[prop];
       }
       return acc;
     }, {});
+    runtimeModel.value[item.prop] = mixTypeWithPropValue;
+
+    const onMixValue = item.ons?.mixValue;
+    onMixValue && onMixValue(mixTypeWithPropValue);
   });
 }
 
@@ -362,6 +384,30 @@ export function patchReactiveProps(item, runtimeSchema) {
       ])
     );
   }
+  if (!Reflect.has(item, "hideLabelText")) {
+    set(
+      item,
+      "hideLabelText",
+      getNotUndefinedValueByOrder([
+        item.hideLabelText,
+        runtimeSchema.value.hideLabelText,
+        globalConfig.hideLabelText,
+        false,
+      ])
+    );
+  }
+  // if (!Reflect.has(item, "hideRequiredAsterisk")) {
+  //   set(
+  //     item,
+  //     "hideRequiredAsterisk",
+  //     getNotUndefinedValueByOrder([
+  //       item.hideRequiredAsterisk,
+  //       runtimeSchema.value.hideRequiredAsterisk,
+  //       globalConfig.hideRequiredAsterisk,
+  //       false,
+  //     ])
+  //   );
+  // }
 }
 // 将select, cascader等选项的数组或者对象值使用下划线透出
 export function generatorWithObjectValue(item, runtimeModel, runtimeSchema) {
@@ -392,22 +438,19 @@ export function generatorWithObjectValue(item, runtimeModel, runtimeSchema) {
       () => [runtimeModel.value[prop], item.options],
       ([newVal]) => {
         if (item.__optionsMap) {
-          runtimeModel.value[`_${prop}`] = multiple
+          const objectValue = multiple
             ? newVal.map((v) => item.__optionsMap[v])
             : item.__optionsMap[newVal];
+          runtimeModel.value[`_${prop}`] = objectValue;
+          const onObjectValue = item.ons?.objectValue;
+          onObjectValue && onObjectValue(objectValue);
         }
       },
       { immediate: true, deep: true }
     );
   }
 }
-
-// 修改options的value、label、children值， 可在schema或者item配置中关闭， autoOptionProps: false
-export function generatorOptionsByOptionProps(
-  item,
-  runtimeModel,
-  runtimeSchema
-) {
+export function dealOptionProps(item, runtimeSchema) {
   const optionProps = item.optionProps || runtimeSchema.value.optionProps;
   const autoOptionProps = undefinedAndTrueAsTrue([
     item.autoOptionProps,
@@ -420,6 +463,23 @@ export function generatorOptionsByOptionProps(
     children = "children",
     disabled = "disabled",
   } = optionProps || {};
+  return {
+    autoOptionProps,
+    optionProps,
+    value,
+    label,
+    children,
+    disabled,
+  };
+}
+// 修改options的value、label、children值， 可在schema或者item配置中关闭， autoOptionProps: false
+export function generatorOptionsByOptionProps(
+  item,
+  runtimeModel,
+  runtimeSchema
+) {
+  const { autoOptionProps, optionProps, value, label, children, disabled } =
+    dealOptionProps(item, runtimeSchema);
   if (optionProps && autoOptionProps) {
     watchEffect(() => {
       if (item?.options?.length) {
@@ -465,7 +525,7 @@ export const deleteValueOnHiddenFunc = (item, runtimeModel, runtimeSchema) => {
         runtimeSchema,
         resetShowWithDefaultValue,
         true
-      )
+      ).value
     );
   }
 };
@@ -478,4 +538,18 @@ export function dealWithDeleteValueOnHidden(item, runtimeModel, runtimeSchema) {
     },
     { immediate: true, deep: true }
   );
+}
+export function rewriteItemListeners(item, runtimeModel, runtimeSchema) {
+  const ons = item?.ons ?? {};
+  Object.keys(ons).forEach((key) => {
+    const originOn = ons[key];
+    ons[key] = (...resets) => {
+      const mayHasInnerArs = resets.at(-1)?.model !== undefined;
+      if (!mayHasInnerArs) {
+        resets.push({ model: runtimeModel, item, schema: runtimeSchema });
+      }
+      originOn(...resets);
+    };
+  });
+  item.ons = ons;
 }

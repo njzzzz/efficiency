@@ -5,24 +5,21 @@ import {
   toRefs,
   watch,
   computed,
-  onRenderTriggered,
   useSlots,
   useAttrs,
   set,
 } from "vue";
 import { useHandleInit } from "./useHandleInit";
-import Mix from "../components/Mix";
-import FormItem from "../components/FormItem";
 import { renderComponent } from "@slacking/shared";
 import { formProps } from "./formProps";
-import { cloneDeep, isEqual } from "lodash-es";
+import { cloneDeep } from "lodash-es";
 import FormItemWithMix from "../components/FormItemWithMix";
+import { useCollectFormItemRenderMap } from "./useCollectFormItemRenderMap";
 export const globalProviderKey = Symbol();
 export default defineComponent({
   props: formProps,
   setup(props, { expose, emit }) {
     const slots = useSlots();
-    const initialing = ref(false);
     const elFormRef = ref();
     const Form = renderComponent("Form");
     const subFormItemRenderMap = ref({});
@@ -30,86 +27,52 @@ export default defineComponent({
     const runtimeModel = ref<any>({});
     const runtimeSchema = ref<any>({});
     const { init } = useHandleInit();
+    const { getRenderMap } = useCollectFormItemRenderMap({ runtimeSchema });
     provide(globalProviderKey, {
       model: runtimeModel,
       schema: runtimeSchema,
       subFormItemRenderMap: subFormItemRenderMap,
     });
-    const isIndependentForm = computed(
-      () => schema.value?.independent === true
-    );
-    //---------dev---------------------------------
-    onRenderTriggered((e) => {
-      // console.log("elFrom onRenderTriggered", e);
-    });
-    // console.count("elFrom setup render-times");
-    //---------dev---------------------------------
     watch(
-      model,
+      () => model.value,
       (v) => {
-        if (isEqual(v, runtimeModel.value)) return;
-        runtimeModel.value = isIndependentForm.value ? cloneDeep(v) : v;
+        runtimeModel.value = v;
       },
       { deep: true, immediate: true }
     );
     watch(
       schema,
       (v) => {
-        if (isEqual(v, runtimeSchema.value)) return;
-        runtimeSchema.value = isIndependentForm.value ? cloneDeep(v) : v;
-        initialing.value = true;
-        init(runtimeSchema.value.list, runtimeModel, elFormRef, runtimeSchema);
-        initialing.value = false;
+        runtimeSchema.value = cloneDeep(v);
+        init(
+          runtimeSchema.value.list ?? [],
+          runtimeModel,
+          elFormRef,
+          runtimeSchema
+        );
       },
-      { deep: true, immediate: true }
+      { immediate: true }
     );
     watch(
       runtimeModel,
       (v) => {
-        !initialing.value && emit("input", v);
+        emit("input", v);
       },
       { deep: true }
     );
-    if (!runtimeSchema.value?.list?.length) {
-      return () => null;
-    }
-    const FormItemWithMixRender = computed<any>(() => {
-      return defineComponent({
-        setup() {
-          const attrs = useAttrs() as any;
-          return () => (
-            <FormItemWithMix
-              item={attrs.item}
-              key={attrs.item?.prop || attrs.item?.list?.[0]?.prop}
-              scopedSlots={{
-                render({ item, render }) {
-                  if (item.prop) {
-                    set(subFormItemRenderMap.value, item.prop, render);
-                  }
-                  return <render.value></render.value>;
-                },
-              }}
-            ></FormItemWithMix>
-          );
-        },
-      });
-    });
-    const totalFormItemRenderMap = computed(() => {
-      return { ...subFormItemRenderMap.value };
-    });
+    watch(
+      runtimeSchema,
+      (v) => {
+        emit("update-schema", v);
+      },
+      { deep: true }
+    );
+    const genRenderMap = computed(() => runtimeSchema.value?.genRenderMap);
     expose({
       elFormRef,
       model: runtimeModel,
       schema: runtimeSchema,
     });
-    const initRender = () =>
-      runtimeSchema.value.list.map((item) => {
-        return (
-          <FormItemWithMixRender.value
-            item={item}
-          ></FormItemWithMixRender.value>
-        );
-      });
     return () => {
       return (
         <Form
@@ -118,8 +81,15 @@ export default defineComponent({
           scopedSlots={slots}
         >
           {slots.render
-            ? slots.render(initRender, totalFormItemRenderMap.value)
-            : initRender()}
+            ? slots.render(genRenderMap.value && getRenderMap())
+            : runtimeSchema.value.list?.map?.((item, index) => {
+                return (
+                  <FormItemWithMix
+                    item={item}
+                    key={item?.prop || item?.list?.[0]?.prop || index}
+                  ></FormItemWithMix>
+                );
+              })}
         </Form>
       );
     };

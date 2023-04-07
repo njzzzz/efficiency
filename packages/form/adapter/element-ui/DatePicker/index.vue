@@ -3,7 +3,6 @@
     :value="runtimeAttrs.value"
     v-bind="runtimeAttrs"
     v-on="$listeners"
-    @input="$emit('input', $event)"
   />
 </template>
 <script setup>

@@ -10,11 +10,13 @@ const globalFormConfig: GlobalFormConfig = {
   size: "small",
   deleteValueOnHidden: true,
   resetShowWithDefaultValue: true,
+  // 设置默认使用的渲染组件，需要通过registerComponent注册
   defaultRender: "Input",
+  hideLabelText: false,
+  hideRequiredAsterisk: false,
 };
 const globalTableConfig: GlobalTableConfig = {
-  // 设置表格列默认使用的渲染组件，需要通过registerComponent注册
-  defaultRender: "Input",
+  hideLabelText: false,
 };
 export function registerComponents(componentsRegister = []) {
   componentsRegister.forEach(({ name, component, ...reset }) => {
@@ -80,9 +82,12 @@ interface GlobalFormConfig {
   resetShowWithDefaultValue: boolean;
   // 默认渲染组件
   defaultRender: string;
+  hideLabelText: boolean;
+  hideRequiredAsterisk: boolean;
 }
 interface GlobalTableConfig {
-  defaultRender: string;
+  // 表单型表格是否带label
+  hideLabelText: boolean;
 }
 export function setGlobalFormConfig(config: Partial<GlobalFormConfig> = {}) {
   Object.assign(globalFormConfig, config);

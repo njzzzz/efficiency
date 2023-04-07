@@ -1,4 +1,11 @@
-import { computed, defineComponent, inject, set, toRefs } from "vue";
+import {
+  computed,
+  defineComponent,
+  inject,
+  onRenderTriggered,
+  set,
+  toRefs,
+} from "vue";
 import { globalProviderKey } from "../core";
 import { useConfig } from "../core/useConfig";
 import { renderComponent, getGlobalFormConfig } from "@slacking/shared";
@@ -13,8 +20,8 @@ export default defineComponent({
   },
   setup(props) {
     const { model, schema } = inject(globalProviderKey) as any;
-    const { label } = useConfig();
     const { item } = toRefs(props) as any;
+    const { label } = useConfig({ schema, item });
     const FormItem = renderComponent("FormItem");
     if (!item.value?.type) {
       console.log(`未知类型${item.value?.type}`);
@@ -22,18 +29,20 @@ export default defineComponent({
     const formItemProps = computed(() => {
       return {
         ...item.value,
-        label: label({ item, schema }),
+        label: label.value,
       };
     });
+    const updateModelInput = (val) => {
+      set(model.value, item.value.prop, val);
+    };
+    const hasInputEvent = computed(() => {
+      return item.value?.ons?.input;
+    });
+
     const innerFormItemProps = computed(() => {
-      const ons = item.value?.on ?? {};
-      Object.keys(ons).forEach((key) => {
-        const originOn = ons[key];
-        ons[key] = (...resets) => {
-          originOn(...resets, model, item, schema);
-        };
-      });
       return {
+        // value可以被复写
+        value: model.value[item.value.prop],
         ...item.value,
         clearable: getNotUndefinedValueByOrder([
           item.value.clearable,
@@ -51,7 +60,6 @@ export default defineComponent({
           schema.value.readonly,
           false,
         ]),
-        value: model.value[item.value.prop],
         size: getNotUndefinedValueByOrder([
           item.value.size,
           schema.value.size,
@@ -63,10 +71,12 @@ export default defineComponent({
           globalConfig.filterable,
         ]),
         on: {
+          ...(item.value?.ons ?? {}),
           input(val) {
-            set(model.value, item.value.prop, val);
+            updateModelInput(val);
+            hasInputEvent.value &&
+              item.value.ons.input(val, { model, schema, item });
           },
-          ...ons,
         },
       };
     });
@@ -84,16 +94,32 @@ export default defineComponent({
         ]),
       })
     );
+    const formItemSlots = computed(() => {
+      return {
+        label() {
+          return item.value.hideLabelText ? "" : item.value.label;
+        },
+        default() {
+          return (
+            <InnerFormItem.value
+              {...{
+                attrs: innerFormItemProps.value,
+              }}
+              props={innerFormItemProps.value}
+              key={item.value.prop}
+              on={innerFormItemProps.value.on}
+            ></InnerFormItem.value>
+          );
+        },
+      };
+    });
     return () =>
       item.value?.show ? (
-        <FormItem props={formItemProps.value} key={item.value.prop}>
-          <InnerFormItem.value
-            {...{ attrs: innerFormItemProps.value }}
-            props={innerFormItemProps.value}
-            key={item.value.prop}
-            on={innerFormItemProps.value.on}
-          ></InnerFormItem.value>
-        </FormItem>
+        <FormItem
+          props={formItemProps.value}
+          key={item.value.prop}
+          scopedSlots={formItemSlots.value}
+        ></FormItem>
       ) : null;
   },
 }) as any;

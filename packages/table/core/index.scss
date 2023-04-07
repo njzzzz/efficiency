@@ -1,0 +1,6 @@
+.slacking-table {
+  // 修复表格内部长度超出问题
+  .el-form-item__content {
+    display: flex;
+  }
+}

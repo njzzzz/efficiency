@@ -1,4 +1,4 @@
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, set } from "vue";
 import {
   useTable,
   defineTableColumns,
@@ -10,120 +10,137 @@ const _columns = defineTableColumns([
     label: "姓名",
     fixed: true,
     sortable: true,
-    width: 1800,
-    subHeaders: [
-      {
-        prop: "name",
-        label: "姓名-1",
-        defaultValue: 1111,
-        // showOverflowTooltip: false,
-        width: 300,
-        scopedSlots: {
-          default() {
-            return (
-              <span>
-                是的舒服是的是的是谁的是谁的是谁说是的舒服是的是的是谁的是谁的是谁说是的舒服是的是的是谁的是谁的是谁说
-              </span>
-            );
-          },
-        },
-      },
-      {
-        prop: "name",
-        label: "姓名-2",
-        defaultValue: 1111,
-        // showOverflowTooltip: false,
-        width: 300,
-        scopedSlots: {
-          default() {
-            return (
-              <span>
-                是的舒服是的是的是谁的是谁的是谁说是的舒服是的是的是谁的是谁的是谁说是的舒服是的是的是谁的是谁的是谁说
-              </span>
-            );
-          },
-        },
-      },
-      {
-        label: "姓名-3",
-        width: 900,
-        required: true,
-        subHeaders: [
-          {
-            prop: "name",
-            label: "姓名3-1",
-            width: 300,
-            defaultValue: 11,
-            required: false,
-            scopedSlots: {
-              default() {
-                return (
-                  <span>
-                    是的舒服是的是的是谁的是谁的是谁说是的舒服是的是的是谁的是谁的是谁说是的舒服是的是的是谁的是谁的是谁说
-                  </span>
-                );
-              },
-            },
-          },
-          {
-            prop: "name",
-            label: "姓名3-2",
-            width: 600,
-            list: [
-              {
-                prop: "name",
-                label: "姓名3-2-1",
-                width: 300,
-                defaultValue: 11,
-                required: true,
-              },
-              {
-                prop: "name",
-                label: "姓名3-2-2",
-                width: 300,
-                defaultValue: 11,
-                required: true,
-              },
-            ],
-          },
-        ],
-      },
-      {
-        prop: "name",
-        label: "姓名-4",
-        width: 300,
-      },
-    ],
+    width: 200,
+    prop: "name",
+    required: true,
+
+    // subHeaders: [
+    //   {
+    //     prop: "name-1",
+    //     label: "姓名-1",
+    //     defaultValue: 1111,
+    //     // showOverflowTooltip: false,
+    //     width: 100,
+    //     ons: {
+    //       input(val, a) {
+    //         console.log("out input args", val, a);
+    //       },
+    //     },
+    //     // scopedSlots: {
+    //     //   default() {
+    //     //     return (
+    //     //       <span>
+    //     //         是的舒服是的是的是谁的是谁的是谁说是的舒服是的是的是谁的是谁的是谁说是的舒服是的是的是谁的是谁的是谁说
+    //     //       </span>
+    //     //     );
+    //     //   },
+    //     // },
+    //   },
+    //   {
+    //     prop: "name-2",
+    //     label: "姓名-2",
+    //     defaultValue: 1111,
+    //     // showOverflowTooltip: false,
+    //     width: 100,
+    //     scopedSlots: {
+    //       default(...args) {
+    //         return (
+    //           <span>
+    //             是的舒服是的是的是谁的是谁的是谁说是的舒服是的是的是谁的是谁的是谁说是的舒服是的是的是谁的是谁的是谁说
+    //           </span>
+    //         );
+    //       },
+    //     },
+    //   },
+    //   {
+    //     label: "姓名-3",
+    //     width: 500,
+    //     required: true,
+    //     subHeaders: [
+    //       {
+    //         prop: "name3-1",
+    //         label: "姓名3-1",
+    //         width: 100,
+    //         defaultValue: 11,
+    //         required: false,
+    //         scopedSlots: {
+    //           default() {
+    //             return (
+    //               <span>
+    //                 是的舒服是的是的是谁的是谁的是谁说是的舒服是的是的是谁的是谁的是谁说是的舒服是的是的是谁的是谁的是谁说
+    //               </span>
+    //             );
+    //           },
+    //         },
+    //       },
+    //       {
+    //         label: "姓名3-2",
+    //         width: 400,
+    //         gap: "50px",
+    //         list: [
+    //           {
+    //             prop: "name3-2-1",
+    //             label: "姓名3-2-1",
+    //             defaultValue: 11,
+    //             required: true,
+    //           },
+    //           {
+    //             prop: "name3-2-2",
+    //             label: "姓名3-2-2",
+    //             defaultValue: 11,
+    //             required: true,
+    //           },
+    //         ],
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     prop: "name-4",
+    //     label: "姓名-4",
+    //     width: 100,
+    //   },
+    // ],
   },
   {
     prop: "age",
     label: "年龄",
     width: 300,
+    type: "Select",
+    options: [
+      { value: "1", label: "吃" },
+      { value: "2", label: "喝" },
+      { value: "3", label: "玩" },
+      { value: "4", label: "乐" },
+    ],
   },
-  // {
-  //   prop: "lover",
-  //   label: "爱好",
-  //   width: 500,
-  // },
-  // {
-  //   prop: "lover",
-  //   label: "爱好",
-  //   width: 500,
-  // },
-  // {
-  //   prop: "lover",
-  //   label: "爱好",
-  //   width: 500,
-  // },
-  // {
-  //   prop: "lover",
-  //   label: "爱好",
-  //   width: 500,
-  // },
-  // {
-  //   prop: "lover",
-  //   label: "爱好",
-  // },
+  {
+    prop: "lovers",
+    label: "爱好",
+    width: 500,
+    list: [
+      { label: "第一个爱好", prop: "lovers-1" },
+      { label: "第二个爱好", prop: "lovers-2" },
+    ],
+  },
+  {
+    prop: "lover",
+    label: "爱好",
+    width: 500,
+  },
+  {
+    prop: "lover",
+    label: "爱好",
+    width: 500,
+  },
+  {
+    prop: "lover",
+    label: "爱好",
+    width: 500,
+  },
+  {
+    prop: "lover",
+    label: "爱好",
+  },
   {
     prop: "lover",
     label: "爱好",
@@ -135,41 +152,97 @@ const _columns = defineTableColumns([
     // },
   },
   {
-    prop: "lover",
+    prop: "lover-other",
     label: "其他爱好",
     width: 1000,
   },
-  // {
-  //   prop: "lover",
-  //   label: "爱好",
-  // },
+  {
+    prop: "lover",
+    label: "爱好",
+  },
 ]);
 const _data = [
-  { name: "张三", age: 18, lover: "唱" },
-  { name: "李四", age: 18, lover: "跳" },
-  { name: "王五", age: 18, lover: "rap" },
-  { name: "老六", age: 18, lover: "篮球" },
-];
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+  { name: 1, age: "2" },
+] as any;
 export default defineComponent({
   setup() {
     const model = ref(_data);
-    const [Table] = useTable();
+    const [Table, formRef, tableModel] = useTable();
     const schema = ref(
       defineTableSchema({
         readonly: false,
-        labelPosition: "top",
+        labelPosition: "left",
         list: _columns,
+        hideLabelText: true,
+        hideRequiredAsterisk: false,
       })
     );
+    const click = () => {
+      model.value = [
+        { name: 1, age: "2" },
+        { name: 1, age: "2" },
+        { name: 1, age: "2" },
+        { name: 1, age: "2" },
+        { name: 1, age: "2" },
+        { name: 1, age: "2" },
+        { name: 1, age: "2" },
+        { name: 1, age: "2" },
+        { name: 1, age: "2" },
+        { name: 1, age: "2" },
+        { name: 1, age: "2" },
+      ];
+    };
 
     return () => (
-      <Table
-        props={{
-          model: model.value,
-        }}
-        schema={schema.value}
-        style="width: 100%"
-      ></Table>
+      <div>
+        <div onClick={click}>{model.value.length}</div>
+        <Table
+          props={{
+            model: model.value,
+          }}
+          schema={schema.value}
+          style="width: 100%"
+        ></Table>
+      </div>
     );
   },
 });

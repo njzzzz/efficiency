@@ -13,8 +13,8 @@ const Mix = defineComponent({
   },
   setup(props) {
     const { item } = toRefs(props);
-    const { label } = useConfig();
-    const { schema, subFormItemRenderMap } = inject(globalProviderKey) as any;
+    const { schema } = inject(globalProviderKey) as any;
+    const { label } = useConfig({ item, schema });
     const Row = renderComponent("Row");
     const Col = renderComponent("Col");
     const OriginFormItem = renderComponent("FormItem");
@@ -35,44 +35,47 @@ const Mix = defineComponent({
         ? (24 - totalSpan.value) / noSpanLen
         : 24 / noSpanLen;
     };
+    const formItemSlots = computed(() => {
+      return {
+        label() {
+          return item.value.hideLabelText ? "" : item.value.label;
+        },
+        default() {
+          return (
+            <Row
+              props={{
+                gutter: 16,
+                justify: "start",
+                ...item.value,
+                type: "flex",
+              }}
+            >
+              {item.value.list.map((item, index) => {
+                return item.show !== false ? (
+                  <Col
+                    props={{ span: getSpan(item.span), ...item }}
+                    key={item.prop || index}
+                  >
+                    <FormItemWithMix
+                      item={item}
+                      style={{
+                        marginBottom: 0,
+                      }}
+                    ></FormItemWithMix>
+                  </Col>
+                ) : null;
+              })}
+            </Row>
+          );
+        },
+      };
+    });
     return () =>
       item.value?.show ? (
         <OriginFormItem
-          props={{ ...item.value, label: label({ item, schema }) }}
-        >
-          <Row
-            props={{
-              gutter: 16,
-              justify: "start",
-              ...item.value,
-              type: "flex",
-            }}
-          >
-            {item.value.list.map((item) => {
-              return item.show !== false ? (
-                <Col
-                  props={{ span: getSpan(item.span), ...item }}
-                  key={item.prop}
-                >
-                  <FormItemWithMix
-                    item={item}
-                    style={{
-                      marginBottom: 0,
-                    }}
-                    scopedSlots={{
-                      render({ item, render }) {
-                        if (item.prop) {
-                          set(subFormItemRenderMap.value, item.prop, render);
-                        }
-                        return <render.value></render.value>;
-                      },
-                    }}
-                  ></FormItemWithMix>
-                </Col>
-              ) : null;
-            })}
-          </Row>
-        </OriginFormItem>
+          props={{ ...item.value, label: label.value }}
+          scopedSlots={formItemSlots.value}
+        ></OriginFormItem>
       ) : null;
   },
 }) as any;
