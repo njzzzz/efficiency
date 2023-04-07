@@ -9,7 +9,11 @@ import {
   Ref,
   computed,
 } from "vue";
-import { renderComponent } from "@slacking/shared";
+import {
+  getNotUndefinedValueByOrder,
+  renderComponent,
+  getGlobalTableConfig,
+} from "@slacking/shared";
 import TableColumn from "../components/TableColumn";
 import { useHandleInit } from "./useHandleInit";
 import { FormItemWithMixRender, useForm } from "@slacking/form";
@@ -17,6 +21,8 @@ import { cloneDeep } from "lodash-es";
 import { tableProps } from "./tableProps";
 import { genRuntimeFormProp } from "./useConfig";
 import "./index.scss";
+
+const globalTableConfig = getGlobalTableConfig();
 const TableRender = defineComponent({
   setup() {
     const Table = renderComponent("Table");
@@ -32,6 +38,7 @@ const TableRender = defineComponent({
                   {...{
                     attrs: column,
                   }}
+                  formSchema={attrs.formSchema}
                   key={column.columnIndex}
                   scopedSlots={{
                     default({ column }, { $index, row }) {
@@ -93,6 +100,22 @@ export function useTable() {
             runtimeTableModel
           );
           runtimeFormSchema.value = {
+            labelPosition: "left",
+            hideLabelText: getNotUndefinedValueByOrder([
+              runtimeTableSchema.value.hideLabelText,
+              globalTableConfig.hideLabelText,
+              true,
+            ]),
+            hideRequiredAsterisk: getNotUndefinedValueByOrder([
+              runtimeTableSchema.value.hideRequiredAsterisk,
+              globalTableConfig.hideRequiredAsterisk,
+              false,
+            ]),
+            hideHeaderRequiredAsterisk: getNotUndefinedValueByOrder([
+              runtimeTableSchema.value.hideHeaderRequiredAsterisk,
+              globalTableConfig.hideHeaderRequiredAsterisk,
+              false,
+            ]),
             ...runtimeTableSchema.value,
             list: formSchemaList,
           };
@@ -133,6 +156,7 @@ export function useTable() {
                     columns={runtimeTableSchema.value.list}
                     data={runtimeTableModel.value}
                     runtimeFormSchemaMap={runtimeFormSchemaMap.value}
+                    formSchema={formSchema.value}
                     scopedSlots={slots}
                   ></TableRender>
                 );

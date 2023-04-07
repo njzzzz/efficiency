@@ -13,10 +13,12 @@ const globalFormConfig: GlobalFormConfig = {
   // 设置默认使用的渲染组件，需要通过registerComponent注册
   defaultRender: "Input",
   hideLabelText: false,
-  hideRequiredAsterisk: false,
+  hideRequiredAsterisk: true,
 };
 const globalTableConfig: GlobalTableConfig = {
-  hideLabelText: false,
+  hideLabelText: true,
+  hideRequiredAsterisk: true,
+  hideHeaderRequiredAsterisk: false,
 };
 export function registerComponents(componentsRegister = []) {
   componentsRegister.forEach(({ name, component, ...reset }) => {
@@ -88,6 +90,8 @@ interface GlobalFormConfig {
 interface GlobalTableConfig {
   // 表单型表格是否带label
   hideLabelText: boolean;
+  hideHeaderRequiredAsterisk: boolean;
+  hideRequiredAsterisk: boolean;
 }
 export function setGlobalFormConfig(config: Partial<GlobalFormConfig> = {}) {
   Object.assign(globalFormConfig, config);

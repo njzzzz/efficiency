@@ -77,7 +77,11 @@ export default defineComponent({
       return (
         <Form
           ref={elFormRef}
-          props={{ model: runtimeModel.value, ...runtimeSchema.value }}
+          props={{
+            model: runtimeModel.value,
+            ...runtimeSchema.value,
+            hideRequiredAsterisk: false,
+          }}
           scopedSlots={slots}
         >
           {slots.render

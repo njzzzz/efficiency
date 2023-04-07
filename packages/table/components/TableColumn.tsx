@@ -1,6 +1,12 @@
 import { computed, defineComponent, useAttrs, useSlots } from "vue";
-import { renderComponent } from "@slacking/shared";
+import {
+  getNotUndefinedValueByOrder,
+  renderComponent,
+  getGlobalTableConfig,
+} from "@slacking/shared";
 const TableColumn = renderComponent("TableColumn");
+const OriginFormItem = renderComponent("FormItem");
+const globalTableConfig = getGlobalTableConfig();
 const InnerTableColumn = defineComponent({
   setup() {
     const attrs = useAttrs();
@@ -11,7 +17,7 @@ const InnerTableColumn = defineComponent({
       if (attrs.scopedSlots) {
         return attrs.scopedSlots;
       }
-      // 多级表头嵌套多级表头，只会渲染最后一个多级表头，故这里
+      // 多级表头嵌套多级表头，只会渲染最后一个多级表头，故这里直接用传入的插槽
       if (column.subHeaders?.length) {
         return slots;
       }
@@ -26,6 +32,27 @@ const InnerTableColumn = defineComponent({
               subIndex,
             },
             args
+          );
+        },
+        header() {
+          const hideHeaderRequiredAsterisk = getNotUndefinedValueByOrder([
+            (attrs.formSchema as any).hideHeaderRequiredAsterisk,
+            false,
+          ]);
+          return hideHeaderRequiredAsterisk ? (
+            column.label
+          ) : (
+            <OriginFormItem
+              class="slacking-form-asterisk-header"
+              label={column.label}
+              required={column.required}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                marginBottom: 0,
+                verticalAlign: "middle",
+              }}
+            ></OriginFormItem>
           );
         },
       };

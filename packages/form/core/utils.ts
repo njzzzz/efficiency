@@ -82,6 +82,8 @@ export interface OptionProps {
   label: string;
   children: string;
   disabled: string;
+  // 兜底
+  [key: string]: unknown;
 }
 export interface Form {
   name: string;
@@ -146,6 +148,8 @@ export interface FormItem {
   options?: any[];
   hideLabelText?: boolean;
   props?: Record<string, any>;
+  // 在必填的情况下隐藏前面的必填星号
+  hideRequiredAsterisk?: boolean;
   ons?: Record<
     string,
     (val: any, model: Ref<any>, item: Ref<any>, schema: Ref<Schema>) => unknown

@@ -3,4 +3,9 @@
   .el-form-item__content {
     display: flex;
   }
+  .slacking-form-asterisk-header {
+    .el-form-item__label {
+      padding: 0;
+    }
+  }
 }

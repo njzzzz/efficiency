@@ -1,11 +1,4 @@
-import {
-  computed,
-  defineComponent,
-  inject,
-  onRenderTriggered,
-  set,
-  toRefs,
-} from "vue";
+import { computed, defineComponent, inject, set, toRefs } from "vue";
 import { globalProviderKey } from "../core";
 import { useConfig } from "../core/useConfig";
 import { renderComponent, getGlobalFormConfig } from "@slacking/shared";
@@ -94,6 +87,14 @@ export default defineComponent({
         ]),
       })
     );
+    const isNoAsterisk = computed(() => {
+      return getNotUndefinedValueByOrder([
+        item.value.hideRequiredAsterisk,
+        schema.value.hideRequiredAsterisk,
+        globalConfig.hideRequiredAsterisk,
+        false,
+      ]);
+    });
     const formItemSlots = computed(() => {
       return {
         label() {
@@ -118,6 +119,9 @@ export default defineComponent({
         <FormItem
           props={formItemProps.value}
           key={item.value.prop}
+          class={{
+            "is-no-asterisk": isNoAsterisk.value,
+          }}
           scopedSlots={formItemSlots.value}
         ></FormItem>
       ) : null;

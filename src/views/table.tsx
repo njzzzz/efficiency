@@ -210,10 +210,7 @@ export default defineComponent({
     const schema = ref(
       defineTableSchema({
         readonly: false,
-        labelPosition: "left",
         list: _columns,
-        hideLabelText: true,
-        hideRequiredAsterisk: false,
       })
     );
     const click = () => {
