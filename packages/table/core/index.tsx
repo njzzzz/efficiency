@@ -13,6 +13,7 @@ import {
   getNotUndefinedValueByOrder,
   renderComponent,
   getGlobalTableConfig,
+  flattenListWithDataIndex,
 } from "@slacking/shared";
 import TableColumn from "../components/TableColumn";
 import { useHandleInit } from "./useHandleInit";
@@ -50,9 +51,14 @@ const TableRender = defineComponent({
                         columnIndex: column.columnIndex,
                         list: column.list,
                       });
+
                       const item = attrs.runtimeFormSchemaMap[prop];
                       return (
                         <FormItemWithMixRender
+                          class={{
+                            "is-readonly":
+                              item.readonly || attrs.formSchema.readonly,
+                          }}
                           item={item}
                         ></FormItemWithMixRender>
                       );
@@ -91,16 +97,27 @@ export function useTable() {
       const { schema, model } = toRefs(props);
       const attrs = useAttrs() as any;
       const slots = useSlots() as any;
-      const { genFormSchema, genFormModel } = useHandleInit();
+      const runtimeAttrs = computed(() => ({
+        ...runtimeTableSchema.value,
+        ...attrs,
+      }));
+
+      const { genFormSchema, genFormModel } = useHandleInit({
+        runtimeAttrs,
+      });
       watch(
         [schema, model],
         () => {
           runtimeTableSchema.value = cloneDeep(schema.value);
           runtimeTableModel.value = model.value;
-          const formSchemaList = genFormSchema(
-            runtimeTableSchema,
-            runtimeTableModel
+          const flattenedTableModel = flattenListWithDataIndex(
+            runtimeTableModel.value
           );
+          const formSchemaList = genFormSchema({
+            runtimeTableSchema,
+            runtimeTableModel,
+            flattenedTableModel,
+          });
           runtimeFormSchema.value = {
             labelPosition: "left",
             hideLabelText: getNotUndefinedValueByOrder([
@@ -121,10 +138,11 @@ export function useTable() {
             ...runtimeTableSchema.value,
             list: formSchemaList,
           };
-          runtimeFormModel.value = genFormModel(
+          runtimeFormModel.value = genFormModel({
             runtimeFormSchema,
-            runtimeTableModel
-          );
+            runtimeTableModel,
+            flattenedTableModel,
+          });
         },
         {
           immediate: true,
@@ -140,6 +158,7 @@ export function useTable() {
           immediate: true,
         }
       );
+
       return () => {
         return (
           <Form
@@ -154,7 +173,7 @@ export function useTable() {
               render() {
                 return (
                   <TableRender
-                    {...{ attrs }}
+                    {...{ attrs: runtimeAttrs.value }}
                     columns={runtimeTableSchema.value.list}
                     data={runtimeTableModel.value}
                     runtimeFormSchemaMap={runtimeFormSchemaMap.value}

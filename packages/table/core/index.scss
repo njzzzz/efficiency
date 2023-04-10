@@ -1,11 +1,47 @@
 .slacking-table {
   // 修复表格内部长度超出问题
   .el-form-item__content {
-    display: flex;
+    display: inline-flex;
   }
   .slacking-form-asterisk-header {
+    // 去除带星号的表头padding
     .el-form-item__label {
       padding: 0;
+    }
+  }
+  .el-table__cell {
+    & > .cell {
+      display: flex;
+      align-items: center;
+      & > .el-form-item {
+        margin-bottom: 0;
+        display: inline-flex;
+      }
+      & > .el-form-item.is-error {
+        margin-bottom: 22px;
+      }
+      & > .el-form-item:not(.is-readonly) {
+        flex: 1;
+        .el-form-item__content {
+          flex: 1;
+        }
+      }
+    }
+    &.is-right {
+      & > .cell {
+        justify-content: flex-end;
+      }
+    }
+
+    &.is-left {
+      & > .cell {
+        justify-content: flex-start;
+      }
+    }
+    &.is-center {
+      & > .cell {
+        justify-content: center;
+      }
     }
   }
 }

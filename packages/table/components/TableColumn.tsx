@@ -1,11 +1,16 @@
 import { computed, defineComponent, useAttrs, useSlots } from "vue";
-import { getNotUndefinedValueByOrder, renderComponent } from "@slacking/shared";
+import {
+  getGlobalTableConfig,
+  getNotUndefinedValueByOrder,
+  renderComponent,
+  useOverrideProps,
+} from "@slacking/shared";
 const TableColumn = renderComponent("TableColumn");
 const OriginFormItem = renderComponent("FormItem");
 const InnerTableColumn = defineComponent({
   setup() {
-    const attrs = useAttrs();
     const slots = useSlots();
+    const { runtimeAttrs, attrs } = useOverrideProps();
     const subHeaders = computed(() => (attrs?.subHeaders as any) ?? []);
     const genCommonSlots = (column, subIndex = null) => {
       // 本身配置了插槽则使用自身插槽
@@ -63,11 +68,19 @@ const InnerTableColumn = defineComponent({
         },
       };
     };
+    const showOverflowTooltip = computed(() =>
+      getNotUndefinedValueByOrder([
+        attrs.showOverflowTooltip,
+        (attrs.formSchema as any)?.showOverflowTooltip,
+        getGlobalTableConfig().showOverflowTooltip,
+        false,
+      ])
+    );
     return () => (
       <TableColumn
         attrs={{
-          showOverflowTooltip: true,
-          ...attrs,
+          showOverflowTooltip: showOverflowTooltip.value,
+          ...runtimeAttrs.value,
         }}
         scopedSlots={genCommonSlots(attrs)}
       >

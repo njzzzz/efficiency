@@ -19,6 +19,7 @@ const globalTableConfig: GlobalTableConfig = {
   hideLabelText: true,
   hideRequiredAsterisk: true,
   hideHeaderRequiredAsterisk: false,
+  showOverflowTooltip: true,
 };
 export function registerComponents(componentsRegister = []) {
   componentsRegister.forEach(({ name, component, ...reset }) => {
@@ -92,6 +93,7 @@ interface GlobalTableConfig {
   hideLabelText: boolean;
   hideHeaderRequiredAsterisk: boolean;
   hideRequiredAsterisk: boolean;
+  showOverflowTooltip: boolean;
 }
 export function setGlobalFormConfig(config: Partial<GlobalFormConfig> = {}) {
   Object.assign(globalFormConfig, config);

@@ -1,8 +1,3 @@
-import { getNotUndefinedValueByOrder } from "@slacking/shared";
-import { getGlobalTableConfig } from "@slacking/shared";
-import { set } from "vue";
-const globalTableConfig = getGlobalTableConfig();
-
 export function genRuntimeFormProp({
   prop,
   dataIndex,

@@ -27,6 +27,7 @@
   },
   "description": "",
   "devDependencies": {
-    "@slacking/shared": "workspace:^0.0.1"
+    "@slacking/shared": "workspace:^0.0.1",
+    "short-uuid": "^4.2.2"
   }
 }

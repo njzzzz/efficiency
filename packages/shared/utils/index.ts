@@ -1,3 +1,4 @@
+import short from "short-uuid";
 export const convertListValueLabel = (
   list = [],
   from = {
@@ -71,4 +72,28 @@ export function undefinedAndNotNullValueAsTrue(val) {
   } else {
     return val === undefined || !["", null].includes(val);
   }
+}
+export function sid() {
+  return short.generate();
+}
+export function flattenListWithDataIndex(
+  list,
+  childrenKey = "children",
+  parent = null,
+  newArr = []
+) {
+  if (list?.length) {
+    list.forEach((item, index) => {
+      item.__parent = parent;
+      item.__topIndex = parent === null ? index : parent.__topIndex;
+      item.__index = index;
+      newArr.push(item);
+      if (item[childrenKey]) {
+        flattenListWithDataIndex(item[childrenKey], childrenKey, item, newArr);
+      }
+    });
+  }
+  console.log(newArr);
+
+  return newArr;
 }
