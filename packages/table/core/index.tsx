@@ -51,7 +51,6 @@ const TableRender = defineComponent({
                         columnIndex: column.columnIndex,
                         list: column.list,
                       });
-
                       const item = attrs.runtimeFormSchemaMap[prop];
                       return (
                         <FormItemWithMixRender
@@ -101,7 +100,6 @@ export function useTable() {
         ...runtimeTableSchema.value,
         ...attrs,
       }));
-
       const { genFormSchema, genFormModel } = useHandleInit({
         runtimeAttrs,
       });

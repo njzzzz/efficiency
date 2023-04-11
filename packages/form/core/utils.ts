@@ -116,7 +116,13 @@ export interface Form {
   [key: string]: unknown;
 }
 export interface DependOnOptions {
-  handler: (val: any, model: Ref<any>, item: any, oldVal: any) => any;
+  handler: (data: {
+    val: any;
+    model: Ref<any>;
+    item: any;
+    schema: Ref<any>;
+    oldVal: any;
+  }) => any;
   immediate?: boolean;
   deep?: boolean;
   flush?: "pre" | "post" | "sync";
@@ -152,7 +158,10 @@ export interface FormItem {
   hideRequiredAsterisk?: boolean;
   ons?: Record<
     string,
-    (val: any, model: Ref<any>, item: Ref<any>, schema: Ref<Schema>) => unknown
+    (
+      val: any,
+      opts: { model: Ref<any>; item: Ref<any>; schema: Ref<Schema> }
+    ) => unknown
   >;
   validator?: (
     rule: any,

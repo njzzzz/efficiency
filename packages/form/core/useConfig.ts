@@ -287,7 +287,13 @@ export function generatorDependOn(
           () => runtimeModel.value[key],
           (val, oldVal) => {
             Promise.resolve(
-              dependOnOptions(val, runtimeModel, item, oldVal)
+              dependOnOptions({
+                val,
+                oldVal,
+                model: runtimeModel,
+                schema: runtimeSchema,
+                item,
+              })
             ).then(() => {
               deleteValueOnHiddenFunc(item, runtimeModel, runtimeSchema);
             });
@@ -300,11 +306,17 @@ export function generatorDependOn(
         const unWatch = watch(
           () => runtimeModel.value[key],
           (val, oldVal) => {
-            Promise.resolve(handler(val, runtimeModel, item, oldVal)).then(
-              () => {
-                deleteValueOnHiddenFunc(item, runtimeModel, runtimeSchema);
-              }
-            );
+            Promise.resolve(
+              handler({
+                val,
+                oldVal,
+                model: runtimeModel,
+                schema: runtimeSchema,
+                item,
+              })
+            ).then(() => {
+              deleteValueOnHiddenFunc(item, runtimeModel, runtimeSchema);
+            });
           },
           { immediate: true, deep: false, ...options }
         );

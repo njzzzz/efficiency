@@ -61,6 +61,7 @@ export function useHandleInit({ runtimeAttrs }) {
         mixValue(val, args) {
           if (!runtimeTableModel.value[__topIndex]) return;
           const { item: runtimeItem } = args;
+          if (item.originProp === undefined) return;
           const originOnObjectValue = item.ons?.mixValue;
           const realValue = runtimeItem.list.reduce((acc, subItem) => {
             const { originProp, prop } = subItem;

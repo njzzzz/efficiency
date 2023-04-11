@@ -1,4 +1,4 @@
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, set } from "vue";
 import {
   useTable,
   defineTableColumns,
@@ -25,8 +25,8 @@ const _columns = defineTableColumns([
       //   },
       // },
       {
-        prop: "name-1",
-        label: "姓名-1",
+        prop: "name-0",
+        label: "姓名0",
         width: 200,
         required: true,
         type: "Select",
@@ -38,22 +38,22 @@ const _columns = defineTableColumns([
         ],
       },
       {
-        prop: "name-2",
-        label: "姓名-2",
+        prop: "name-1",
+        label: "姓名-1",
         required: true,
         defaultValue: 1111,
         width: 200,
-        ons: {
-          input(val, a) {
-            console.log("out input args", val, a);
+        dependOn: {
+          "name-0"({ val }) {
+            console.log(val);
           },
         },
       },
     ],
   },
   {
-    prop: "age",
-    label: "年龄",
+    prop: "age2",
+    label: "年龄2",
     type: "Select",
     className: "xx",
     width: 200,
@@ -65,8 +65,8 @@ const _columns = defineTableColumns([
     ],
   },
   {
-    prop: "lovers",
-    label: "爱好",
+    prop: "lovers3",
+    label: "爱好3",
     width: 500,
     list: [
       { label: "第一个爱好", prop: "lovers-1" },
@@ -74,27 +74,35 @@ const _columns = defineTableColumns([
     ],
   },
   {
-    prop: "lover",
-    label: "爱好",
+    label: "爱好4",
+    width: 500,
+    list: [
+      { label: "第一个爱好", prop: "lovers-1" },
+      { label: "第二个爱好", prop: "lovers-2" },
+    ],
+  },
+  {
+    prop: "lover5",
+    label: "爱好5",
     width: 500,
     dependOn: {
       age() {},
     },
   },
   {
-    prop: "lover",
-    label: "爱好",
+    prop: "lover6",
+    label: "爱好6",
     width: 500,
   },
   {
-    prop: "lover",
-    label: "爱好",
+    prop: "lover7",
+    label: "爱好7",
     width: 500,
   },
 
   {
-    prop: "lover",
-    label: "爱好",
+    prop: "lover8",
+    label: "爱好8",
     minWidth: 200,
     // scopedSlots: {
     //   default(item) {
@@ -183,20 +191,20 @@ export default defineComponent({
       })
     );
     const click = () => {
-      formRef.value.validate();
-      // model.value = [
-      //   { name: 1, age: "2" },
-      //   { name: 1, age: "2" },
-      //   { name: 1, age: "2" },
-      //   { name: 1, age: "2" },
-      //   { name: 1, age: "2" },
-      //   { name: 1, age: "2" },
-      //   { name: 1, age: "2" },
-      //   { name: 1, age: "2" },
-      //   { name: 1, age: "2" },
-      //   { name: 1, age: "2" },
-      //   { name: 1, age: "2" },
-      // ];
+      // formRef.value.validate();
+      model.value = [
+        { name: 1, age: "2" },
+        { name: 1, age: "2" },
+        { name: 1, age: "2" },
+        { name: 1, age: "2" },
+        { name: 1, age: "2" },
+        { name: 1, age: "2" },
+        { name: 1, age: "2" },
+        { name: 1, age: "2" },
+        { name: 1, age: "2" },
+        { name: 1, age: "2" },
+        { name: 1, age: "2" },
+      ];
     };
 
     return () => (

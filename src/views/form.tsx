@@ -57,7 +57,7 @@ const schema = ref(
         message: "请输入姓名",
         ons: {
           // 不要在此处监听change事件，因为在input的时候修改model不会触发此处的change
-          blur(val, model, item, schema) {
+          blur(val, { model, item, schema }) {
             console.log("【LOG】  val ---->", val);
           },
         },
@@ -123,7 +123,7 @@ const schema = ref(
         prop: "sex",
         label: "性别",
         dependOn: {
-          name(val, model, item) {
+          name({ val, model, item, schema, oldVal }) {
             item.show = val === "xxx1";
           },
         },
@@ -144,7 +144,7 @@ const schema = ref(
         // },
         dependOn: {
           name: {
-            handler(val, model, item, oldVal) {
+            handler({ val, model, item, schema, oldVal }) {
               item.options = [
                 { value: "1", label: val },
                 { value: "2", label: "喝" },
@@ -162,9 +162,9 @@ const schema = ref(
         prop: "age",
         label: "年龄",
         dependOn: {
-          age(val, model, item, oldVal) {},
+          age({ val, model, item, schema, oldVal }) {},
           name: {
-            handler(val, model, item, oldVal) {
+            handler({ val, model, item, schema, oldVal }) {
               const random = Math.random();
               model.value.sex = val;
               item.label = random.toString();
@@ -180,13 +180,14 @@ const schema = ref(
         label: "备注",
         dependOn: {
           name: {
-            handler(val, model, item, oldVal) {
+            handler({ val, model, item, schema, oldVal }) {
               console.log(
                 "【LOG】  val, model, item, oldVal ---->",
                 val,
                 model,
                 item,
-                oldVal
+                oldVal,
+                schema
               );
               model.value.sex = Math.random();
               item.show = Math.random() > 0.5;
@@ -238,7 +239,7 @@ const schema = ref(
             prop: "sex1",
             required: false,
             dependOn: {
-              name1(val, model, item, oldVal) {
+              name1({ val, model, item, schema, oldVal }) {
                 item.show = val === "2";
               },
             },
@@ -277,12 +278,13 @@ export default defineComponent({
       useForm();
     const model = ref({
       age: 0,
+      name: "",
     });
     const modSchema = () => {
       schema.value.list[0].label = "111111";
     };
     const modFormData = () => {
-      // model.value.name = "122";
+      model.value.name = "122";
     };
     const validate = () => {
       console.log(formData);
