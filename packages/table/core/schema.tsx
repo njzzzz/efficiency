@@ -5,11 +5,12 @@ interface TableSchema extends Form {
   hideHeaderRequiredAsterisk: boolean;
   showOverflowTooltip: boolean;
   hideRequiredAsterisk: boolean;
+  ons: Record<string, any>;
 }
 interface TableColumn extends FormItem {
   scopedSlots: any;
   type: string;
-  list: Partial<FormItem>[];
+  list: Partial<TableColumn>[];
   subHeaders: Partial<TableColumn>[];
   hideLabelText: boolean;
   hideHeaderRequiredAsterisk: boolean;

@@ -1,4 +1,11 @@
-import { computed, defineComponent, ref, ComputedRef, useSlots } from "vue";
+import {
+  computed,
+  defineComponent,
+  ref,
+  ComputedRef,
+  useSlots,
+  useListeners,
+} from "vue";
 import { FormRender } from "@slacking/form";
 import { formProps } from "./formProps";
 export function useForm() {
@@ -10,22 +17,28 @@ export function useForm() {
     props: formProps,
     setup(props, { emit }) {
       const slots = useSlots();
+      const listeners = useListeners();
       return () => {
         return (
           <FormRender
             ref={_formRef}
             props={props}
             scopedSlots={slots}
-            onInput={($event) => emit("input", $event)}
+            on={{
+              ...listeners,
+              input($event) {
+                emit("input", $event);
+              },
+            }}
           ></FormRender>
         );
       };
     },
   });
-  return [EffectForm, formData, formRef, schema] as [
-    any,
-    ComputedRef<any>,
-    ComputedRef<any>,
-    ComputedRef<any>
-  ];
+  return { Form: EffectForm, formData, formRef, schema } as {
+    Form: any;
+    formData: ComputedRef<any>;
+    formRef: ComputedRef<any>;
+    schema: ComputedRef<any>;
+  };
 }

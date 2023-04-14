@@ -31,21 +31,29 @@ export const convertListValueLabel = (
 export const convertListToMap = (
   list = [],
   { value = "value", children = "children" },
+  withParentAndPath = true,
   parent = null
 ) => {
   const result = {};
   if (list?.length) {
     for (let index = 0; index < list.length; index++) {
       const item = list[index] as any;
-      item.__parent = parent;
-      item.__path = item.__parent
-        ? [...item.__parent.__path, item[value]]
-        : [item[value]];
+      if (withParentAndPath) {
+        item.__parent = parent;
+        item.__path = item.__parent
+          ? [...item.__parent.__path, item[value]]
+          : [item[value]];
+      }
       result[item[value]] = item;
       if (item[children]) {
         Object.assign(
           result,
-          convertListToMap(item[children], { value, children }, item)
+          convertListToMap(
+            item[children],
+            { value, children },
+            withParentAndPath,
+            item
+          )
         );
       }
     }
@@ -111,7 +119,9 @@ export function isUndef(val) {
 export function isNull(val) {
   return realTypeEqual(val, "Null");
 }
-
+export function isArray(val) {
+  return realTypeEqual(val, "Array");
+}
 export const getValueByPath = function (object, prop) {
   prop = prop || "";
   const paths = prop.split(".");
@@ -154,4 +164,33 @@ export function getPropByPath(obj, path, strict) {
     k: keyArr[i],
     v: tempObj ? tempObj[keyArr[i]] : null,
   };
+}
+export function runFns(fns = [], args) {
+  fns.forEach((fn) => fn(...args));
+}
+function runListenersEvent(fns, event, args) {
+  if (fns) {
+    if (isArray(fns)) {
+      runFns(fns, args);
+    } else {
+      fns(...args);
+    }
+  }
+}
+function getListenersByEventName(obj, event) {
+  return obj[event]?.fns ?? obj[event] ?? null;
+}
+
+export function mergeListeners(obj1 = {}, obj2 = {}) {
+  const obj = { ...obj1 };
+  // listeners可能为数组挂在fns属性下
+  Object.keys(obj2).forEach((event) => {
+    const fns = getListenersByEventName(obj, event);
+    obj[event] = (...args) => {
+      runListenersEvent(fns, event, args);
+      const obj2Fns = getListenersByEventName(obj2, event);
+      runListenersEvent(obj2Fns, event, args);
+    };
+  });
+  return obj;
 }

@@ -285,9 +285,13 @@ const schema = ref(
 
 export default defineComponent({
   setup() {
-    const [EffectForm, formData, formRef, _schema] = useForm();
-    const [AnotherEffectForm, AnotherFormData, anotherFormRef, anotherSchema] =
-      useForm();
+    const { Form: EffectForm, formData, formRef } = useForm();
+    const {
+      Form: AnotherEffectForm,
+      formData: AnotherFormData,
+      formRef: anotherFormRef,
+      schema: anotherSchema,
+    } = useForm();
     const model = ref({
       age: 0,
       name: "",
@@ -308,12 +312,18 @@ export default defineComponent({
         <Button onClick={modFormData}>修改姓名</Button>
         <Button onClick={validate}>表单验证</Button>
         <EffectForm
-          props={{ schema: schema.value, model }}
+          schema={schema.value}
+          props={{
+            model: model.value,
+          }}
           onInput={(v) => {
             model.value = v;
           }}
           onUpdateSchema={(v) => {
             schema.value = v;
+          }}
+          onValidate={(v) => {
+            console.log(v);
           }}
         ></EffectForm>
       </div>

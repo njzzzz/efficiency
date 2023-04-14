@@ -1,6 +1,14 @@
-import { ref, defineComponent, provide, toRefs, watch, useSlots } from "vue";
+import {
+  ref,
+  defineComponent,
+  provide,
+  toRefs,
+  watch,
+  useSlots,
+  useListeners,
+} from "vue";
 import { useHandleInit, FormItemRender } from "@slacking/form";
-import { renderComponent } from "@slacking/shared";
+import { renderComponent, mergeListeners } from "@slacking/shared";
 import { formProps } from "./formProps";
 import { cloneDeep } from "lodash-es";
 export const globalProviderKey = Symbol();
@@ -8,6 +16,7 @@ export default defineComponent({
   props: formProps,
   setup(props, { expose, emit }) {
     const slots = useSlots();
+    const listeners = useListeners();
     const elFormRef = ref();
     const Form = renderComponent("Form");
     const { model, schema } = toRefs(props);
@@ -57,6 +66,7 @@ export default defineComponent({
       model: runtimeModel,
       schema: runtimeSchema,
     });
+
     return () => {
       return (
         <Form
@@ -67,6 +77,7 @@ export default defineComponent({
             hideRequiredAsterisk: false,
           }}
           scopedSlots={slots}
+          on={mergeListeners(runtimeSchema.value.ons, listeners)}
         >
           {runtimeSchema.value.list?.map?.((item, index) => {
             return (

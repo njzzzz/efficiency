@@ -3,7 +3,6 @@ import {
   useTable,
   defineTableColumns,
   defineTableSchema,
-  genRuntimeFormProp,
 } from "@slacking/table";
 import { TableColumn, Form, FormItem } from "element-ui";
 // element-ui 多级表头固定列bug，未修复前，需要保证子表头的width之和等于父表头的宽度
@@ -159,7 +158,8 @@ export default defineComponent({
   components: { TableColumn, Form, FormItem },
   setup() {
     const model = ref(_data);
-    const [Table, formRef] = useTable();
+    const { Table, formRef } = useTable();
+    const selectModel = ref({});
     const schema = ref(
       defineTableSchema({
         readonly: false,
@@ -190,11 +190,28 @@ export default defineComponent({
       <div>
         <div onClick={click}>表单验证</div>
         <Table
+          multiple={false}
           props={{
             model: model.value,
           }}
           schema={schema.value}
           style="width: 100%"
+          on={{
+            "row-click"(args) {
+              console.log("row-click", args);
+            },
+            "selection-change"(args) {
+              console.log("selection-change", args);
+            },
+            "current-change": [
+              (args) => {
+                console.log("current-change1", args);
+              },
+              (args) => {
+                console.log("current-change2", args);
+              },
+            ],
+          }}
         ></Table>
       </div>
     );

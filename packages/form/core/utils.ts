@@ -112,11 +112,12 @@ export interface Form {
   hideLabelText?: boolean;
   defaultRender: string;
   hideRequiredAsterisk: boolean;
+  ons: Record<string, any>;
   // 兜底
   [key: string]: unknown;
 }
 export interface DependOnOptions {
-  handler: (data: {
+  handler: (args: {
     val: any;
     model: Ref<any>;
     item: any;
