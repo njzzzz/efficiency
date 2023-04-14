@@ -65,7 +65,6 @@ const _columns = defineTableColumns([
     label: "爱好3",
     width: 500,
     type: "Mix",
-    prop: "a",
     list: [
       { label: "第一个爱好", prop: "lovers-1" },
       { label: "第二个爱好", prop: "lovers-2" },
@@ -163,7 +162,7 @@ export default defineComponent({
     const [Table, formRef] = useTable();
     const schema = ref(
       defineTableSchema({
-        readonly: true,
+        readonly: false,
         list: _columns,
         rowKey: "id",
         showOverflowTooltip: true,

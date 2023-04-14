@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "outDir": "./types",
     "declaration": true,
     "emitDeclarationOnly": true,
@@ -24,6 +25,6 @@
     "core/**/*.vue",
     "core/**/*.ts",
     "core/**/*.tsx",
-    "index.ts"
+    "./index.ts"
   ]
 }

@@ -3,27 +3,18 @@ import {
   toRefs,
   useAttrs,
   useSlots,
-  ref,
-  watch,
   ComputedRef,
-  Ref,
   computed,
 } from "vue";
 import {
   getNotUndefinedValueByOrder,
   renderComponent,
   getGlobalTableConfig,
-  flattenListWithDataIndex,
-  isUndef,
   isNull,
-  sid,
 } from "@slacking/shared";
 import TableColumn from "../components/TableColumn";
-import { useHandleInit } from "./useHandleInit";
 import { FormItemRender, useForm } from "@slacking/form";
-import { cloneDeep } from "lodash-es";
 import { tableProps } from "./tableProps";
-import { genRuntimeFormProp } from "./useConfig";
 import "./index.scss";
 
 const globalTableConfig = getGlobalTableConfig();
@@ -172,7 +163,6 @@ export function useTable() {
           });
           return formSchemaList;
         }
-
         formSchema.list = dealWithSchemaAndModel(model.value);
         return { formSchema, formModel, formPropMap, rowMap };
       });
