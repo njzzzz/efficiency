@@ -42,12 +42,10 @@ const _columns = defineTableColumns([
         label: "姓名-1",
         required: true,
         defaultValue: 1111,
-        width: 200,
-        dependOn: {
-          "name-0"({ val }) {
-            console.log(val);
-          },
+        readonlyFormatter() {
+          return 2222222;
         },
+        width: 200,
       },
     ],
   },
@@ -55,7 +53,6 @@ const _columns = defineTableColumns([
     prop: "age2",
     label: "年龄2",
     type: "Select",
-    className: "xx",
     width: 200,
     options: [
       { value: "1", label: "吃" },
@@ -65,9 +62,10 @@ const _columns = defineTableColumns([
     ],
   },
   {
-    prop: "lovers3",
     label: "爱好3",
     width: 500,
+    type: "Mix",
+    prop: "a",
     list: [
       { label: "第一个爱好", prop: "lovers-1" },
       { label: "第二个爱好", prop: "lovers-2" },
@@ -76,18 +74,17 @@ const _columns = defineTableColumns([
   {
     label: "爱好4",
     width: 500,
+    prop: "lover4",
+    type: "Mix",
     list: [
-      { label: "第一个爱好", prop: "lovers-1" },
-      { label: "第二个爱好", prop: "lovers-2" },
+      { label: "第一个爱好", prop: "lovers-4-1" },
+      { label: "第二个爱好", prop: "lovers-4-2" },
     ],
   },
   {
     prop: "lover5",
     label: "爱好5",
     width: 500,
-    dependOn: {
-      age() {},
-    },
   },
   {
     prop: "lover6",
@@ -99,11 +96,11 @@ const _columns = defineTableColumns([
     label: "爱好7",
     width: 500,
   },
-
   {
     prop: "lover8",
     label: "爱好8",
     minWidth: 200,
+    required: true,
     // scopedSlots: {
     //   default(item) {
     //     return <div>xxxx</div>;
@@ -113,66 +110,48 @@ const _columns = defineTableColumns([
 ]);
 const _data = [
   {
-    id: 1,
-    age: "2",
-    "lover-other": "lover-other",
-    lover: "lover",
+    id: "0",
+    age2: "1",
     children: [
       {
-        id: "sub-1",
-        age: "4",
+        id: "sub0-0",
       },
       {
-        id: "sub-2",
-        age: "3",
+        id: "sub0-1",
       },
     ],
   },
+
   {
     id: 2,
-    age: "2",
-    "lover-other": "lover-other",
-    lover: "lover",
     children: [
       {
         id: "sub-2-1",
-        age: "4",
       },
       {
         id: "sub-2-2",
-        age: "3",
       },
     ],
   },
   {
     id: 3,
-    age: "2",
-    "lover-other": "lover-other",
-    lover: "lover",
     children: [
       {
         id: "sub-3-1",
-        age: "4",
       },
       {
         id: "sub-3-2",
-        age: "3",
       },
     ],
   },
   {
     id: 4,
-    age: "2",
-    "lover-other": "lover-other",
-    lover: "lover",
     children: [
       {
         id: "sub-4-1",
-        age: "4",
       },
       {
         id: "sub-4-2",
-        age: "3",
       },
     ],
   },
@@ -181,30 +160,31 @@ export default defineComponent({
   components: { TableColumn, Form, FormItem },
   setup() {
     const model = ref(_data);
-    const [Table, formRef, tableModel] = useTable();
+    const [Table, formRef] = useTable();
     const schema = ref(
       defineTableSchema({
-        readonly: false,
+        readonly: true,
         list: _columns,
         rowKey: "id",
-        showOverflowTooltip: false,
+        showOverflowTooltip: true,
+        hideHeaderRequiredAsterisk: true,
       })
     );
     const click = () => {
-      // formRef.value.validate();
-      model.value = [
-        { name: 1, age: "2" },
-        { name: 1, age: "2" },
-        { name: 1, age: "2" },
-        { name: 1, age: "2" },
-        { name: 1, age: "2" },
-        { name: 1, age: "2" },
-        { name: 1, age: "2" },
-        { name: 1, age: "2" },
-        { name: 1, age: "2" },
-        { name: 1, age: "2" },
-        { name: 1, age: "2" },
-      ];
+      formRef.value.validate();
+      // model.value = [
+      //   { name: 1, age: "2" },
+      //   { name: 1, age: "2" },
+      //   { name: 1, age: "2" },
+      //   { name: 1, age: "2" },
+      //   { name: 1, age: "2" },
+      //   { name: 1, age: "2" },
+      //   { name: 1, age: "2" },
+      //   { name: 1, age: "2" },
+      //   { name: 1, age: "2" },
+      //   { name: 1, age: "2" },
+      //   { name: 1, age: "2" },
+      // ];
     };
 
     return () => (

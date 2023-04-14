@@ -13,7 +13,7 @@ const globalFormConfig: GlobalFormConfig = {
   // 设置默认使用的渲染组件，需要通过registerComponent注册
   defaultRender: "Input",
   hideLabelText: false,
-  hideRequiredAsterisk: true,
+  hideRequiredAsterisk: false,
 };
 const globalTableConfig: GlobalTableConfig = {
   hideLabelText: true,

@@ -1,6 +1,6 @@
 import { defineComponent, reactive, ref } from "vue";
-import { useForm, defineFormSchema } from "@slacking/form";
-import { Button } from "element-ui";
+import { useForm, defineFormSchema, FormItemRender } from "@slacking/form";
+import { Button, Cascader, Input } from "element-ui";
 import { useConfig } from "./config";
 const { cascaderOptions } = useConfig();
 const sleep = (res = [], timing = 2000) => {
@@ -132,16 +132,14 @@ const schema = ref(
         type: "Select",
         prop: "lover",
         label: "爱好",
-        a: 1,
-        b: 2,
-        // async asyncOptions() {
-        //   return [
-        //     { value: "1", label: "吃" },
-        //     { value: "2", label: "喝" },
-        //     { value: "3", label: "玩" },
-        //     { value: "4", label: "乐" },
-        //   ];
-        // },
+        async asyncOptions() {
+          return [
+            { value: "1", label: "吃" },
+            { value: "2", label: "喝" },
+            { value: "3", label: "玩" },
+            { value: "4", label: "乐" },
+          ];
+        },
         dependOn: {
           name: {
             handler({ val, model, item, schema, oldVal }) {
@@ -178,6 +176,21 @@ const schema = ref(
         type: "Input",
         prop: "remark",
         label: "备注",
+        options: cascaderOptions,
+        required: true,
+        scopedSlots: {
+          label({ dItem }) {
+            return 111;
+          },
+          default({ dItem }) {
+            return (
+              <Cascader
+                {...{ attrs: dItem.value }}
+                on={dItem.value.on}
+              ></Cascader>
+            );
+          },
+        },
         dependOn: {
           name: {
             handler({ val, model, item, schema, oldVal }) {
@@ -204,6 +217,7 @@ const schema = ref(
         maxLen: 10,
         minLen: 2,
         multiple: true,
+        defaultValue: ["jiaohu"],
         options: cascaderOptions,
       },
       {
@@ -213,10 +227,6 @@ const schema = ref(
         justify: "start",
         label: "别名",
         required: true,
-        prop: "otherName",
-        // validator(_1, _2, callback) {
-        //   callback(new Error(111));
-        // },
         list: [
           {
             type: "Select",
@@ -225,6 +235,8 @@ const schema = ref(
             filterable: true,
             clearable: false,
             multiple: false,
+            required: true,
+            message: "请选择xxx",
             async asyncOptions() {
               return [
                 { value: "1", label: "吃" },
@@ -237,7 +249,7 @@ const schema = ref(
           {
             type: "Input",
             prop: "sex1",
-            required: false,
+            required: true,
             dependOn: {
               name1({ val, model, item, schema, oldVal }) {
                 item.show = val === "2";
@@ -251,7 +263,6 @@ const schema = ref(
         align: "bottom",
         gutter: 30,
         justify: "end",
-        prop: "111",
         list: [
           {
             type: "Input",
@@ -264,6 +275,7 @@ const schema = ref(
             prop: "column2",
             label: "同一行-2",
             required: true,
+            hideRequiredAsterisk: false,
           },
         ],
       },

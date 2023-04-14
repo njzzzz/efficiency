@@ -1,19 +1,42 @@
-import { computed, watch, set, watchEffect, del } from "vue";
-import { getGlobalFormConfig } from "@slacking/shared";
+import { computed, watch, set, watchEffect, del, Ref } from "vue";
+import {
+  getGlobalFormConfig,
+  getPropByPath,
+  getValueByPath,
+  isUndef,
+} from "@slacking/shared";
 import {
   convertListValueLabel,
   convertListToMap,
   undefinedAndTrueAsTrue,
   getNotUndefinedValueByOrder,
-} from "./utils";
+} from "@slacking/form";
 const functionalProps = ["label"];
 const globalConfig = getGlobalFormConfig();
 export function realType(may) {
   return Object.prototype.toString.call(may);
 }
-
 export function realTypeEqual(may, type) {
   return realType(may) === `[object ${type}]`;
+}
+export function updateValue({
+  prop,
+  model,
+  value,
+}: {
+  prop: string;
+  model: Ref<any>;
+  value: any | Record<string, any>;
+}): void {
+  if (isUndef(prop) && realTypeEqual(value, "Object")) {
+    Object.keys(value).forEach((key) => {
+      const { o, k } = getPropByPath(model.value, key, true);
+      set(o, k, value);
+    });
+  } else {
+    const { o, k } = getPropByPath(model.value, prop, true);
+    set(o, k, value);
+  }
 }
 export function getDefaultValue(
   item,
@@ -26,7 +49,7 @@ export function getDefaultValue(
   const values = [];
   let changedByDefault = false;
   if (withModelValue) {
-    values.push(runtimeModel.value[item.prop]);
+    values.push(getValueByPath(runtimeModel.value, item.prop));
   }
   if (withDefaultValue) {
     if (values[0] === undefined) {
@@ -41,11 +64,11 @@ export function getDefaultValue(
   };
 }
 
-export function useConfig({ item, schema }) {
+export function useLabel({ item, schema }) {
   const label = computed(() => {
     realType(item.value.symbol);
-    const symbol = realTypeEqual(item.value.symbol, "Undefined")
-      ? realTypeEqual(schema.value.symbol, "Undefined")
+    const symbol = isUndef(item.value.symbol)
+      ? isUndef(schema.value.symbol)
         ? ":"
         : schema.value.symbol
       : item.value.symbol;
@@ -110,79 +133,6 @@ export function generatorRules(item, runtimeModel, runtimeSchema, elFormRef) {
     rule.validator = (rule, value, callback) => {
       item.validator(rule, value, callback, item, runtimeModel, elFormRef);
     };
-  }
-  // 只处理Mix类型的多对一格式，如果未配置prop择按照正常表单执行，只处理布局
-  if (item.type === "Mix" && item.prop) {
-    // 子表单指定 required 为 false，则不会触发验证
-    if (item.required) {
-      item.list.map((child) => {
-        child.trigger = child.trigger || item.trigger;
-        child.validator = child.validator
-          ? (rule, value, callback) => {
-              item.validator(
-                rule,
-                value,
-                callback,
-                child,
-                runtimeModel,
-                elFormRef
-              );
-            }
-          : (rule, value, callback) => {
-              callback();
-              // 触发父级验证
-              elFormRef.value.validateField(item.prop);
-            };
-        return child;
-      });
-      item.rules = [
-        {
-          trigger: rule.trigger,
-          validator(rule, value, callback) {
-            if (!value) {
-              return callback(new Error(message));
-            }
-            // 只验证必填的子表单
-            const requiredChildrenProps = item.list
-              .filter((child) => child.required !== false)
-              .map((child) => child.prop);
-            const values = requiredChildrenProps.reduce((acc, prop) => {
-              acc.push(value[prop]);
-              return acc;
-            }, []);
-            if (item.validator) {
-              item.validator(
-                rule,
-                value,
-                callback,
-                item,
-                runtimeModel,
-                elFormRef
-              );
-            } else if (!values?.length) {
-              callback(new Error(message));
-            } else if (
-              values.some((v) => {
-                if (Array.isArray(v)) return !v?.length;
-                return [null, undefined, ""].includes(v);
-              })
-            ) {
-              callback(new Error(message));
-            } else {
-              if (regexp) {
-                if (regexp.test(value)) {
-                  callback();
-                } else {
-                  callback(new Error(message));
-                }
-              } else {
-                callback();
-              }
-            }
-          },
-        },
-      ];
-    }
   }
   // 配置长度
   let lengthRule = null;
@@ -284,7 +234,7 @@ export function generatorDependOn(
       const dependOnOptions = item.dependOn[key];
       if (typeof dependOnOptions === "function") {
         const unWatch = watch(
-          () => runtimeModel.value[key],
+          () => getValueByPath(runtimeModel.value, key),
           (val, oldVal) => {
             Promise.resolve(
               dependOnOptions({
@@ -304,7 +254,7 @@ export function generatorDependOn(
       } else {
         const { handler, ...options } = dependOnOptions;
         const unWatch = watch(
-          () => runtimeModel.value[key],
+          () => getValueByPath(runtimeModel.value, key),
           (val, oldVal) => {
             Promise.resolve(
               handler({
@@ -354,13 +304,21 @@ export function generatorReactiveModelPropsDefaultValue(
 ) {
   if (item.prop) {
     const defaultValue = getDefaultValue(item, runtimeModel, runtimeSchema);
-    set(runtimeModel.value, item.prop, defaultValue.value);
+    updateValue({
+      prop: item.prop,
+      model: runtimeModel,
+      value: defaultValue.value,
+    });
     if (defaultValue.changedByDefault && item.ons?.defaultValue) {
       item.ons.defaultValue(defaultValue.value);
     }
   }
 }
-
+/**
+ * @deprecated
+ * @param item
+ * @param runtimeModel
+ */
 export function dealWithMixTypeValue(item, runtimeModel) {
   if (item.type !== "Mix" || !item.prop) return;
   watchEffect(() => {
@@ -372,7 +330,6 @@ export function dealWithMixTypeValue(item, runtimeModel) {
       return acc;
     }, {});
     runtimeModel.value[item.prop] = mixTypeWithPropValue;
-
     const onMixValue = item.ons?.mixValue;
     onMixValue && onMixValue(mixTypeWithPropValue);
   });
@@ -408,20 +365,14 @@ export function patchReactiveProps(item, runtimeSchema) {
       ])
     );
   }
-  // if (!Reflect.has(item, "hideRequiredAsterisk")) {
-  //   set(
-  //     item,
-  //     "hideRequiredAsterisk",
-  //     getNotUndefinedValueByOrder([
-  //       item.hideRequiredAsterisk,
-  //       runtimeSchema.value.hideRequiredAsterisk,
-  //       globalConfig.hideRequiredAsterisk,
-  //       false,
-  //     ])
-  //   );
-  // }
 }
-// 将select, cascader等选项的数组或者对象值使用下划线透出
+/**
+ * @description 将select, cascader等选项的数组或者对象值使用下划线透出
+ * @deprecated
+ * @param item
+ * @param runtimeModel
+ * @param runtimeSchema
+ */
 export function generatorWithObjectValue(item, runtimeModel, runtimeSchema) {
   const optionProps = item.optionProps || runtimeSchema.value.optionProps;
   const withObjectValue = undefinedAndTrueAsTrue([
@@ -462,6 +413,26 @@ export function generatorWithObjectValue(item, runtimeModel, runtimeSchema) {
     );
   }
 }
+export function generatorOptionsMap(item, runtimeModel, runtimeSchema) {
+  const optionProps = item.optionProps || runtimeSchema.value.optionProps;
+  const { value = "value", children = "children" } = optionProps || {};
+  const prop = item.prop;
+  if (prop) {
+    watch(
+      () => item.options,
+      (options) => {
+        if (options?.length) {
+          item.__optionsMap = convertListToMap(options, {
+            value,
+            children,
+          });
+        }
+      },
+      { immediate: true, deep: true }
+    );
+  }
+}
+
 export function dealOptionProps(item, runtimeSchema) {
   const optionProps = item.optionProps || runtimeSchema.value.optionProps;
   const autoOptionProps = undefinedAndTrueAsTrue([
@@ -515,10 +486,12 @@ export const deleteValueOnHiddenFunc = (item, runtimeModel, runtimeSchema) => {
   ]);
   if (item.show === false) {
     if (deleteValueOnHidden) {
-      del(runtimeModel.value, item.prop);
+      const { k, o } = getPropByPath(runtimeModel.value, item.prop, true);
+      del(o, k);
       if (item.prop && item.list && item.type === "Mix")
         item.list.forEach((conf) => {
-          del(runtimeModel.value, conf.prop);
+          const { k, o } = getPropByPath(runtimeModel.value, conf.prop, true);
+          del(o, k);
         });
     }
   } else {
@@ -528,17 +501,17 @@ export const deleteValueOnHiddenFunc = (item, runtimeModel, runtimeSchema) => {
       globalConfig.resetShowWithDefaultValue,
       true,
     ]);
-    set(
-      runtimeModel.value,
-      item.prop,
-      getDefaultValue(
+    updateValue({
+      prop: item.prop,
+      model: runtimeModel,
+      value: getDefaultValue(
         item,
         runtimeModel,
         runtimeSchema,
         resetShowWithDefaultValue,
         true
-      ).value
-    );
+      ).value,
+    });
   }
 };
 export function dealWithDeleteValueOnHidden(item, runtimeModel, runtimeSchema) {
@@ -565,3 +538,84 @@ export function rewriteItemListeners(item, runtimeModel, runtimeSchema) {
   });
   item.ons = ons;
 }
+
+// export function generatorMixTypeValidate(
+//   item,
+//   runtimeModel,
+//   runtimeSchema,
+//   elFormRef
+// ) {
+//   // 只处理Mix类型的多对一格式，如果未配置prop择按照正常表单执行，只处理布局
+//   if (item.type === "Mix" && item.prop) {
+//     // 子表单指定 required 为 false，则不会触发验证
+//     if (item.required) {
+//       item.list.map((child) => {
+//         child.trigger = child.trigger || item.trigger;
+//         child.validator = child.validator
+//           ? (rule, value, callback) => {
+//               item.validator(
+//                 rule,
+//                 value,
+//                 callback,
+//                 child,
+//                 runtimeModel,
+//                 elFormRef
+//               );
+//             }
+//           : (rule, value, callback) => {
+//               callback();
+//               // 触发父级验证
+//               elFormRef.value.validateField(item.prop);
+//             };
+//         return child;
+//       });
+//       item.rules = [
+//         {
+//           trigger: rule.trigger,
+//           validator(rule, value, callback) {
+//             if (!value) {
+//               return callback(new Error(message));
+//             }
+//             // 只验证必填的子表单
+//             const requiredChildrenProps = item.list
+//               .filter((child) => child.required !== false)
+//               .map((child) => child.prop);
+//             const values = requiredChildrenProps.reduce((acc, prop) => {
+//               acc.push(value[prop]);
+//               return acc;
+//             }, []);
+//             if (item.validator) {
+//               item.validator(
+//                 rule,
+//                 value,
+//                 callback,
+//                 item,
+//                 runtimeModel,
+//                 elFormRef
+//               );
+//             } else if (!values?.length) {
+//               callback(new Error(message));
+//             } else if (
+//               values.some((v) => {
+//                 if (Array.isArray(v)) return !v?.length;
+//                 return [null, undefined, ""].includes(v);
+//               })
+//             ) {
+//               callback(new Error(message));
+//             } else {
+//               if (regexp) {
+//                 if (regexp.test(value)) {
+//                   callback();
+//                 } else {
+//                   callback(new Error(message));
+//                 }
+//               } else {
+//                 callback();
+//               }
+//             }
+//           },
+//         },
+//       ];
+//     }
+//   }
+// }

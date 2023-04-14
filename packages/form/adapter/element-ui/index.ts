@@ -18,6 +18,7 @@ import Cascader from "./Cascader/index.vue";
 import SelectTree from "./SelectTree/index.vue";
 import TimeSelect from "./TimeSelect/index.vue";
 import DatePicker from "./DatePicker/index.vue";
+import Mix from "./Mix";
 import { useFormRegister } from "@slacking/shared";
 
 export function elementUiRegister() {
@@ -35,6 +36,7 @@ export function elementUiRegister() {
     { name: "Slider", component: Slider },
     { name: "Rate", component: Rate },
     { name: "ColorPicker", component: ColorPicker },
+    { name: "Mix", component: Mix },
     // 以下name不可以修改
     { name: "Form", component: Form },
     { name: "FormItem", component: FormItem },

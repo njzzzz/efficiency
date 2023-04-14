@@ -9,6 +9,11 @@
       padding: 0;
     }
   }
+  .slacking-table-form-item {
+    .el-form-item__content {
+      display: flex;
+    }
+  }
   .el-table__cell {
     & > .cell {
       display: flex;

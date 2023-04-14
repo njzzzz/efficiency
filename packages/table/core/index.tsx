@@ -14,10 +14,13 @@ import {
   renderComponent,
   getGlobalTableConfig,
   flattenListWithDataIndex,
+  isUndef,
+  isNull,
+  sid,
 } from "@slacking/shared";
 import TableColumn from "../components/TableColumn";
 import { useHandleInit } from "./useHandleInit";
-import { FormItemWithMixRender, useForm } from "@slacking/form";
+import { FormItemRender, useForm } from "@slacking/form";
 import { cloneDeep } from "lodash-es";
 import { tableProps } from "./tableProps";
 import { genRuntimeFormProp } from "./useConfig";
@@ -39,27 +42,26 @@ const TableRender = defineComponent({
                   {...{
                     attrs: {
                       ...column,
-                      formSchema: attrs.formSchema,
+                      formSchema: attrs.formAttrs.formSchema,
                     },
                   }}
                   key={column.columnIndex}
                   scopedSlots={{
-                    default({ column }, { $index, row }) {
-                      const prop = genRuntimeFormProp({
-                        prop: column.originProp,
-                        dataIndex: $index,
-                        columnIndex: column.columnIndex,
-                        list: column.list,
-                      });
+                    default({ column }, args) {
+                      const { commonRowProp } = attrs.formAttrs.rowMap.get(
+                        args.row
+                      );
+                      const prop = `${attrs.prop}.${commonRowProp}.${column.prop}`;
                       const item = attrs.runtimeFormSchemaMap[prop];
                       return (
-                        <FormItemWithMixRender
+                        <FormItemRender
                           class={{
                             "is-readonly":
-                              item.readonly || attrs.formSchema.readonly,
+                              item.readonly ||
+                              attrs.formAttrs.formSchema.readonly,
                           }}
                           item={item}
-                        ></FormItemWithMixRender>
+                        ></FormItemRender>
                       );
                     },
                   }}
@@ -73,17 +75,10 @@ const TableRender = defineComponent({
 }) as any;
 
 export function useTable() {
-  const [Form, formModel, formRef, formSchema] = useForm();
-  // 表单配置
-  const runtimeFormSchema = ref<any>({});
-  // 表单数据
-  const runtimeFormModel = ref<any>({});
-  // 表格数据
-  const runtimeTableModel = ref<any>([]);
-  // 表格配置
-  const runtimeTableSchema = ref<any>({});
+  const [Form, formModel, formRef, runtimeFormSchema] = useForm();
+  const FormItem = renderComponent("FormItem");
   const runtimeFormSchemaMap = computed(() => {
-    return formSchema.value?.list?.reduce?.((acc, item) => {
+    return runtimeFormSchema.value?.list?.reduce?.((acc, item) => {
       if (item.prop) {
         acc[item.prop] = item;
       }
@@ -96,66 +91,91 @@ export function useTable() {
       const { schema, model } = toRefs(props);
       const attrs = useAttrs() as any;
       const slots = useSlots() as any;
-      const runtimeAttrs = computed(() => ({
-        ...runtimeTableSchema.value,
+      function flattenTableSchemaList(list, flattenedList = []) {
+        list.forEach((col) => {
+          if (col.subHeaders) {
+            flattenedList = [
+              ...flattenTableSchemaList(col.subHeaders),
+              ...flattenedList,
+            ];
+          } else {
+            flattenedList.push(col);
+          }
+        });
+        return flattenedList;
+      }
+      const tableAttrs = computed(() => ({
+        prop: "tableData",
+        ...schema.value,
         ...attrs,
       }));
-      const { genFormSchema, genFormModel } = useHandleInit({
-        runtimeAttrs,
+      const formAttrs = computed(() => {
+        const flattenedTableSchemaList = flattenTableSchemaList(
+          schema.value.list
+        );
+        // 带children的index错误问题
+        const rowMap = new WeakMap();
+        const formModel = {} as any;
+        const formPropMap = {} as any;
+        const formSchema = {
+          labelPosition: "left",
+          hideLabelText: getNotUndefinedValueByOrder([
+            schema.value.hideLabelText,
+            globalTableConfig.hideLabelText,
+            true,
+          ]),
+          hideRequiredAsterisk: getNotUndefinedValueByOrder([
+            schema.value.hideRequiredAsterisk,
+            globalTableConfig.hideRequiredAsterisk,
+            false,
+          ]),
+          hideHeaderRequiredAsterisk: getNotUndefinedValueByOrder([
+            schema.value.hideHeaderRequiredAsterisk,
+            globalTableConfig.hideHeaderRequiredAsterisk,
+            false,
+          ]),
+          ...schema.value,
+          list: [],
+        };
+        function dealWithSchemaAndModel(
+          list,
+          parentProp = null,
+          formSchemaList = []
+        ) {
+          list.forEach((row: any, rowIndex) => {
+            const propIndex = !isNull(parentProp)
+              ? `${parentProp}.children.${rowIndex}`
+              : `${rowIndex}`;
+            flattenedTableSchemaList.forEach((col: any) => {
+              const prop = `${tableAttrs.value.prop}.${propIndex}.${col.prop}`;
+              formModel[prop] = row[col.prop];
+              formPropMap[prop] = col;
+              rowMap.set(row, { commonRowProp: propIndex });
+              const formItem = {
+                ...col,
+                prop,
+              };
+              if (col.list) {
+                formItem.list = col.list.map((item) => {
+                  const prop = `${tableAttrs.value.prop}.${propIndex}.${item.prop}`;
+                  return {
+                    ...item,
+                    prop,
+                  };
+                });
+              }
+              formSchemaList.push(formItem);
+            });
+            if (row.children) {
+              dealWithSchemaAndModel(row.children, propIndex, formSchemaList);
+            }
+          });
+          return formSchemaList;
+        }
+
+        formSchema.list = dealWithSchemaAndModel(model.value);
+        return { formSchema, formModel, formPropMap, rowMap };
       });
-      watch(
-        [schema, model],
-        () => {
-          runtimeTableSchema.value = cloneDeep(schema.value);
-          runtimeTableModel.value = model.value;
-          const flattenedTableModel = flattenListWithDataIndex(
-            runtimeTableModel.value
-          );
-          const formSchemaList = genFormSchema({
-            runtimeTableSchema,
-            runtimeTableModel,
-            flattenedTableModel,
-          });
-          runtimeFormSchema.value = {
-            labelPosition: "left",
-            hideLabelText: getNotUndefinedValueByOrder([
-              runtimeTableSchema.value.hideLabelText,
-              globalTableConfig.hideLabelText,
-              true,
-            ]),
-            hideRequiredAsterisk: getNotUndefinedValueByOrder([
-              runtimeTableSchema.value.hideRequiredAsterisk,
-              globalTableConfig.hideRequiredAsterisk,
-              false,
-            ]),
-            hideHeaderRequiredAsterisk: getNotUndefinedValueByOrder([
-              runtimeTableSchema.value.hideHeaderRequiredAsterisk,
-              globalTableConfig.hideHeaderRequiredAsterisk,
-              false,
-            ]),
-            ...runtimeTableSchema.value,
-            list: formSchemaList,
-          };
-          runtimeFormModel.value = genFormModel({
-            runtimeFormSchema,
-            runtimeTableModel,
-            flattenedTableModel,
-          });
-        },
-        {
-          immediate: true,
-        }
-      );
-      watch(
-        runtimeTableModel,
-        () => {
-          emit("input", runtimeTableModel.value);
-        },
-        {
-          deep: true,
-          immediate: true,
-        }
-      );
 
       return () => {
         return (
@@ -163,21 +183,29 @@ export function useTable() {
             class="slacking-table"
             {...{
               attrs: {
-                schema: runtimeFormSchema.value,
-                model: runtimeFormModel.value,
+                schema: formAttrs.value.formSchema,
+                model: {
+                  tableData: model.value,
+                },
               },
             }}
             scopedSlots={{
-              render() {
+              default() {
                 return (
-                  <TableRender
-                    {...{ attrs: runtimeAttrs.value }}
-                    columns={runtimeTableSchema.value.list}
-                    data={runtimeTableModel.value}
-                    runtimeFormSchemaMap={runtimeFormSchemaMap.value}
-                    formSchema={formSchema.value}
-                    scopedSlots={slots}
-                  ></TableRender>
+                  <FormItem
+                    {...{ attrs: tableAttrs.value }}
+                    prop={tableAttrs.value.prop}
+                    class="slacking-table-form-item"
+                  >
+                    <TableRender
+                      {...{ attrs: tableAttrs.value }}
+                      columns={schema.value.list}
+                      data={model.value}
+                      formAttrs={formAttrs.value}
+                      runtimeFormSchemaMap={runtimeFormSchemaMap.value}
+                      scopedSlots={slots}
+                    ></TableRender>
+                  </FormItem>
                 );
               },
             }}
@@ -186,10 +214,5 @@ export function useTable() {
       };
     },
   });
-  return [InnerTable, formRef, runtimeTableModel, runtimeTableSchema] as [
-    any,
-    ComputedRef<any>,
-    Ref<any>,
-    Ref<any>
-  ];
+  return [InnerTable, formRef] as [any, ComputedRef<any>];
 }

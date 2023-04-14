@@ -1,6 +1,6 @@
 import { defineComponent, useAttrs } from "vue";
-import Mix from "./Mix";
-import FormItem from "./FormItem";
+import Mix from ".";
+import { FormItemRender } from "@slacking/form";
 const FormItemWithMix = defineComponent({
   setup() {
     const attrs = useAttrs() as any;
@@ -11,10 +11,10 @@ const FormItemWithMix = defineComponent({
           key={attrs.item.prop || attrs.item.list?.[0]?.prop}
         ></Mix>
       ) : (
-        <FormItem
+        <FormItemRender
           item={attrs.item}
           key={attrs.item.prop || attrs.item.list?.[0]?.prop}
-        ></FormItem>
+        ></FormItemRender>
       );
   },
 }) as any;

@@ -156,6 +156,16 @@ export interface FormItem {
   props?: Record<string, any>;
   // 在必填的情况下隐藏前面的必填星号
   hideRequiredAsterisk?: boolean;
+  readonlyFormatter?: (args: { item: any; model: any; value: any }) => any;
+  scopedSlots?: Record<
+    string,
+    (args: {
+      model: Ref<any>;
+      item: Ref<any>;
+      schema: Ref<Schema>;
+      dItem: Ref<any>;
+    }) => any
+  >;
   ons?: Record<
     string,
     (

@@ -1,8 +1,15 @@
 import { computed, defineComponent, inject, set, toRefs } from "vue";
-import { globalProviderKey } from "../core";
-import { useConfig } from "../core/useConfig";
-import { renderComponent, getGlobalFormConfig } from "@slacking/shared";
-import { getNotUndefinedValueByOrder } from "../core/utils";
+import {
+  globalProviderKey,
+  useLabel,
+  getNotUndefinedValueByOrder,
+  updateValue,
+} from "@slacking/form";
+import {
+  renderComponent,
+  getGlobalFormConfig,
+  getValueByPath,
+} from "@slacking/shared";
 const globalConfig = getGlobalFormConfig();
 export default defineComponent({
   props: {
@@ -14,7 +21,7 @@ export default defineComponent({
   setup(props) {
     const { model, schema } = inject(globalProviderKey) as any;
     const { item } = toRefs(props) as any;
-    const { label } = useConfig({ schema, item });
+    const { label } = useLabel({ schema, item });
     const FormItem = renderComponent("FormItem");
     if (!item.value?.type) {
       console.log(`未知类型${item.value?.type}`);
@@ -25,9 +32,7 @@ export default defineComponent({
         label: label.value,
       };
     });
-    const updateModelInput = (val) => {
-      set(model.value, item.value.prop, val);
-    };
+
     const hasInputEvent = computed(() => {
       return item.value?.ons?.input;
     });
@@ -35,7 +40,7 @@ export default defineComponent({
     const innerFormItemProps = computed(() => {
       return {
         // value可以被复写
-        value: model.value[item.value.prop],
+        value: getValueByPath(model.value, item.value.prop),
         ...item.value,
         clearable: getNotUndefinedValueByOrder([
           item.value.clearable,
@@ -63,10 +68,11 @@ export default defineComponent({
           schema.value.filterable,
           globalConfig.filterable,
         ]),
+        model: model.value,
         on: {
           ...(item.value?.ons ?? {}),
           input(val) {
-            updateModelInput(val);
+            updateValue({ prop: item.value.prop, model, value: val });
             hasInputEvent.value &&
               item.value.ons.input(val, { model, schema, item });
           },
@@ -96,9 +102,20 @@ export default defineComponent({
       ]);
     });
     const formItemSlots = computed(() => {
+      const slots = item.value.scopedSlots ?? {};
+      const scopedSlots = {};
+      Object.keys(slots).forEach((slotName) => {
+        scopedSlots[slotName] = () =>
+          slots[slotName]({
+            item,
+            schema,
+            model,
+            dItem: innerFormItemProps,
+          });
+      });
       return {
         label() {
-          return item.value.hideLabelText ? "" : item.value.label;
+          return item.value.hideLabelText ? "" : formItemProps.value.label;
         },
         default() {
           return (
@@ -109,9 +126,11 @@ export default defineComponent({
               props={innerFormItemProps.value}
               key={item.value.prop}
               on={innerFormItemProps.value.on}
+              item={innerFormItemProps.value}
             ></InnerFormItem.value>
           );
         },
+        ...scopedSlots,
       };
     });
     return () =>

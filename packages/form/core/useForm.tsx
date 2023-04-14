@@ -1,13 +1,5 @@
-import {
-  computed,
-  defineComponent,
-  ref,
-  ComputedRef,
-  onRenderTriggered,
-  useSlots,
-  watch,
-} from "vue";
-import Form from ".";
+import { computed, defineComponent, ref, ComputedRef, useSlots } from "vue";
+import { FormRender } from "@slacking/form";
 import { formProps } from "./formProps";
 export function useForm() {
   const _formRef = ref();
@@ -20,12 +12,12 @@ export function useForm() {
       const slots = useSlots();
       return () => {
         return (
-          <Form
+          <FormRender
             ref={_formRef}
             props={props}
             scopedSlots={slots}
             onInput={($event) => emit("input", $event)}
-          ></Form>
+          ></FormRender>
         );
       };
     },
