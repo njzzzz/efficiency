@@ -4,13 +4,11 @@ import {
   getPropByPath,
   getValueByPath,
   isUndef,
-} from "@slacking/shared";
-import {
   convertListValueLabel,
   convertListToMap,
   undefinedAndTrueAsTrue,
   getNotUndefinedValueByOrder,
-} from "@slacking/form";
+} from "@slacking/shared";
 const functionalProps = ["label"];
 const globalConfig = getGlobalFormConfig();
 export function realType(may) {

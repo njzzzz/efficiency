@@ -1,14 +1,10 @@
 import { computed, defineComponent, inject, set, toRefs } from "vue";
-import {
-  globalProviderKey,
-  useLabel,
-  getNotUndefinedValueByOrder,
-  updateValue,
-} from "@slacking/form";
+import { globalProviderKey, useLabel, updateValue } from "@slacking/form";
 import {
   renderComponent,
   getGlobalFormConfig,
   getValueByPath,
+  getNotUndefinedValueByOrder,
 } from "@slacking/shared";
 const globalConfig = getGlobalFormConfig();
 export default defineComponent({

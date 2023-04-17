@@ -285,7 +285,7 @@ const schema = ref(
 
 export default defineComponent({
   setup() {
-    const { Form: EffectForm, formData, formRef } = useForm();
+    const { Form: EffectForm, formData, formRef, getFullValue } = useForm();
     const {
       Form: AnotherEffectForm,
       formData: AnotherFormData,
@@ -306,6 +306,7 @@ export default defineComponent({
       console.log(formData);
       formRef.value.validate();
     };
+
     return () => (
       <div>
         <Button onClick={modSchema}>修改schema</Button>
@@ -318,6 +319,8 @@ export default defineComponent({
           }}
           onInput={(v) => {
             model.value = v;
+            const fullValue = getFullValue("yz");
+            console.log("【LOG】  fullValue ---->", fullValue);
           }}
           onUpdateSchema={(v) => {
             schema.value = v;

@@ -6,13 +6,16 @@ import {
   watch,
   useSlots,
   useListeners,
+  getCurrentInstance,
+  onBeforeMount,
 } from "vue";
 import { useHandleInit, FormItemRender } from "@slacking/form";
 import { renderComponent, mergeListeners } from "@slacking/shared";
 import { formProps } from "./formProps";
 import { cloneDeep } from "lodash-es";
 export const globalProviderKey = Symbol();
-export default defineComponent({
+
+const InnerForm = defineComponent({
   props: formProps,
   setup(props, { expose, emit }) {
     const slots = useSlots();
@@ -66,7 +69,6 @@ export default defineComponent({
       model: runtimeModel,
       schema: runtimeSchema,
     });
-
     return () => {
       return (
         <Form
@@ -92,3 +94,4 @@ export default defineComponent({
     };
   },
 }) as any;
+export default InnerForm;
