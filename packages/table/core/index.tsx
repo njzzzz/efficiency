@@ -223,6 +223,7 @@ export function useTable() {
                     }, {}),
                   };
                 }
+                // 表格多选增加的配置不用传给form
                 if (formItem.props?.type !== "selection") {
                   formSchemaList.push(formItem);
                 }
