@@ -122,6 +122,9 @@ export function isNull(val) {
 export function isArray(val) {
   return realTypeEqual(val, "Array");
 }
+export function isPlainObj(val) {
+  return realTypeEqual(val, "Object");
+}
 export const getValueByPath = function (object, prop) {
   prop = prop || "";
   const paths = prop.split(".");
@@ -193,4 +196,8 @@ export function mergeListeners(obj1 = {}, obj2 = {}) {
     };
   });
   return obj;
+}
+
+export function isEmptyObj(obj: unknown) {
+  return isPlainObj(obj) && Object.keys(obj).length === 0;
 }

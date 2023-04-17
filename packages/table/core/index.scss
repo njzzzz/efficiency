@@ -7,6 +7,7 @@
     // 去除带星号的表头padding
     .el-form-item__label {
       padding: 0;
+      color: inherit;
     }
   }
   .slacking-table-form-item {

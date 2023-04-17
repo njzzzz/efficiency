@@ -68,6 +68,7 @@ const InnerTableColumn = defineComponent({
         },
       };
     };
+    // scopedSlots={genCommonSlots(attrs)}
     const showOverflowTooltip = computed(() =>
       getNotUndefinedValueByOrder([
         attrs.showOverflowTooltip,
@@ -76,13 +77,18 @@ const InnerTableColumn = defineComponent({
         false,
       ])
     );
+    const dynamicSlots = computed(() => {
+      return runtimeAttrs.value.type === "selection"
+        ? {}
+        : { scopedSlots: genCommonSlots(attrs) };
+    });
     return () => (
       <TableColumn
         attrs={{
           showOverflowTooltip: showOverflowTooltip.value,
           ...runtimeAttrs.value,
         }}
-        scopedSlots={genCommonSlots(attrs)}
+        {...dynamicSlots.value}
       >
         {subHeaders.value.map((item, index) => {
           return (

@@ -13,7 +13,7 @@ import {
 } from "@slacking/form";
 
 export function initFormItem(item, runtimeModel, elFormRef, runtimeSchema) {
-  // 布局型item只初始化响应式数据即可
+  // 布局型(配置了list就算布局类型)item只初始化响应式数据即可
   if (item.list) {
     patchReactiveProps(item, runtimeSchema);
     initFormList(item.list, runtimeModel, elFormRef, runtimeSchema);

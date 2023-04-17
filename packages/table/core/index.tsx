@@ -8,7 +8,7 @@ import {
   useListeners,
   ref,
   watch,
-  reactive,
+  Ref,
 } from "vue";
 import {
   getNotUndefinedValueByOrder,
@@ -16,12 +16,19 @@ import {
   getGlobalTableConfig,
   isNull,
   mergeListeners,
+  sid,
 } from "@slacking/shared";
 import TableColumn from "../components/TableColumn";
-import { FormItemRender, useForm } from "@slacking/form";
+import {
+  DependOnOptions,
+  FormItem,
+  FormItemRender,
+  useForm,
+} from "@slacking/form";
 import { tableProps } from "./tableProps";
 import "./index.scss";
 import { useSelect } from "./useSelect";
+export const DEFAULT_TABLE_PROP = "tableData";
 
 const globalTableConfig = getGlobalTableConfig();
 const TableRender = defineComponent({
@@ -76,9 +83,10 @@ const TableRender = defineComponent({
     };
   },
 }) as any;
-
 export function useTable() {
   const tableRef = ref(null);
+  const formAttrs = ref<any>({});
+  const dependOnConfig = ref<any>({});
   const { Form, formRef, schema: runtimeFormSchema } = useForm();
   const FormItem = renderComponent("FormItem");
   const runtimeFormSchemaMap = computed(() => {
@@ -89,10 +97,14 @@ export function useTable() {
       return acc;
     }, {});
   });
+
+  const defineDependOn = (_dependOnConfig = {}) => {
+    dependOnConfig.value = _dependOnConfig;
+  };
+
   const InnerTable = defineComponent({
     props: tableProps,
     setup(props, { emit }) {
-      const formAttrs = ref<any>({});
       const { schema, model } = toRefs(props);
       const attrs = useAttrs() as any;
       const slots = useSlots() as any;
@@ -101,7 +113,6 @@ export function useTable() {
         const { children = "children" } = tableAttrs.value.treeProps ?? {};
         return children;
       });
-
       function flattenTableSchemaList(list, flattenedList = []) {
         list.forEach((col) => {
           if (col.subHeaders) {
@@ -116,10 +127,11 @@ export function useTable() {
         return flattenedList;
       }
       const tableAttrs = computed(() => ({
-        prop: "tableData",
+        prop: DEFAULT_TABLE_PROP,
         ...schema.value,
         ...attrs,
       }));
+
       watch(
         [schema, model],
         () => {
@@ -159,8 +171,11 @@ export function useTable() {
               const propIndex = !isNull(parentProp)
                 ? `${parentProp}.${childrenKey.value}.${rowIndex}`
                 : `${rowIndex}`;
-              flattenedTableSchemaList.forEach((col: any) => {
+              flattenedTableSchemaList.forEach((col: any, index) => {
+                // 布局类型(配置了list)可能不会有prop生成一个虚拟prop, 用于后面table渲染
+                col.prop = getNotUndefinedValueByOrder([col.prop, sid()]);
                 const prop = `${tableAttrs.value.prop}.${propIndex}.${col.prop}`;
+                const propWithoutTableProp = `${propIndex}.${col.prop}`;
                 formModel[prop] = row[col.prop];
                 formPropMap[prop] = col;
                 rowMap.set(row, { commonRowProp: propIndex });
@@ -170,6 +185,8 @@ export function useTable() {
                 };
                 if (col.list) {
                   formItem.list = col.list.map((item) => {
+                    // 布局类型(配置了list)可能不会有prop生成一个虚拟prop
+                    item.prop = getNotUndefinedValueByOrder([item.prop, sid()]);
                     const prop = `${tableAttrs.value.prop}.${propIndex}.${item.prop}`;
                     return {
                       ...item,
@@ -177,7 +194,38 @@ export function useTable() {
                     };
                   });
                 }
-                formSchemaList.push(formItem);
+
+                // dependOn映射
+                if (formItem.dependOn) {
+                  formItem.dependOn = Object.keys(formItem.dependOn).reduce(
+                    (acc, onProp) => {
+                      const dependOnOptions = formItem.dependOn[onProp];
+                      const prop = `${tableAttrs.value.prop}.${propIndex}.${onProp}`;
+                      acc[prop] = dependOnOptions;
+                      return acc;
+                    },
+                    {}
+                  );
+                }
+                // 自定义dependOn合并
+                const defineDependOns =
+                  dependOnConfig.value[propWithoutTableProp];
+                if (defineDependOns) {
+                  const _dependOn = formItem.dependOn ?? {};
+                  const defineDependOns =
+                    dependOnConfig.value[propWithoutTableProp];
+                  formItem.dependOn = {
+                    ..._dependOn,
+                    ...Object.keys(defineDependOns).reduce((acc, _prop) => {
+                      acc[`${tableAttrs.value.prop}.${_prop}`] =
+                        defineDependOns[_prop];
+                      return acc;
+                    }, {}),
+                  };
+                }
+                if (formItem.props?.type !== "selection") {
+                  formSchemaList.push(formItem);
+                }
               });
               if (row[childrenKey.value]) {
                 dealWithSchemaAndModel(
@@ -201,13 +249,15 @@ export function useTable() {
         { immediate: true }
       );
 
-      const { selectTableAttrsAndOns } = useSelect({
+      const { selectTableAttrsAndOns, multiple } = useSelect({
         tableAttrs,
         model,
         childrenKey,
         tableRef,
+        schema,
         emit,
       });
+
       return () => {
         return (
           <Form
@@ -216,7 +266,7 @@ export function useTable() {
               attrs: {
                 schema: formAttrs.value.formSchema,
                 model: {
-                  tableData: model.value,
+                  [tableAttrs.value.prop]: model.value,
                 },
               },
             }}
@@ -255,9 +305,17 @@ export function useTable() {
       };
     },
   });
-  return { Table: InnerTable, formRef, tableRef } as {
+  return {
+    Table: InnerTable,
+    formRef,
+    tableRef,
+    defineDependOn,
+  } as {
     Table: any;
     formRef: ComputedRef<any>;
     tableRef: ComputedRef<any>;
+    defineDependOn: (
+      dependOnConfig: Record<string, FormItem["dependOn"]>
+    ) => unknown;
   };
 }

@@ -8,6 +8,17 @@ import { TableColumn, Form, FormItem } from "element-ui";
 // element-ui 多级表头固定列bug，未修复前，需要保证子表头的width之和等于父表头的宽度
 const _columns = defineTableColumns([
   {
+    props: {
+      type: "selection",
+    },
+    // selectable(row, index) {
+    //   return index === 2;
+    // },
+    renderHeader() {
+      return 222;
+    },
+  },
+  {
     label: "姓名",
     fixed: true,
     sortable: true,
@@ -40,9 +51,10 @@ const _columns = defineTableColumns([
         prop: "name-1",
         label: "姓名-1",
         required: true,
-        defaultValue: 1111,
-        readonlyFormatter() {
-          return 2222222;
+        dependOn: {
+          "name-0"({ val, updateValue }) {
+            updateValue(val);
+          },
         },
         width: 200,
       },
@@ -106,7 +118,9 @@ const _columns = defineTableColumns([
     // },
   },
 ]);
-const _data = [
+const _data = [{ id: 1 }, { id: 2 }];
+//element tree型表格多选存在bug暂未修复
+const _treeData = [
   {
     id: "0",
     age2: "1",
@@ -158,8 +172,17 @@ export default defineComponent({
   components: { TableColumn, Form, FormItem },
   setup() {
     const model = ref(_data);
-    const { Table, formRef } = useTable();
+    const { Table, formRef, defineDependOn } = useTable();
     const selectModel = ref({});
+    //非同一行dependOn配置
+    //例子：第一行的age2依赖于第二行的age2
+    defineDependOn({
+      "0.age2": {
+        "1.age2"({ val, updateValue }) {
+          updateValue(val);
+        },
+      },
+    });
     const schema = ref(
       defineTableSchema({
         readonly: false,
@@ -185,18 +208,25 @@ export default defineComponent({
       //   { name: 1, age: "2" },
       // ];
     };
-
+    const singleSelectValue = ref("0");
+    const multiSelectValue = ref([]);
     return () => (
       <div>
         <div onClick={click}>表单验证</div>
+        <div>{multiSelectValue.value}</div>
         <Table
-          multiple={false}
+          value={multiSelectValue.value}
+          multiple={true}
           props={{
             model: model.value,
           }}
           schema={schema.value}
           style="width: 100%"
           on={{
+            input: (val) => {
+              console.log(val);
+              multiSelectValue.value = val;
+            },
             "row-click"(args) {
               console.log("row-click", args);
             },

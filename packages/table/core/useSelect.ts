@@ -2,7 +2,14 @@ import { convertListToMap } from "@slacking/shared";
 import { isUndef } from "@slacking/shared";
 import { computed, onMounted, watch } from "vue";
 
-export function useSelect({ tableAttrs, model, childrenKey, tableRef, emit }) {
+export function useSelect({
+  tableAttrs,
+  model,
+  childrenKey,
+  tableRef,
+  schema,
+  emit,
+}) {
   const multiple = computed(() => {
     return !!tableAttrs.value.multiple;
   });
@@ -10,6 +17,7 @@ export function useSelect({ tableAttrs, model, childrenKey, tableRef, emit }) {
   // 传入rowKey的情况下，默认使用rowKey去tableData里获取对象后调用table方法选中
   // 不传则默认为传入的值为对象或数组
   const hasRowKey = computed(() => !isUndef(tableAttrs.value.rowKey));
+  const rowKey = computed(() => tableAttrs.value.rowKey);
   const modelMap = computed(() => {
     return convertListToMap(
       model.value ?? [],
@@ -23,7 +31,7 @@ export function useSelect({ tableAttrs, model, childrenKey, tableRef, emit }) {
 
   const value = computed({
     get() {
-      return multiple.value ? 1 : tableAttrs.value.value;
+      return tableAttrs.value.value;
     },
     set(v) {
       emit("input", v);
@@ -31,6 +39,7 @@ export function useSelect({ tableAttrs, model, childrenKey, tableRef, emit }) {
   });
   const setCurrentRow = computed(() => tableRef.value?.setCurrentRow);
   const toggleRowSelection = computed(() => tableRef.value?.toggleRowSelection);
+  const clearSelection = computed(() => tableRef.value?.clearSelection);
   onMounted(() => {
     // 开启选择必传multiple
     if (isSelect.value) {
@@ -38,7 +47,8 @@ export function useSelect({ tableAttrs, model, childrenKey, tableRef, emit }) {
       watch(
         value,
         (v) => {
-          if (hasRowKey) {
+          clearSelection.value();
+          if (hasRowKey.value) {
             if (multiple.value) {
               v.forEach((key) => {
                 const row = modelMap.value[key] ?? null;
@@ -62,12 +72,54 @@ export function useSelect({ tableAttrs, model, childrenKey, tableRef, emit }) {
       );
     }
   });
+  const getRowValue = (row) => {
+    return hasRowKey.value ? row[rowKey.value] : row;
+  };
+  const compareIsSameRow = (row, selectRow) => {
+    return row === getRowValue(selectRow);
+  };
+  const compareIsDiffRow = (row, selectRow) => {
+    return row !== getRowValue(selectRow);
+  };
   const selectTableAttrsAndOns = computed(() => {
     if (isSelect.value) {
       if (multiple.value) {
         return {
           attrs: {},
-          on: {},
+          on: {
+            select(selection, row) {
+              const isChecked = value.value.filter((item) =>
+                compareIsSameRow(item, row)
+              );
+              if (isChecked.length) {
+                value.value = value.value.filter((item) =>
+                  compareIsDiffRow(item, row)
+                );
+              } else {
+                value.value = [...value.value, getRowValue(row)];
+              }
+            },
+            "select-all"(selection) {
+              if (selection.length) {
+                const selectedValueList = value.value;
+                const selected = value.value.length
+                  ? model.value.filter(
+                      (tableItem) =>
+                        !selectedValueList.includes(getRowValue(tableItem))
+                    )
+                  : model.value;
+                value.value = [...value.value, ...selected.map(getRowValue)];
+              } else {
+                const excludeKeys = model.value.map((tableItem) =>
+                  getRowValue(tableItem)
+                );
+                const selected = value.value.filter(
+                  (item) => !excludeKeys.includes(item)
+                );
+                value.value = selected;
+              }
+            },
+          },
         };
       } else {
         return {
@@ -76,9 +128,7 @@ export function useSelect({ tableAttrs, model, childrenKey, tableRef, emit }) {
           },
           on: {
             "current-change"(val) {
-              console.log("current-change3", val);
-
-              value.value = val;
+              value.value = hasRowKey.value ? val[rowKey.value] : val;
             },
           },
         };
@@ -88,18 +138,7 @@ export function useSelect({ tableAttrs, model, childrenKey, tableRef, emit }) {
     }
   });
 
-  //   const singleSelectValue = computed({
-  //     get() {
-  //       return tableAttrs.value.value;
-  //     },
-  //     set(v) {
-  //       emits("input", v);
-  //     },
-  //   });
-  //   const multipleSelectValue = ref([]);
   return {
-    // singleSelectValue,
-    // multipleSelectValue,
     multiple,
     selectTableAttrsAndOns,
   };

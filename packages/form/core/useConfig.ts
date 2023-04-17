@@ -225,6 +225,9 @@ export function generatorDependOn(
   runtimeSchema,
   deleteValueOnHiddenFunc
 ) {
+  const _updateValue = (val) => {
+    updateValue({ prop: item.prop, model: runtimeModel, value: val });
+  };
   const unWatches = [];
   // 收集所有callback 在后续做展示隐藏功能时，需要等所有watch都执行完成才能进行展示隐藏的判断
   if (item.dependOn) {
@@ -243,6 +246,7 @@ export function generatorDependOn(
                 model: runtimeModel,
                 schema: runtimeSchema,
                 item,
+                updateValue: _updateValue,
               })
             ).then(() => {
               deleteValueOnHiddenFunc(item, runtimeModel, runtimeSchema);
@@ -263,6 +267,7 @@ export function generatorDependOn(
                 model: runtimeModel,
                 schema: runtimeSchema,
                 item,
+                updateValue: _updateValue,
               })
             ).then(() => {
               deleteValueOnHiddenFunc(item, runtimeModel, runtimeSchema);
@@ -531,7 +536,15 @@ export function rewriteItemListeners(item, runtimeModel, runtimeSchema) {
     ons[key] = (...resets) => {
       const mayHasInnerArs = resets.at(-1)?.model !== undefined;
       if (!mayHasInnerArs) {
-        resets.push({ model: runtimeModel, item, schema: runtimeSchema });
+        const _updateValue = (val) => {
+          updateValue({ prop: item.prop, model: runtimeModel, value: val });
+        };
+        resets.push({
+          model: runtimeModel,
+          item,
+          schema: runtimeSchema,
+          updateValue: _updateValue,
+        });
       }
       originOn(...resets);
     };

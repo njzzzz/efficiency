@@ -123,6 +123,7 @@ export interface DependOnOptions {
     item: any;
     schema: Ref<any>;
     oldVal: any;
+    updateValue: (val: any) => void;
   }) => any;
   immediate?: boolean;
   deep?: boolean;
@@ -171,7 +172,12 @@ export interface FormItem {
     string,
     (
       val: any,
-      opts: { model: Ref<any>; item: Ref<any>; schema: Ref<Schema> }
+      opts: {
+        model: Ref<any>;
+        item: Ref<any>;
+        schema: Ref<Schema>;
+        updateValue: (val: any) => void;
+      }
     ) => unknown
   >;
   validator?: (

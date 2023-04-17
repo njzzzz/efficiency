@@ -22,7 +22,3 @@ export function defineTableSchema(schema: Partial<TableSchema>) {
 export function defineTableColumns(columns: Partial<TableColumn>[]) {
   return columns;
 }
-
-export function defineDependOn(dependOn) {
-  return dependOn;
-}
