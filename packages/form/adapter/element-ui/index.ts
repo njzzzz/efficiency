@@ -36,7 +36,13 @@ export function elementUiRegister() {
     { name: "Slider", component: Slider },
     { name: "Rate", component: Rate },
     { name: "ColorPicker", component: ColorPicker },
-    { name: "Mix", component: Mix },
+    // 只做布局使用
+    {
+      name: "Mix",
+      component: Mix,
+      readonlyComponent: Mix,
+      disabledComponent: Mix,
+    },
     // 以下name不可以修改
     { name: "Form", component: Form },
     { name: "FormItem", component: FormItem },

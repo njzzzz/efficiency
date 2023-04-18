@@ -1,0 +1,15 @@
+.mix-type--no-label {
+  & > .el-form-item__content {
+    margin-left: 0 !important;
+    width: 100%;
+  }
+}
+.el-form--inline {
+  .mix-type--no-label {
+    .el-col {
+      .el-form-item {
+        display: flex;
+      }
+    }
+  }
+}

@@ -74,8 +74,6 @@ const schema = reactive(
     inline: false,
     gutter: 16,
     symbol: "：",
-    withObjectValue: true, // 带options的表单项是否需要抛出完整的值以_${prop}为键名
-    independent: true, // 是否深克隆model和schema，这样会使相同引用数据的form互不影响
     list: [
       {
         type: "AnyInput",

@@ -112,7 +112,9 @@ export function realType(may) {
 export function realTypeEqual(may, type) {
   return realType(may) === `[object ${type}]`;
 }
-
+export function isEmptyInput(val) {
+  return [null, undefined, ""].includes(val);
+}
 export function isUndef(val) {
   return realTypeEqual(val, "Undefined");
 }

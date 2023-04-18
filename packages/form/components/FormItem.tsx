@@ -1,10 +1,11 @@
-import { computed, defineComponent, inject, set, toRefs } from "vue";
+import { computed, defineComponent, inject, toRefs } from "vue";
 import { globalProviderKey, useLabel, updateValue } from "@slacking/form";
 import {
   renderComponent,
   getGlobalFormConfig,
   getValueByPath,
   getNotUndefinedValueByOrder,
+  isEmptyInput,
 } from "@slacking/shared";
 const globalConfig = getGlobalFormConfig();
 export default defineComponent({
@@ -64,7 +65,6 @@ export default defineComponent({
           schema.value.filterable,
           globalConfig.filterable,
         ]),
-        model: model.value,
         on: {
           ...(item.value?.ons ?? {}),
           input(val) {
@@ -73,6 +73,8 @@ export default defineComponent({
               item.value.ons.input(val, { model, schema, item });
           },
         },
+        // 与配置重名的属性存在props中
+        ...(item.value.props ?? {}),
       };
     });
     const InnerFormItem = computed(() =>
@@ -136,6 +138,8 @@ export default defineComponent({
           key={item.value.prop}
           class={{
             "is-no-asterisk": isNoAsterisk.value,
+            "mix-type--no-label":
+              formItemProps.value.type === "Mix" && isEmptyInput(label.value),
           }}
           scopedSlots={formItemSlots.value}
         ></FormItem>

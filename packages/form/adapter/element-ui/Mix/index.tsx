@@ -39,6 +39,9 @@ const Mix = defineComponent({
             ...item.value,
             type: "flex",
           }}
+          style={{
+            width: "100%",
+          }}
         >
           {item.value.list.map((item, index) => {
             return item.show !== false ? (

@@ -5,14 +5,25 @@ Vue.use(VueRouter);
 
 const routes = [
   {
-    path: "/form",
-    name: "form",
-    component: () => import("@/views/form"),
+    path: "/",
+    component: () => import("@/components/Layout/Sidebar.vue"),
+    children: [
+      {
+        path: "/form",
+        name: "form",
+        component: () => import("@/views/form"),
+      },
+      {
+        path: "/table-form",
+        name: "tableForm",
+        component: () => import("@/views/table"),
+      },
+    ],
+    redirect: "/form",
   },
   {
-    path: "/table",
-    name: "table",
-    component: () => import("@/views/table"),
+    path: "*",
+    redirect: "/form",
   },
 ];
 

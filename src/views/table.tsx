@@ -1,10 +1,10 @@
-import { defineComponent, ref, set } from "vue";
+import { defineComponent, inject, ref, set } from "vue";
 import {
   useTable,
   defineTableColumns,
   defineTableSchema,
 } from "@slacking/table";
-import { TableColumn, Form, FormItem } from "element-ui";
+import { TableColumn, Form, FormItem, Button } from "element-ui";
 // element-ui 多级表头固定列bug，未修复前，需要保证子表头的width之和等于父表头的宽度
 const _columns = defineTableColumns([
   {
@@ -172,6 +172,7 @@ export default defineComponent({
   components: { TableColumn, Form, FormItem },
   setup() {
     const model = ref(_data);
+    const { formModel = { value: {} } } = inject("TEST_FORM") as any;
     const { Table, formRef, defineDependOn } = useTable();
     const selectModel = ref({});
     //非同一行dependOn配置
@@ -189,31 +190,17 @@ export default defineComponent({
         list: _columns,
         rowKey: "id",
         showOverflowTooltip: true,
-        hideHeaderRequiredAsterisk: true,
+        hideRequiredAsterisk: true,
+        hideLabelText: true,
       })
     );
     const click = () => {
       formRef.value.validate();
-      // model.value = [
-      //   { name: 1, age: "2" },
-      //   { name: 1, age: "2" },
-      //   { name: 1, age: "2" },
-      //   { name: 1, age: "2" },
-      //   { name: 1, age: "2" },
-      //   { name: 1, age: "2" },
-      //   { name: 1, age: "2" },
-      //   { name: 1, age: "2" },
-      //   { name: 1, age: "2" },
-      //   { name: 1, age: "2" },
-      //   { name: 1, age: "2" },
-      // ];
     };
     const singleSelectValue = ref("0");
     const multiSelectValue = ref([]);
     return () => (
       <div>
-        <div onClick={click}>表单验证</div>
-        <div>{multiSelectValue.value}</div>
         <Table
           value={multiSelectValue.value}
           multiple={true}
@@ -243,6 +230,9 @@ export default defineComponent({
             ],
           }}
         ></Table>
+        <Button onClick={click} type="primary">
+          提交
+        </Button>
       </div>
     );
   },

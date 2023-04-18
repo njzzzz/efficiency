@@ -6,15 +6,14 @@ import {
   watch,
   useSlots,
   useListeners,
-  getCurrentInstance,
-  onBeforeMount,
+  onRenderTriggered,
 } from "vue";
 import { useHandleInit, FormItemRender } from "@slacking/form";
 import { renderComponent, mergeListeners } from "@slacking/shared";
 import { formProps } from "./formProps";
 import { cloneDeep } from "lodash-es";
+import "./index.scss";
 export const globalProviderKey = Symbol();
-
 const InnerForm = defineComponent({
   props: formProps,
   setup(props, { expose, emit }) {
@@ -70,6 +69,7 @@ const InnerForm = defineComponent({
       schema: runtimeSchema,
     });
     return () => {
+      console.count("render times");
       return (
         <Form
           ref={elFormRef}

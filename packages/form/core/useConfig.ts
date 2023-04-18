@@ -283,19 +283,20 @@ export function generatorDependOn(
 }
 
 export function generatorOptions(item, runtimeModel, runtimeSchema) {
-  const { autoOptionProps, optionProps, value, label, children, disabled } =
-    dealOptionProps(item, runtimeSchema);
+  const { autoOptionProps, value, label, children, disabled } = dealOptionProps(
+    item,
+    runtimeSchema
+  );
   if (item.asyncOptions) {
     item.asyncOptions(runtimeModel, item).then((opts) => {
-      item.options =
-        autoOptionProps && optionProps
-          ? convertListValueLabel(opts, {
-              value,
-              label,
-              children,
-              disabled,
-            })
-          : opts;
+      item.options = autoOptionProps
+        ? convertListValueLabel(opts, {
+            value,
+            label,
+            children,
+            disabled,
+          })
+        : opts;
     });
   }
 }
@@ -341,6 +342,9 @@ export function dealWithMixTypeValue(item, runtimeModel) {
 export function patchReactiveProps(item, runtimeSchema) {
   if (!Reflect.has(item, "options")) {
     set(item, "options", []);
+  }
+  if (!Reflect.has(item, "__optionsMap")) {
+    set(item, "__optionsMap", {});
   }
   if (!Reflect.has(item, "show")) {
     set(item, "show", true);
@@ -466,7 +470,7 @@ export function generatorOptionsByOptionProps(
 ) {
   const { autoOptionProps, optionProps, value, label, children, disabled } =
     dealOptionProps(item, runtimeSchema);
-  if (optionProps && autoOptionProps) {
+  if (autoOptionProps) {
     watchEffect(() => {
       if (item?.options?.length) {
         item.options = convertListValueLabel(item.options, {

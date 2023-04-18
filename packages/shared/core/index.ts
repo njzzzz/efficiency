@@ -1,3 +1,4 @@
+import { Ref } from "vue";
 import ReadonlyComponent from "./ReadonlyComponent";
 const components = {};
 const globalFormConfig: GlobalFormConfig = {
@@ -87,6 +88,13 @@ interface GlobalFormConfig {
   defaultRender: string;
   hideLabelText: boolean;
   hideRequiredAsterisk: boolean;
+  readonlyFormatter?: (args: {
+    item: any;
+    model: Ref<any>;
+    schema: Ref<any>;
+    value: any;
+    readonlyRender: () => unknown;
+  }) => any;
 }
 interface GlobalTableConfig {
   // 表单型表格是否带label

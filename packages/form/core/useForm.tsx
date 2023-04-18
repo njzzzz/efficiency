@@ -31,6 +31,7 @@ export function useForm() {
       ? originValue.map((val) => __optionsMap[val])
       : __optionsMap[originValue];
   }
+
   const EffectForm = defineComponent({
     props: formProps,
     setup(props, { emit }) {
