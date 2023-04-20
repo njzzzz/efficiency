@@ -6,7 +6,6 @@ import {
   watch,
   useSlots,
   useListeners,
-  onRenderTriggered,
 } from "vue";
 import { useHandleInit, FormItemRender } from "@slacking/form";
 import { renderComponent, mergeListeners } from "@slacking/shared";

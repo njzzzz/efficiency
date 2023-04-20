@@ -54,6 +54,7 @@ const Mix = defineComponent({
                   style={{
                     marginBottom: 0,
                   }}
+                  Mix={Mix}
                 ></FormItemWithMix>
               </Col>
             ) : null;

@@ -1,8 +1,10 @@
 import { computed, defineComponent, inject, useAttrs } from "vue";
-import { isArray } from "@slacking/shared";
+import {
+  isArray,
+  getGlobalFormConfig,
+  getNotUndefinedValueByOrder,
+} from "@slacking/shared";
 import { globalProviderKey } from "@slacking/form";
-import { getNotUndefinedValueByOrder } from "utils";
-import { getGlobalFormConfig } from "core";
 export default defineComponent({
   props: {
     value: {

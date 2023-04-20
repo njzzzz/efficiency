@@ -1,9 +1,10 @@
 import { defineComponent, useAttrs } from "vue";
-import Mix from ".";
+// import Mix from ".";
 import { FormItemRender } from "@slacking/form";
 const FormItemWithMix = defineComponent({
   setup() {
     const attrs = useAttrs() as any;
+    const Mix = attrs.Mix;
     return () =>
       attrs.item.type === "Mix" ? (
         <Mix
