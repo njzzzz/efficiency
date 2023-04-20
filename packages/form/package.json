@@ -1,6 +1,6 @@
 {
   "name": "@slacking/form",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "keywords": [],
   "author": "njzzz",
@@ -34,6 +34,6 @@
   "homepage": "https://github.com/njzzzz/efficiency#readme",
   "license": "MIT",
   "devDependencies": {
-    "@slacking/shared": "workspace:^0.0.1"
+    "@slacking/shared": "workspace:^1.0.4"
   }
 }

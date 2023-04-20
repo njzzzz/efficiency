@@ -8,11 +8,14 @@ import {
   useListeners,
 } from "vue";
 import { useHandleInit, FormItemRender } from "@slacking/form";
-import { renderComponent, mergeListeners } from "@slacking/shared";
+import {
+  renderComponent,
+  mergeListeners,
+  globalFormProviderKey,
+} from "@slacking/shared";
 import { formProps } from "./formProps";
 import { cloneDeep } from "lodash-es";
 import "./index.scss";
-export const globalProviderKey = Symbol();
 const InnerForm = defineComponent({
   props: formProps,
   setup(props, { expose, emit }) {
@@ -24,7 +27,7 @@ const InnerForm = defineComponent({
     const runtimeModel = ref<any>({});
     const runtimeSchema = ref<any>({});
     const { init } = useHandleInit();
-    provide(globalProviderKey, {
+    provide(globalFormProviderKey, {
       model: runtimeModel,
       schema: runtimeSchema,
     });

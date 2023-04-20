@@ -1,10 +1,11 @@
 import { computed, defineComponent, inject, toRefs } from "vue";
-import { globalProviderKey, useLabel, updateValue } from "@slacking/form";
+import { useLabel, updateValue } from "@slacking/form";
 import {
   renderComponent,
   getGlobalFormConfig,
   getValueByPath,
   getNotUndefinedValueByOrder,
+  globalFormProviderKey,
   isEmptyInput,
 } from "@slacking/shared";
 const globalConfig = getGlobalFormConfig();
@@ -16,7 +17,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { model, schema } = inject(globalProviderKey) as any;
+    const { model, schema } = inject(globalFormProviderKey) as any;
     const { item } = toRefs(props) as any;
     const { label } = useLabel({ schema, item });
     const FormItem = renderComponent("FormItem");

@@ -3,8 +3,8 @@ import {
   isArray,
   getGlobalFormConfig,
   getNotUndefinedValueByOrder,
+  globalFormProviderKey,
 } from "@slacking/shared";
-import { globalProviderKey } from "@slacking/form";
 export default defineComponent({
   props: {
     value: {
@@ -14,7 +14,7 @@ export default defineComponent({
   },
   setup(props) {
     const attrs = useAttrs() as any;
-    const { model, schema } = inject(globalProviderKey) as any;
+    const { model, schema } = inject(globalFormProviderKey) as any;
 
     function readonlyRender() {
       if (isArray(props.value)) {

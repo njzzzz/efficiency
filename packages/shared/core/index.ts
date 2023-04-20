@@ -70,6 +70,7 @@ export function getGlobalTableConfig() {
 export function getRegisterComponents() {
   return components;
 }
+export const globalFormProviderKey = Symbol();
 interface GlobalFormConfig {
   maxLen: number | false;
   minLen: number | false;
