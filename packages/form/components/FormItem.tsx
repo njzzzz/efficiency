@@ -135,6 +135,12 @@ export default defineComponent({
     return () =>
       item.value?.show ? (
         <FormItem
+          {...{
+            attrs: {
+              ...formItemProps.value,
+              ...(formItemProps.value.formItemAttrs ?? {}),
+            },
+          }}
           props={formItemProps.value}
           key={item.value.prop}
           class={{

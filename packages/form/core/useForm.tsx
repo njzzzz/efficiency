@@ -5,6 +5,7 @@ import {
   ComputedRef,
   useSlots,
   useListeners,
+  useAttrs,
 } from "vue";
 import { FormRender } from "@slacking/form";
 import { convertListToMap, isArray } from "@slacking/shared";
@@ -37,9 +38,11 @@ export function useForm() {
     setup(props, { emit }) {
       const slots = useSlots();
       const listeners = useListeners();
+      const attrs = useAttrs();
       return () => {
         return (
           <FormRender
+            {...{ attrs }}
             ref={_formRef}
             props={props}
             scopedSlots={slots}

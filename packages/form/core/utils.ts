@@ -56,6 +56,7 @@ export interface DependOnOptions {
   deep?: boolean;
   flush?: "pre" | "post" | "sync";
 }
+export interface ExtendedFormItem {}
 export interface FormItem {
   type?: string;
   prop?: string;
@@ -83,6 +84,10 @@ export interface FormItem {
   options?: any[];
   hideLabelText?: boolean;
   props?: Record<string, any>;
+  // 优先级比直接平铺属性高
+  colAttrs?: Record<string, any>;
+  // 优先级比直接平铺属性高
+  formItemAttrs?: Record<string, any>;
   // 在必填的情况下隐藏前面的必填星号
   hideRequiredAsterisk?: boolean;
   readonlyFormatter?: (args: {
@@ -127,5 +132,5 @@ export interface FormItem {
 }
 
 interface Schema extends Partial<Form> {
-  list: FormItem[];
+  list: (FormItem & ExtendedFormItem)[];
 }

@@ -75,6 +75,13 @@ const InnerForm = defineComponent({
       return (
         <Form
           ref={elFormRef}
+          {...{
+            attrs: {
+              model: runtimeModel.value,
+              ...runtimeSchema.value,
+              hideRequiredAsterisk: false,
+            },
+          }}
           props={{
             model: runtimeModel.value,
             ...runtimeSchema.value,

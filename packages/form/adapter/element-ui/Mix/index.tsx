@@ -46,6 +46,7 @@ const Mix = defineComponent({
           {item.value.list.map((item, index) => {
             return item.show !== false ? (
               <Col
+                {...{ attrs: { ...item, ...(item.colAttrs ?? {}) } }}
                 props={{ span: getSpan(item.span), ...item }}
                 key={item.prop || index}
               >

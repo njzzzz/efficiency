@@ -1,6 +1,6 @@
 import { computed, defineComponent, inject, reactive, ref } from "vue";
 import { useForm, defineFormSchema, FormItemRender } from "@slacking/form";
-import { Button, Cascader, Input } from "element-ui";
+import { Button, Cascader } from "element-ui";
 import { useConfig } from "./config";
 const { cascaderOptions } = useConfig();
 const sleep = (res = [], timing = 2000) => {
@@ -18,6 +18,7 @@ export default defineComponent({
       defineFormSchema({
         ...formModel.value,
         list: [
+          { type: "Input" },
           {
             type: "Select",
             label: "Select",
