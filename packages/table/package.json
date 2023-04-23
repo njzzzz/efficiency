@@ -1,6 +1,6 @@
 {
   "name": "@slacking/table",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "scripts": {},
   "keywords": [],
   "author": "njzzz",
@@ -26,7 +26,7 @@
     "./dist/*": "./dist/*"
   },
   "description": "",
-  "dependencies": {
+  "devDependencies": {
     "@slacking/shared": "workspace:^1.0.4",
     "@slacking/form": "workspace:^1.0.4"
   }
