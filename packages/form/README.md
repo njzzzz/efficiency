@@ -1,6 +1,4 @@
-### 提高开发效率的常用集合
-
-## Form
+### @slacking/form
 
 配置式表单，支持自定义注册表单组件，单个组件支持自定义 disabled, readonly，和正常状态下的展示组件，目前支持 vue2  
 支持 typescript，暂时只做代码提示用，具体参数含义可进类型定义文件看  
@@ -38,11 +36,11 @@ import { useFormRegister } from "@slacking/form";
 const { registerComponents } = useFormRegister();
 
 registerComponents([
-  { name: "AnyInput", component: Input },
-  { name: "AnyInputNumber", component: InputNumber },
-  { name: "AnyRadio", component: Radio },
+  { name: "Input", component: Input },
+  { name: "InputNumber", component: InputNumber },
+  { name: "Radio", component: Radio },
   {
-    name: "AnySelect",
+    name: "Select",
     component: Select,
     disabledComponent: DisabledSelect,
     readonlyComponent: ReadonlySelect,
@@ -74,11 +72,9 @@ const schema = reactive(
     inline: false,
     gutter: 16,
     symbol: "：",
-    withObjectValue: true, // 带options的表单项是否需要抛出完整的值以_${prop}为键名
-    independent: true, // 是否深克隆model和schema，这样会使相同引用数据的form互不影响
     list: [
       {
-        type: "AnyInput",
+        type: "Input",
         prop: "name",
         label: "姓名",
         minLen: 3,
@@ -92,9 +88,9 @@ const schema = reactive(
         //   callback(new Error("请输入姓名"));
         // },
       },
-      { type: "AnyInput", prop: "sex", label: "性别" },
+      { type: "Input", prop: "sex", label: "性别" },
       {
-        type: "AnySelect",
+        type: "Select",
         prop: "lover",
         label: "爱好",
         dependOn: {
@@ -113,7 +109,7 @@ const schema = reactive(
         },
       },
       {
-        type: "AnyInputNumber",
+        type: "InputNumber",
         prop: "age",
         label: "年龄",
         dependOn: {
@@ -123,14 +119,14 @@ const schema = reactive(
               const random = Math.random();
               model.value.sex = val;
               item.label = random.toString();
-              item.type = random > 0.5 ? "AnyInputNumber" : "AnyInput";
+              item.type = random > 0.5 ? "InputNumber" : "Input";
             },
             immediate: false,
           },
         },
       },
       {
-        type: "AnyInput",
+        type: "Input",
         prop: "remark",
         label: "备注",
         dependOn: {
@@ -153,7 +149,7 @@ const schema = reactive(
         prop: "otherName",
         list: [
           {
-            type: "AnySelect",
+            type: "Select",
             prop: "name1",
             span: 3,
             defaultValue: [],
@@ -238,7 +234,7 @@ export default defineComponent({
 ### 快速使用内置的 element-ui 注册组件
 
 ```js
-import { elementUiRegister } from "@slacking/form/src/element-ui";
+import { elementUiRegister } from "@slacking/adapter";
 elementUiRegister();
 
 // 相当于注册了以下类型组件
