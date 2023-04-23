@@ -4,7 +4,7 @@ import "./index.scss";
 import "element-ui/lib/theme-chalk/index.css";
 import App from "./App.vue";
 import router from "./router";
-import { elementUiRegister } from "@slacking/form";
+import { elementUiRegister } from "@slacking/adapter";
 import "./index.scss";
 Vue.config.productionTip = false;
 elementUiRegister();

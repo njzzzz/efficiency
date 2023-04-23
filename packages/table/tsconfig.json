@@ -16,15 +16,12 @@
   "include": [
     "../../src/shims-vue.d.ts",
     "../../src/shims-tsx.d.ts",
-    "components/**/*.ts",
-    "components/**/*.tsx",
-    "components/**/*.vue",
-    "adapter/**/*.vue",
-    "adapter/**/*.ts",
-    "adapter/**/*.tsx",
-    "core/**/*.vue",
-    "core/**/*.ts",
-    "core/**/*.tsx",
-    "index.ts"
+    "./components/**/*.ts",
+    "./components/**/*.tsx",
+    "./components/**/*.vue",
+    "./core/**/*.vue",
+    "./core/**/*.ts",
+    "./core/**/*.tsx",
+    "./index.ts"
   ]
 }

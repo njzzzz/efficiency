@@ -20,7 +20,6 @@ import TimeSelect from "./TimeSelect/index.vue";
 import DatePicker from "./DatePicker/index.vue";
 import Mix from "./Mix";
 import { useFormRegister } from "@slacking/shared";
-
 export function elementUiRegister() {
   const { registerComponents } = useFormRegister();
   registerComponents([
@@ -52,3 +51,17 @@ export function elementUiRegister() {
     { name: "TableColumn", component: TableColumn },
   ]);
 }
+export type AdapterElementUI =
+  | "Input"
+  | "InputNumber"
+  | "Radio"
+  | "Select"
+  | "Cascader"
+  | "SelectTree"
+  | "TimeSelect"
+  | "DatePicker"
+  | "Switch"
+  | "Slider"
+  | "Rate"
+  | "ColorPicker"
+  | "Mix";

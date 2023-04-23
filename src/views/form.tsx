@@ -18,7 +18,6 @@ export default defineComponent({
       defineFormSchema({
         ...formModel.value,
         list: [
-          { type: "Input" },
           {
             type: "Select",
             label: "Select",

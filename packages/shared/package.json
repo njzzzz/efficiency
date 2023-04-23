@@ -26,8 +26,7 @@
     "./dist/*": "./dist/*"
   },
   "description": "",
-  "devDependencies": {
-    "@slacking/shared": "workspace:^1.0.4",
+  "dependencies": {
     "short-uuid": "^4.2.2"
   }
 }

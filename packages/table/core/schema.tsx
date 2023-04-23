@@ -9,7 +9,6 @@ interface TableSchema extends Form {
 }
 interface TableColumn extends FormItem {
   scopedSlots: any;
-  type: string;
   list: Partial<TableColumn>[];
   subHeaders: Partial<TableColumn>[];
   hideLabelText: boolean;

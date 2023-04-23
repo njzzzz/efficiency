@@ -1,5 +1,5 @@
 {
-  "name": "@slacking/form",
+  "name": "@slacking/adapter",
   "version": "1.0.4",
   "description": "",
   "keywords": [],
@@ -12,14 +12,14 @@
     "types",
     "index.ts"
   ],
-  "main": "./dist/slacking-form.umd.js",
+  "main": "./dist/slacking-adapter-element-ui.umd.js",
   "types": "./types/index.d.ts",
-  "module": "./dist/slacking-form.es.js",
-  "unpkg": "./dist/slacking-form.min.js",
+  "module": "./dist/slacking-adapter-element-ui.es.js",
+  "unpkg": "./dist/slacking-adapter-element-ui.min.js",
   "exports": {
     ".": {
-      "import": "./dist/slacking-form.es.js",
-      "require": "./dist/slacking-form.umd.js",
+      "import": "./dist/slacking-adapter-element-ui.es.js",
+      "require": "./dist/slacking-adapter-element-ui.umd.js",
       "types": "./types/index.d.ts"
     },
     "./dist/*": "./dist/*"
@@ -34,6 +34,7 @@
   "homepage": "https://github.com/njzzzz/efficiency#readme",
   "license": "MIT",
   "dependencies": {
-    "@slacking/shared": "workspace:^1.0.4"
+    "@slacking/shared": "workspace:^1.0.4",
+    "element-ui": "^2.15.13"
   }
 }

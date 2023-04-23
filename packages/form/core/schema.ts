@@ -56,9 +56,9 @@ export interface DependOnOptions {
   deep?: boolean;
   flush?: "pre" | "post" | "sync";
 }
-export interface ExtendedFormItem {}
+export interface CustomFormItemProperties {}
 export interface FormItem {
-  type?: string;
+  type?: CustomFormItemProperties extends Record<"type", infer T> ? T : string;
   prop?: string;
   label?: string;
   defaultValue?: any;
@@ -130,7 +130,6 @@ export interface FormItem {
   // 兜底
   [key: string]: unknown;
 }
-
 interface Schema extends Partial<Form> {
-  list: (FormItem & ExtendedFormItem)[];
+  list: FormItem[];
 }

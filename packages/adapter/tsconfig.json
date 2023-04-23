@@ -1,8 +1,8 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "./types",
     "baseUrl": ".",
+    "outDir": "./types",
     "declaration": true,
     "emitDeclarationOnly": true,
     "allowJs": true,
@@ -16,15 +16,9 @@
   "include": [
     "../../src/shims-vue.d.ts",
     "../../src/shims-tsx.d.ts",
-    "./core/**/*.vue",
-    "./core/**/*.ts",
-    "./core/**/*.tsx",
-    "./hooks/**/*.vue",
-    "./hooks/**/*.ts",
-    "./hooks/**/*.tsx",
-    "./utils/**/*.tsx",
-    "./utils/**/*.tsx",
-    "./utils/**/*.tsx",
+    "./element/**/*.ts",
+    "./element/**/*.tsx",
+    "./element/**/*.vue",
     "./index.ts"
   ]
 }
