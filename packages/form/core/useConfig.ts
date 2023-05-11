@@ -31,7 +31,8 @@ export function updateValue({
       const { o, k } = getPropByPath(model.value, key, true);
       set(o, k, value);
     });
-  } else {
+    //fix: 不带prop的情况下更新model报错
+  } else if (!isUndef(prop)) {
     const { o, k } = getPropByPath(model.value, prop, true);
     set(o, k, value);
   }
