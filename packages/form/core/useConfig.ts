@@ -493,9 +493,11 @@ export const deleteValueOnHiddenFunc = (item, runtimeModel, runtimeSchema) => {
   ]);
   if (item.show === false) {
     if (deleteValueOnHidden) {
-      const { k, o } = getPropByPath(runtimeModel.value, item.prop, true);
-      del(o, k);
-      if (item.prop && item.list && item.type === "Mix")
+      if (item.prop) {
+        const { k, o } = getPropByPath(runtimeModel.value, item.prop, true);
+        del(o, k);
+      }
+      if (item.list)
         item.list.forEach((conf) => {
           const { k, o } = getPropByPath(runtimeModel.value, conf.prop, true);
           del(o, k);
@@ -522,7 +524,6 @@ export const deleteValueOnHiddenFunc = (item, runtimeModel, runtimeSchema) => {
   }
 };
 export function dealWithDeleteValueOnHidden(item, runtimeModel, runtimeSchema) {
-  if (realTypeEqual(item.prop, "Undefined")) return;
   watch(
     () => [item.show],
     () => {

@@ -16,6 +16,8 @@ export function initFormItem(item, runtimeModel, elFormRef, runtimeSchema) {
   // 布局型(配置了list就算布局类型)item只初始化响应式数据即可
   if (item.list) {
     patchReactiveProps(item, runtimeSchema);
+    // feat: 对布局类型增加显隐时值的处理
+    dealWithDeleteValueOnHidden(item, runtimeModel, runtimeSchema);
     initFormList(item.list, runtimeModel, elFormRef, runtimeSchema);
     return;
   }
