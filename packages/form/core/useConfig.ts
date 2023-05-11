@@ -497,11 +497,12 @@ export const deleteValueOnHiddenFunc = (item, runtimeModel, runtimeSchema) => {
         const { k, o } = getPropByPath(runtimeModel.value, item.prop, true);
         del(o, k);
       }
-      if (item.list)
+      if (item.list) {
         item.list.forEach((conf) => {
           const { k, o } = getPropByPath(runtimeModel.value, conf.prop, true);
           del(o, k);
         });
+      }
     }
   } else {
     const resetShowWithDefaultValue = getNotUndefinedValueByOrder([
@@ -510,17 +511,35 @@ export const deleteValueOnHiddenFunc = (item, runtimeModel, runtimeSchema) => {
       globalConfig.resetShowWithDefaultValue,
       true,
     ]);
-    updateValue({
-      prop: item.prop,
-      model: runtimeModel,
-      value: getDefaultValue(
-        item,
-        runtimeModel,
-        runtimeSchema,
-        resetShowWithDefaultValue,
-        true
-      ).value,
-    });
+    // fix: 更新布局类型的值导致的错误
+    if (item.prop) {
+      updateValue({
+        prop: item.prop,
+        model: runtimeModel,
+        value: getDefaultValue(
+          item,
+          runtimeModel,
+          runtimeSchema,
+          resetShowWithDefaultValue,
+          true
+        ).value,
+      });
+    }
+    if (item.list) {
+      item.list.forEach((conf) => {
+        updateValue({
+          prop: conf.prop,
+          model: runtimeModel,
+          value: getDefaultValue(
+            conf,
+            runtimeModel,
+            runtimeSchema,
+            resetShowWithDefaultValue,
+            true
+          ).value,
+        });
+      });
+    }
   }
 };
 export function dealWithDeleteValueOnHidden(item, runtimeModel, runtimeSchema) {
