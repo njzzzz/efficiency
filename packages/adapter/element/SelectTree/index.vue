@@ -45,6 +45,7 @@ import {
   useListeners,
 } from "vue";
 import { Tree, Select, Option } from "element-ui";
+import { isEmptyInput } from "@slacking/shared";
 const listeners = useListeners();
 const props = defineProps({
   options: {
@@ -98,7 +99,8 @@ const defaultExpandedKeys = computed(() => {
   if (props.multiple) {
     return runtimeValue.value?.length ? runtimeValue.value : [];
   } else {
-    return [runtimeValue.value];
+    // fix: 单选清空时返回[null]导致的报错
+    return isEmptyInput(runtimeValue.value) ? [] : [runtimeValue.value];
   }
 });
 
