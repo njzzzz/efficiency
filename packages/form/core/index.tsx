@@ -12,6 +12,8 @@ import {
   renderComponent,
   mergeListeners,
   globalFormProviderKey,
+  getGlobalFormConfig,
+  getNotUndefinedValueByOrder,
 } from "@slacking/shared";
 import { formProps } from "./formProps";
 import { cloneDeep } from "lodash-es";
@@ -19,6 +21,7 @@ import "./index.scss";
 const InnerForm = defineComponent({
   props: formProps,
   setup(props, { expose, emit }) {
+    const globalFormConfig = getGlobalFormConfig();
     const slots = useSlots();
     const listeners = useListeners();
     const elFormRef = ref();
@@ -41,6 +44,11 @@ const InnerForm = defineComponent({
     watch(
       schema,
       (v) => {
+        v.labelPosition = getNotUndefinedValueByOrder([
+          v.labelPosition,
+          globalFormConfig.labelPosition,
+          "top",
+        ]);
         runtimeSchema.value = cloneDeep(v);
         init(
           runtimeSchema.value.list ?? [],

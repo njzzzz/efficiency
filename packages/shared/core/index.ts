@@ -6,6 +6,7 @@ const globalFormConfig: GlobalFormConfig = {
   minLen: false,
   withObjectValue: true,
   autoOptionProps: true,
+  labelPosition: "left",
   filterable: true,
   clearable: true,
   size: "small",
@@ -89,6 +90,7 @@ interface GlobalFormConfig {
   defaultRender: string;
   hideLabelText: boolean;
   hideRequiredAsterisk: boolean;
+  labelPosition: string;
   readonlyFormatter?: (args: {
     item: any;
     model: Ref<any>;

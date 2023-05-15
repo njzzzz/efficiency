@@ -5,6 +5,20 @@ interface TableSchema extends Form {
   hideHeaderRequiredAsterisk: boolean;
   showOverflowTooltip: boolean;
   hideRequiredAsterisk: boolean;
+  multiple: boolean;
+  /**
+   * 多选或单选的主键
+   */
+  rowKey: any;
+  /**
+   * 多选或单选的值
+   */
+  value: any;
+  treeProps: any;
+  /**
+   * 表格表单model默认key
+   */
+  prop: string;
   ons: Record<string, any>;
 }
 interface TableColumn extends FormItem {
