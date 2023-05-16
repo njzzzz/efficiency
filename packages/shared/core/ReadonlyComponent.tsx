@@ -47,6 +47,6 @@ export default defineComponent({
       }
       return readonlyRender();
     });
-    return () => <span>{valueText.value}</span>;
+    return () => valueText.value;
   },
 });
