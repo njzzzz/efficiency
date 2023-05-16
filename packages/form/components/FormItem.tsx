@@ -66,6 +66,11 @@ export default defineComponent({
           schema.value.filterable,
           globalConfig.filterable,
         ]),
+        renderWithoutFormItem: getNotUndefinedValueByOrder([
+          item.value.renderWithoutFormItem,
+          schema.value.renderWithoutFormItem,
+          globalConfig.renderWithoutFormItem,
+        ]),
         on: {
           ...(item.value?.ons ?? {}),
           input(val) {
@@ -100,6 +105,19 @@ export default defineComponent({
         false,
       ]);
     });
+    const renderInnerItem = () => {
+      return (
+        <InnerFormItem.value
+          {...{
+            attrs: innerFormItemProps.value,
+          }}
+          props={innerFormItemProps.value}
+          key={item.value.prop}
+          on={innerFormItemProps.value.on}
+          item={innerFormItemProps.value}
+        ></InnerFormItem.value>
+      );
+    };
     const formItemSlots = computed(() => {
       const slots = item.value.scopedSlots ?? {};
       const scopedSlots = {};
@@ -117,39 +135,33 @@ export default defineComponent({
           return item.value.hideLabelText ? "" : formItemProps.value.label;
         },
         default() {
-          return (
-            <InnerFormItem.value
-              {...{
-                attrs: innerFormItemProps.value,
-              }}
-              props={innerFormItemProps.value}
-              key={item.value.prop}
-              on={innerFormItemProps.value.on}
-              item={innerFormItemProps.value}
-            ></InnerFormItem.value>
-          );
+          return renderInnerItem();
         },
         ...scopedSlots,
       };
     });
     return () =>
       item.value?.show ? (
-        <FormItem
-          {...{
-            attrs: {
-              ...formItemProps.value,
-              ...(formItemProps.value.formItemAttrs ?? {}),
-            },
-          }}
-          props={formItemProps.value}
-          key={item.value.prop}
-          class={{
-            "is-no-asterisk": isNoAsterisk.value,
-            "mix-type--no-label":
-              formItemProps.value.type === "Mix" && isEmptyInput(label.value),
-          }}
-          scopedSlots={formItemSlots.value}
-        ></FormItem>
+        innerFormItemProps.value.renderWithoutFormItem ? (
+          renderInnerItem()
+        ) : (
+          <FormItem
+            {...{
+              attrs: {
+                ...formItemProps.value,
+                ...(formItemProps.value.formItemAttrs ?? {}),
+              },
+            }}
+            props={formItemProps.value}
+            key={item.value.prop}
+            class={{
+              "is-no-asterisk": isNoAsterisk.value,
+              "mix-type--no-label":
+                formItemProps.value.type === "Mix" && isEmptyInput(label.value),
+            }}
+            scopedSlots={formItemSlots.value}
+          ></FormItem>
+        )
       ) : null;
   },
 }) as any;

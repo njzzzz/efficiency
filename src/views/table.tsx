@@ -171,7 +171,7 @@ const _treeData = [
 export default defineComponent({
   components: { TableColumn, Form, FormItem },
   setup() {
-    const model = ref(_data);
+    const model = ref(_treeData);
     const { formModel = { value: {} } } = inject("TEST_FORM") as any;
     const { Table, formRef, defineDependOn } = useTable();
     const selectModel = ref({});
@@ -192,6 +192,7 @@ export default defineComponent({
         showOverflowTooltip: true,
         hideRequiredAsterisk: true,
         hideLabelText: true,
+        border: false,
       })
     );
     const click = () => {

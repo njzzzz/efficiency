@@ -3,6 +3,9 @@ import { Ref } from "vue";
 export function defineFormSchema(schema: Schema) {
   return schema;
 }
+export function defineFormSchemaList(list: FormItem[]) {
+  return list;
+}
 export interface OptionProps {
   value: string;
   label: string;
@@ -30,6 +33,7 @@ export interface Form {
   deleteValueOnHidden: boolean; // 在表单隐藏时是否删除键
   resetShowWithDefaultValue: boolean;
   optionProps: Partial<OptionProps>;
+  renderWithoutFormItem: boolean;
   hideLabelText: boolean;
   hideRequiredAsterisk: boolean;
   readonlyFormatter: (args: {
@@ -88,6 +92,7 @@ export interface FormItem {
   colAttrs?: Record<string, any>;
   // 优先级比直接平铺属性高
   formItemAttrs?: Record<string, any>;
+  renderWithoutFormItem?: boolean;
   // 在必填的情况下隐藏前面的必填星号
   hideRequiredAsterisk?: boolean;
   readonlyFormatter?: (args: {

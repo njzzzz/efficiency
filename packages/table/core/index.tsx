@@ -128,6 +128,11 @@ export function useTable() {
       }
       const tableAttrs = computed(() => ({
         prop: DEFAULT_TABLE_PROP,
+        border: getNotUndefinedValueByOrder([
+          schema.value.border,
+          globalTableConfig.border,
+          false,
+        ]),
         ...schema.value,
         ...attrs,
       }));
@@ -157,6 +162,11 @@ export function useTable() {
             hideHeaderRequiredAsterisk: getNotUndefinedValueByOrder([
               schema.value.hideHeaderRequiredAsterisk,
               globalTableConfig.hideHeaderRequiredAsterisk,
+              false,
+            ]),
+            renderWithoutFormItem: getNotUndefinedValueByOrder([
+              schema.value.renderWithoutFormItem,
+              globalTableConfig.renderWithoutFormItem,
               false,
             ]),
             ...schema.value,

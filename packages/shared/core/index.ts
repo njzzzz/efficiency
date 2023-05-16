@@ -16,12 +16,15 @@ const globalFormConfig: GlobalFormConfig = {
   defaultRender: "Input",
   hideLabelText: false,
   hideRequiredAsterisk: false,
+  renderWithoutFormItem: false,
 };
 const globalTableConfig: GlobalTableConfig = {
   hideLabelText: true,
   hideRequiredAsterisk: true,
   hideHeaderRequiredAsterisk: false,
   showOverflowTooltip: true,
+  renderWithoutFormItem: false,
+  border: false,
 };
 export function registerComponents(componentsRegister = []) {
   componentsRegister.forEach(({ name, component, ...reset }) => {
@@ -90,6 +93,7 @@ interface GlobalFormConfig {
   defaultRender: string;
   hideLabelText: boolean;
   hideRequiredAsterisk: boolean;
+  renderWithoutFormItem: boolean;
   labelPosition: string;
   readonlyFormatter?: (args: {
     item: any;
@@ -105,6 +109,8 @@ interface GlobalTableConfig {
   hideHeaderRequiredAsterisk: boolean;
   hideRequiredAsterisk: boolean;
   showOverflowTooltip: boolean;
+  renderWithoutFormItem: boolean;
+  border: boolean;
 }
 export function setGlobalFormConfig(config: Partial<GlobalFormConfig> = {}) {
   Object.assign(globalFormConfig, config);
