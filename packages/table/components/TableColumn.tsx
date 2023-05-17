@@ -84,6 +84,14 @@ const InnerTableColumn = defineComponent({
         false,
       ])
     );
+    const renderWithoutFormItem = computed(() =>
+      getNotUndefinedValueByOrder([
+        attrs.renderWithoutFormItem,
+        (attrs.formSchema as any)?.renderWithoutFormItem,
+        getGlobalTableConfig().renderWithoutFormItem,
+        false,
+      ])
+    );
     const dynamicSlots = computed(() => {
       return runtimeAttrs.value.type === "selection"
         ? {}
@@ -96,7 +104,7 @@ const InnerTableColumn = defineComponent({
           ...runtimeAttrs.value,
           className: `${runtimeAttrs.value.className ?? ""} ${
             readonly.value ? "is-readonly" : ""
-          }`,
+          } ${renderWithoutFormItem.value ? "is-no-form-item" : ""}`,
         }}
         {...dynamicSlots.value}
       >

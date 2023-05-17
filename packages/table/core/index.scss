@@ -15,7 +15,7 @@
       display: flex;
     }
   }
-  .el-table__cell:not(.is-readonly) {
+  .el-table__cell:not(.is-readonly + .is-no-form-item) {
     & > .cell {
       display: flex;
       align-items: center;

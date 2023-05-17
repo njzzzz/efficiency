@@ -259,7 +259,13 @@ export function useTable() {
         },
         { immediate: true }
       );
-
+      const renderWithoutFormItem = computed(() =>
+        getNotUndefinedValueByOrder([
+          formAttrs.value?.formSchema?.renderWithoutFormItem,
+          getGlobalTableConfig().renderWithoutFormItem,
+          false,
+        ])
+      );
       const { selectTableAttrsAndOns, multiple } = useSelect({
         tableAttrs,
         model,
@@ -269,6 +275,25 @@ export function useTable() {
         emit,
       });
 
+      const renderTable = () => {
+        return (
+          <TableRender
+            {...{
+              attrs: {
+                ...tableAttrs.value,
+                ...selectTableAttrsAndOns.value.attrs,
+              },
+            }}
+            on={mergeListeners(listeners, selectTableAttrsAndOns.value.on)}
+            columns={schema.value.list}
+            data={model.value}
+            formAttrs={formAttrs.value}
+            runtimeFormSchemaMap={runtimeFormSchemaMap.value}
+            scopedSlots={slots}
+            tableRef={tableRef}
+          ></TableRender>
+        );
+      };
       return () => {
         return (
           <Form
@@ -286,30 +311,15 @@ export function useTable() {
             }}
             scopedSlots={{
               default() {
-                return (
+                return renderWithoutFormItem.value ? (
+                  renderTable()
+                ) : (
                   <FormItem
                     {...{ attrs: tableAttrs.value }}
                     prop={tableAttrs.value.prop}
                     class="slacking-table-form-item"
                   >
-                    <TableRender
-                      {...{
-                        attrs: {
-                          ...tableAttrs.value,
-                          ...selectTableAttrsAndOns.value.attrs,
-                        },
-                      }}
-                      on={mergeListeners(
-                        listeners,
-                        selectTableAttrsAndOns.value.on
-                      )}
-                      columns={schema.value.list}
-                      data={model.value}
-                      formAttrs={formAttrs.value}
-                      runtimeFormSchemaMap={runtimeFormSchemaMap.value}
-                      scopedSlots={slots}
-                      tableRef={tableRef}
-                    ></TableRender>
+                    {renderTable()}
                   </FormItem>
                 );
               },

@@ -189,11 +189,12 @@ export default defineComponent({
     });
     const schema = ref(
       defineTableSchema({
-        readonly: false,
+        readonly: true,
         list: _columns,
         rowKey: "id",
         showOverflowTooltip: true,
         hideRequiredAsterisk: true,
+        renderWithoutFormItem: true,
         hideLabelText: true,
         border: false,
       })

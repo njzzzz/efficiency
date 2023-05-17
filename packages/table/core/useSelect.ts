@@ -23,7 +23,7 @@ export function useSelect({
       model.value ?? [],
       {
         value: tableAttrs.value.rowKey,
-        children: childrenKey,
+        children: childrenKey.value,
       },
       false
     );
@@ -99,6 +99,7 @@ export function useSelect({
                 value.value = [...value.value, getRowValue(row)];
               }
             },
+            // TODO: 带折叠children的选择暂不支持
             "select-all"(selection) {
               if (selection.length) {
                 const selectedValueList = value.value;
