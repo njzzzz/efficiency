@@ -17,7 +17,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { model, schema } = inject(globalFormProviderKey) as any;
+    const { model, schema, topUtils } = inject(globalFormProviderKey) as any;
     const { item } = toRefs(props) as any;
     const { label } = useLabel({ schema, item });
     const FormItem = renderComponent("FormItem");
@@ -128,6 +128,7 @@ export default defineComponent({
             schema,
             model,
             dItem: innerFormItemProps,
+            ...topUtils,
           });
       });
       return {

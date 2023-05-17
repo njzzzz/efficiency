@@ -54,6 +54,7 @@ export interface DependOnOptions {
     item: any;
     schema: Ref<any>;
     oldVal: any;
+    getFullValue: (prop: any) => any;
     updateValue: (val: any) => void;
   }) => any;
   immediate?: boolean;
@@ -100,6 +101,7 @@ export interface FormItem {
     model: Ref<any>;
     schema: Ref<any>;
     value: any;
+    getFullValue: (prop: any) => any;
     readonlyRender: () => unknown;
   }) => any;
   scopedSlots?: Record<
@@ -109,6 +111,7 @@ export interface FormItem {
       item: Ref<any>;
       schema: Ref<Schema>;
       dItem: Ref<any>;
+      getFullValue: (prop: any) => any;
     }) => any
   >;
   ons?: Record<
@@ -120,6 +123,7 @@ export interface FormItem {
         item: Ref<any>;
         schema: Ref<Schema>;
         updateValue: (val: any) => void;
+        getFullValue: (prop: any) => any;
       }
     ) => unknown
   >;
@@ -128,7 +132,8 @@ export interface FormItem {
     value: any,
     callback: any,
     item: any,
-    model: Ref<any>
+    model: Ref<any>,
+    topUtils: { getFullValue: (prop: any) => any }
   ) => any;
   dependOn?: Record<string, DependOnOptions["handler"] | DependOnOptions>;
   list?: FormItem[];

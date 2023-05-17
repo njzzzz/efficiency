@@ -14,7 +14,7 @@ export default defineComponent({
   },
   setup(props) {
     const attrs = useAttrs() as any;
-    const { model, schema } = inject(globalFormProviderKey) as any;
+    const { model, schema, topUtils } = inject(globalFormProviderKey) as any;
 
     function readonlyRender() {
       if (isArray(props.value)) {
@@ -43,6 +43,7 @@ export default defineComponent({
           schema,
           value: props.value,
           readonlyRender,
+          ...topUtils,
         });
       }
       return readonlyRender();

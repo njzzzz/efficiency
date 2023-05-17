@@ -33,6 +33,7 @@ const InnerForm = defineComponent({
     provide(globalFormProviderKey, {
       model: runtimeModel,
       schema: runtimeSchema,
+      topUtils: props.topUtils,
     });
     watch(
       () => model.value,
@@ -41,6 +42,8 @@ const InnerForm = defineComponent({
       },
       { deep: true, immediate: true }
     );
+    console.log(props);
+
     watch(
       schema,
       (v) => {
@@ -54,7 +57,8 @@ const InnerForm = defineComponent({
           runtimeSchema.value.list ?? [],
           runtimeModel,
           elFormRef,
-          runtimeSchema
+          runtimeSchema,
+          props.topUtils
         );
       },
       { immediate: true }

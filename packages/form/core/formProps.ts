@@ -4,4 +4,5 @@ export const formProps = {
     default: () => ({}),
   },
   model: { type: Object, default: () => ({}) },
+  topUtils: { type: Object, default: () => ({}) },
 };

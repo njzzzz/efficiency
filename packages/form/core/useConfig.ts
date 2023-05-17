@@ -98,7 +98,13 @@ export function proxyItem(list, index, item, model) {
   list[index] = proxyItem;
 }
 
-export function generatorRules(item, runtimeModel, runtimeSchema, elFormRef) {
+export function generatorRules(
+  item,
+  runtimeModel,
+  runtimeSchema,
+  elFormRef,
+  topUtils
+) {
   const rule = {} as any;
   const multiple = getNotUndefinedValueByOrder([
     item.multiple,
@@ -130,7 +136,15 @@ export function generatorRules(item, runtimeModel, runtimeSchema, elFormRef) {
   }
   if (item.validator) {
     rule.validator = (rule, value, callback) => {
-      item.validator(rule, value, callback, item, runtimeModel, elFormRef);
+      item.validator(
+        rule,
+        value,
+        callback,
+        item,
+        runtimeModel,
+        elFormRef,
+        topUtils
+      );
     };
   }
   // 配置长度
@@ -222,6 +236,7 @@ export function generatorDependOn(
   item,
   runtimeModel,
   runtimeSchema,
+  topUtils,
   deleteValueOnHiddenFunc
 ) {
   const _updateValue = (val) => {
@@ -246,6 +261,7 @@ export function generatorDependOn(
                 schema: runtimeSchema,
                 item,
                 updateValue: _updateValue,
+                ...topUtils,
               })
             ).then(() => {
               deleteValueOnHiddenFunc(item, runtimeModel, runtimeSchema);
@@ -267,6 +283,7 @@ export function generatorDependOn(
                 schema: runtimeSchema,
                 item,
                 updateValue: _updateValue,
+                ...topUtils,
               })
             ).then(() => {
               deleteValueOnHiddenFunc(item, runtimeModel, runtimeSchema);
@@ -552,7 +569,12 @@ export function dealWithDeleteValueOnHidden(item, runtimeModel, runtimeSchema) {
     { immediate: true, deep: true }
   );
 }
-export function rewriteItemListeners(item, runtimeModel, runtimeSchema) {
+export function rewriteItemListeners(
+  item,
+  runtimeModel,
+  runtimeSchema,
+  topUtils
+) {
   const ons = item?.ons ?? {};
   Object.keys(ons).forEach((key) => {
     const originOn = ons[key];
@@ -569,6 +591,7 @@ export function rewriteItemListeners(item, runtimeModel, runtimeSchema) {
           updateValue: _updateValue,
         });
       }
+      Object.assign(resets.at(-1), topUtils);
       originOn(...resets);
     };
   });

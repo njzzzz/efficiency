@@ -116,8 +116,10 @@ export default defineComponent({
             prop: "sex",
             label: "性别",
             dependOn: {
-              name({ val, model, item, schema, oldVal }) {
+              name({ val, model, item, schema, oldVal, getFullValue }) {
+                console.log("【LOG】  getFullValue ---->", getFullValue);
                 // item.show = val === "xxx1";
+                console.log(11111, getFullValue("lover"));
               },
             },
           },
@@ -135,7 +137,7 @@ export default defineComponent({
             },
             dependOn: {
               name: {
-                handler({ val, model, item, schema, oldVal }) {
+                handler({ val, model, item, schema, oldVal, getFullValue }) {
                   item.options = [
                     { value: "1", label: val },
                     { value: "2", label: "喝" },

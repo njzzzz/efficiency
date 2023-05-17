@@ -44,7 +44,12 @@ export function useForm() {
           <FormRender
             {...{ attrs }}
             ref={_formRef}
-            props={props}
+            props={{
+              ...props,
+              topUtils: {
+                getFullValue,
+              },
+            }}
             scopedSlots={slots}
             on={{
               ...listeners,
