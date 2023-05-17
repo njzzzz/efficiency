@@ -272,7 +272,10 @@ export function useTable() {
       return () => {
         return (
           <Form
-            class="slacking-table"
+            class={[
+              "slacking-table",
+              { "is-readonly": formAttrs.value.formSchema.readonly },
+            ]}
             {...{
               attrs: {
                 schema: formAttrs.value.formSchema,

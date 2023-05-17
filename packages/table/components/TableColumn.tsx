@@ -77,6 +77,13 @@ const InnerTableColumn = defineComponent({
         false,
       ])
     );
+    const readonly = computed(() =>
+      getNotUndefinedValueByOrder([
+        attrs.readonly,
+        (attrs.formSchema as any)?.readonly,
+        false,
+      ])
+    );
     const dynamicSlots = computed(() => {
       return runtimeAttrs.value.type === "selection"
         ? {}
@@ -87,6 +94,9 @@ const InnerTableColumn = defineComponent({
         attrs={{
           showOverflowTooltip: showOverflowTooltip.value,
           ...runtimeAttrs.value,
+          className: `${runtimeAttrs.value.className ?? ""} ${
+            readonly.value ? "is-readonly" : ""
+          }`,
         }}
         {...dynamicSlots.value}
       >

@@ -94,7 +94,7 @@ const _columns = defineTableColumns([
   {
     prop: "lover5",
     label: "爱好5",
-    width: 500,
+    width: 300,
   },
   {
     prop: "lover6",
@@ -124,6 +124,9 @@ const _treeData = [
   {
     id: "0",
     age2: "1",
+    "name-0": "1",
+    lover5:
+      "lover5lover5lover5lover5lover5lover5lover5lover5lover5lover5lover5lover5lover5lover5lover5lover5lover5lover5lover5lover5lover5lover5lover5lover5lover5lover5lover5",
     children: [
       {
         id: "sub0-0",
