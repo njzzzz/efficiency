@@ -245,6 +245,12 @@ export function generatorDependOn(
   const unWatches = [];
   // 收集所有callback 在后续做展示隐藏功能时，需要等所有watch都执行完成才能进行展示隐藏的判断
   if (item.dependOn) {
+    const deleteValueOnDependOnChange = getNotUndefinedValueByOrder([
+      item.deleteValueOnDependOnChange,
+      runtimeSchema.value.deleteValueOnDependOnChange,
+      globalConfig.deleteValueOnDependOnChange,
+      false,
+    ]);
     const keys = Object.keys(item.dependOn);
     for (let index = 0; index < keys.length; index++) {
       const key = keys[index];
@@ -264,6 +270,22 @@ export function generatorDependOn(
                 ...topUtils,
               })
             ).then(() => {
+              if (deleteValueOnDependOnChange) {
+                _updateValue(
+                  getDefaultValue(
+                    item,
+                    runtimeModel,
+                    runtimeSchema,
+                    false,
+                    getNotUndefinedValueByOrder([
+                      item.setAsDefaultValueOnDependOnChange,
+                      runtimeSchema.value.setAsDefaultValueOnDependOnChange,
+                      globalConfig.setAsDefaultValueOnDependOnChange,
+                      false,
+                    ])
+                  )
+                );
+              }
               deleteValueOnHiddenFunc(item, runtimeModel, runtimeSchema);
             });
           },
@@ -286,6 +308,22 @@ export function generatorDependOn(
                 ...topUtils,
               })
             ).then(() => {
+              if (deleteValueOnDependOnChange) {
+                _updateValue(
+                  getDefaultValue(
+                    item,
+                    runtimeModel,
+                    runtimeSchema,
+                    false,
+                    getNotUndefinedValueByOrder([
+                      item.setAsDefaultValueOnDependOnChange,
+                      runtimeSchema.value.setAsDefaultValueOnDependOnChange,
+                      globalConfig.setAsDefaultValueOnDependOnChange,
+                      false,
+                    ])
+                  )
+                );
+              }
               deleteValueOnHiddenFunc(item, runtimeModel, runtimeSchema);
             });
           },

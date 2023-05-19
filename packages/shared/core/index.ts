@@ -19,6 +19,8 @@ const globalFormConfig: GlobalFormConfig = {
   hideLabelText: false,
   hideRequiredAsterisk: false,
   renderWithoutFormItem: false,
+  deleteValueOnDependOnChange: false,
+  setAsDefaultValueOnDependOnChange: false,
 };
 const globalTableConfig: GlobalTableConfig = {
   hideLabelText: true,
@@ -191,6 +193,16 @@ interface GlobalFormConfig {
    * @default 'left'
    */
   labelPosition: string;
+  /**
+   * 在dependOn触发时清空当前表单项的值
+   * @default false
+   */
+  deleteValueOnDependOnChange: boolean;
+  /**
+   * 在dependOn触发时清空当前表单项的值为配置的defaultValue
+   * @default false
+   */
+  setAsDefaultValueOnDependOnChange: boolean;
   /**
    * readonly 状态展示的文字
    * @param {ReadonlyFormatterParams} args

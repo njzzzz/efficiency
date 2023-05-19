@@ -35,6 +35,8 @@ export interface Form {
   optionProps: Partial<OptionProps>;
   renderWithoutFormItem: boolean;
   hideLabelText: boolean;
+  deleteValueOnDependOnChange: boolean;
+  setAsDefaultValueOnDependOnChange: boolean;
   hideRequiredAsterisk: boolean;
   readonlyFormatter: (args: {
     item: FormItem;
@@ -144,6 +146,16 @@ export interface FormItem {
    * 在必填的情况下隐藏前面的必填星号
    */
   hideRequiredAsterisk?: boolean;
+  /**
+   * 在dependOn触发时清空当前表单项的值
+   * @default false
+   */
+  deleteValueOnDependOnChange?: boolean;
+  /**
+   * 在dependOn触发时清空当前表单项的值为配置的defaultValue
+   * @default false
+   */
+  setAsDefaultValueOnDependOnChange?: boolean;
   readonlyFormatter?: (args: {
     item: FormItem;
     model: Ref<any>;
