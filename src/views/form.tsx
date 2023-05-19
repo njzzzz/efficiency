@@ -289,6 +289,12 @@ export default defineComponent({
                   {
                     prop: "x",
                     required: true,
+                    deleteValueOnDependOnChange: true,
+                    dependOn: {
+                      y({ val, updateValue }) {
+                        updateValue(val);
+                      },
+                    },
                   },
                   {
                     prop: "y",

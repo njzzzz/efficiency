@@ -259,23 +259,6 @@ export function generatorDependOn(
         const unWatch = watch(
           () => getValueByPath(runtimeModel.value, key),
           (val, oldVal) => {
-            // 删除操作在前，否则在dependOn callback中修改值当前项的值 也会被此操作清空
-            if (deleteValueOnDependOnChange) {
-              _updateValue(
-                getDefaultValue(
-                  item,
-                  runtimeModel,
-                  runtimeSchema,
-                  false,
-                  getNotUndefinedValueByOrder([
-                    item.setAsDefaultValueOnDependOnChange,
-                    runtimeSchema.value.setAsDefaultValueOnDependOnChange,
-                    globalConfig.setAsDefaultValueOnDependOnChange,
-                    false,
-                  ])
-                ).value
-              );
-            }
             Promise.resolve(
               dependOnOptions({
                 val,
@@ -287,6 +270,22 @@ export function generatorDependOn(
                 ...topUtils,
               })
             ).then(() => {
+              if (deleteValueOnDependOnChange) {
+                _updateValue(
+                  getDefaultValue(
+                    item,
+                    runtimeModel,
+                    runtimeSchema,
+                    false,
+                    getNotUndefinedValueByOrder([
+                      item.setAsDefaultValueOnDependOnChange,
+                      runtimeSchema.value.setAsDefaultValueOnDependOnChange,
+                      globalConfig.setAsDefaultValueOnDependOnChange,
+                      false,
+                    ])
+                  ).value
+                );
+              }
               deleteValueOnHiddenFunc(item, runtimeModel, runtimeSchema);
             });
           },
@@ -298,22 +297,6 @@ export function generatorDependOn(
         const unWatch = watch(
           () => getValueByPath(runtimeModel.value, key),
           (val, oldVal) => {
-            if (deleteValueOnDependOnChange) {
-              _updateValue(
-                getDefaultValue(
-                  item,
-                  runtimeModel,
-                  runtimeSchema,
-                  false,
-                  getNotUndefinedValueByOrder([
-                    item.setAsDefaultValueOnDependOnChange,
-                    runtimeSchema.value.setAsDefaultValueOnDependOnChange,
-                    globalConfig.setAsDefaultValueOnDependOnChange,
-                    false,
-                  ])
-                ).value
-              );
-            }
             Promise.resolve(
               handler({
                 val,
@@ -325,6 +308,22 @@ export function generatorDependOn(
                 ...topUtils,
               })
             ).then(() => {
+              if (deleteValueOnDependOnChange) {
+                _updateValue(
+                  getDefaultValue(
+                    item,
+                    runtimeModel,
+                    runtimeSchema,
+                    false,
+                    getNotUndefinedValueByOrder([
+                      item.setAsDefaultValueOnDependOnChange,
+                      runtimeSchema.value.setAsDefaultValueOnDependOnChange,
+                      globalConfig.setAsDefaultValueOnDependOnChange,
+                      false,
+                    ])
+                  ).value
+                );
+              }
               deleteValueOnHiddenFunc(item, runtimeModel, runtimeSchema);
             });
           },
