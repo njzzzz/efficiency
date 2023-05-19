@@ -4,7 +4,7 @@ import { FormItemRender } from "@slacking/form";
 const FormItemWithMix = defineComponent({
   setup() {
     const attrs = useAttrs() as any;
-    const Mix = attrs.Mix;
+    const Mix = attrs.mix;
     return () =>
       attrs.item.type === "Mix" ? (
         <Mix
