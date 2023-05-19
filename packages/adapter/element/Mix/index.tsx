@@ -1,6 +1,5 @@
 import { computed, defineComponent, toRefs } from "vue";
 import { renderComponent } from "@slacking/shared";
-import { FormItemRender } from "@slacking/form";
 import FormItemWithMix from "./FormItemWithMix";
 const Mix = defineComponent({
   name: "Mix",
@@ -33,46 +32,35 @@ const Mix = defineComponent({
     };
     return () =>
       item.value?.show ? (
-        <FormItemRender
-          item={{
+        <Row
+          props={{
+            gutter: 16,
+            justify: "start",
             ...item.value,
-            scopedSlots: {
-              default() {
-                return (
-                  <Row
-                    props={{
-                      gutter: 16,
-                      justify: "start",
-                      ...item.value,
-                      type: "flex",
-                    }}
-                    style={{
-                      width: "100%",
-                    }}
-                  >
-                    {item.value.list.map((item, index) => {
-                      return item.show !== false ? (
-                        <Col
-                          {...{ attrs: { ...item, ...(item.colAttrs ?? {}) } }}
-                          props={{ span: getSpan(item.span), ...item }}
-                          key={item.prop || index}
-                        >
-                          <FormItemWithMix
-                            item={item}
-                            style={{
-                              marginBottom: 0,
-                            }}
-                            Mix={Mix}
-                          ></FormItemWithMix>
-                        </Col>
-                      ) : null;
-                    })}
-                  </Row>
-                );
-              },
-            },
+            type: "flex",
           }}
-        ></FormItemRender>
+          style={{
+            width: "100%",
+          }}
+        >
+          {item.value.list.map((item, index) => {
+            return item.show !== false ? (
+              <Col
+                {...{ attrs: { ...item, ...(item.colAttrs ?? {}) } }}
+                props={{ span: getSpan(item.span), ...item }}
+                key={item.prop || index}
+              >
+                <FormItemWithMix
+                  item={item}
+                  style={{
+                    marginBottom: 0,
+                  }}
+                  Mix={Mix}
+                ></FormItemWithMix>
+              </Col>
+            ) : null;
+          })}
+        </Row>
       ) : null;
   },
 }) as any;

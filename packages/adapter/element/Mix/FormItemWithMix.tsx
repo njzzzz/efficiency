@@ -7,10 +7,22 @@ const FormItemWithMix = defineComponent({
     const Mix = attrs.mix;
     return () =>
       attrs.item.type === "Mix" ? (
-        <Mix
-          item={attrs.item}
+        <FormItemRender
+          item={{
+            ...attrs.item,
+            scopedSlots: {
+              default() {
+                return (
+                  <Mix
+                    item={attrs.item}
+                    key={attrs.item.prop || attrs.item.list?.[0]?.prop}
+                  ></Mix>
+                );
+              },
+            },
+          }}
           key={attrs.item.prop || attrs.item.list?.[0]?.prop}
-        ></Mix>
+        ></FormItemRender>
       ) : (
         <FormItemRender
           item={attrs.item}

@@ -103,6 +103,8 @@ const InnerForm = defineComponent({
           on={mergeListeners(runtimeSchema.value.ons, listeners)}
         >
           {runtimeSchema.value.list?.map?.((item, index) => {
+            // 用于后面判断mix类型是否需要用FormItem包裹
+            item.__root__ = true;
             return (
               <FormItemRender
                 item={item}
