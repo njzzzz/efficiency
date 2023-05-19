@@ -398,46 +398,47 @@ export function patchReactiveProps(item, runtimeSchema) {
  * @param runtimeModel
  * @param runtimeSchema
  */
-export function generatorWithObjectValue(item, runtimeModel, runtimeSchema) {
-  const optionProps = item.optionProps || runtimeSchema.value.optionProps;
-  const withObjectValue = undefinedAndTrueAsTrue([
-    item.withObjectValue,
-    runtimeSchema.value.withObjectValue,
-    globalConfig.withObjectValue,
-  ]);
-  const { value = "value", children = "children" } = optionProps || {};
-  const { multiple = false } = item;
-  const prop = item.prop;
+// export function generatorWithObjectValue(item, runtimeModel, runtimeSchema) {
+//   const optionProps = item.optionProps || runtimeSchema.value.optionProps;
+//   const withObjectValue = undefinedAndTrueAsTrue([
+//     item.withObjectValue,
+//     runtimeSchema.value.withObjectValue,
+//     globalConfig.withObjectValue,
+//   ]);
+//   const { value = "value", children = "children" } = optionProps || {};
+//   const { multiple = false } = item;
+//   const prop = item.prop;
 
-  if (withObjectValue && prop) {
-    watch(
-      () => item.options,
-      (options) => {
-        if (options?.length) {
-          item.__optionsMap = convertListToMap(options, {
-            value,
-            children,
-          });
-        }
-      },
-      { immediate: true, deep: true }
-    );
-    watch(
-      () => [runtimeModel.value[prop], item.options],
-      ([newVal]) => {
-        if (item.__optionsMap) {
-          const objectValue = multiple
-            ? newVal.map((v) => item.__optionsMap[v])
-            : item.__optionsMap[newVal];
-          runtimeModel.value[`_${prop}`] = objectValue;
-          const onObjectValue = item.ons?.objectValue;
-          onObjectValue && onObjectValue(objectValue);
-        }
-      },
-      { immediate: true, deep: true }
-    );
-  }
-}
+//   if (withObjectValue && prop) {
+//     watch(
+//       () => item.options,
+//       (options) => {
+//         if (options?.length) {
+//           item.__optionsMap = convertListToMap(options, {
+//             value,
+//             children,
+//           });
+//         }
+//       },
+//       { immediate: true, deep: true }
+//     );
+//     watch(
+//       () => [runtimeModel.value[prop], item.options],
+//       ([newVal]) => {
+//         if (item.__optionsMap) {
+//           const objectValue = multiple
+//             ? newVal.map((v) => item.__optionsMap[v])
+//             : item.__optionsMap[newVal];
+//           runtimeModel.value[`_${prop}`] = objectValue;
+//           const onObjectValue = item.ons?.objectValue;
+//           onObjectValue && onObjectValue(objectValue);
+//         }
+//       },
+//       { immediate: true, deep: true }
+//     );
+//   }
+// }
+
 export function generatorOptionsMap(item, runtimeModel, runtimeSchema) {
   const optionProps = item.optionProps || runtimeSchema.value.optionProps;
   const { value = "value", children = "children" } = optionProps || {};

@@ -1,5 +1,5 @@
 import type { Form, FormItem } from "@slacking/form";
-interface TableSchema extends Form {
+export interface TableSchema extends Form {
   list: Partial<TableColumn>[];
   hideLabelText: boolean;
   hideHeaderRequiredAsterisk: boolean;
@@ -14,16 +14,25 @@ interface TableSchema extends Form {
    * 多选或单选的值
    */
   value: any;
+  /**
+   * 折叠表格treeProps配置需要组件支持，element-ui目前支持
+   */
   treeProps: any;
   /**
-   * 表格表单model默认key
+   * 表格表单model默认key, 表格表单的值均存于这个键中
    */
   prop: string;
+  /**
+   * 事件监听
+   */
   ons: Record<string, any>;
 }
-interface TableColumn extends FormItem {
+export interface TableColumn extends FormItem {
   scopedSlots: any;
   list: Partial<TableColumn>[];
+  /**
+   * 多级表头配置
+   */
   subHeaders: Partial<TableColumn>[];
   hideLabelText: boolean;
   hideHeaderRequiredAsterisk: boolean;
