@@ -203,3 +203,15 @@ export function mergeListeners(obj1 = {}, obj2 = {}) {
 export function isEmptyObj(obj: unknown) {
   return isPlainObj(obj) && Object.keys(obj).length === 0;
 }
+
+export const setIfNotUndef = (data = {}, key = "", value) => {
+  if (!isUndef(value)) {
+    data[key] = value;
+  }
+};
+
+export function noInputEmptyInArr(arr) {
+  return !arr.some((val) => isEmptyInput(val));
+}
+
+export const func = () => {};
