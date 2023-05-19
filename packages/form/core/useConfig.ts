@@ -283,7 +283,7 @@ export function generatorDependOn(
                       globalConfig.setAsDefaultValueOnDependOnChange,
                       false,
                     ])
-                  )
+                  ).value
                 );
               }
               deleteValueOnHiddenFunc(item, runtimeModel, runtimeSchema);
@@ -321,7 +321,7 @@ export function generatorDependOn(
                       globalConfig.setAsDefaultValueOnDependOnChange,
                       false,
                     ])
-                  )
+                  ).value
                 );
               }
               deleteValueOnHiddenFunc(item, runtimeModel, runtimeSchema);
