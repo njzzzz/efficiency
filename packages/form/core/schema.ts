@@ -93,6 +93,10 @@ export interface FormItem {
    */
   gutter?: number;
   filterable?: boolean;
+  /**
+   * 是否自动转换options格式
+   */
+  autoOptionProps?: boolean;
   readonly?: boolean;
   disabled?: boolean;
   /**

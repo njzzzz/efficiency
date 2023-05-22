@@ -170,7 +170,7 @@ export function getPropByPath(obj, path, strict) {
     v: tempObj ? tempObj[keyArr[i]] : null,
   };
 }
-export function runFns(fns = [], args) {
+export function runFns(fns = [], args = []) {
   fns.forEach((fn) => fn(...args));
 }
 function runListenersEvent(fns, event, args) {

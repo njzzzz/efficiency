@@ -23,6 +23,7 @@ export default defineComponent({
             label: "Select",
             prop: "Select",
             required: true,
+            defaultValue: 1,
             optionProps: {
               value: "a",
               label: "b",
@@ -35,6 +36,16 @@ export default defineComponent({
                 { a: 4, b: 4 },
               ]);
               return data;
+            },
+          },
+          {
+            prop: "test-async-getFullValue",
+            label: "getFullValue",
+            dependOn: {
+              Select({ getFullValue }) {
+                const val = getFullValue("Select");
+                console.log("【LOG】  1111121212121212 ---->", val);
+              },
             },
           },
           {

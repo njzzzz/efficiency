@@ -27,7 +27,9 @@ watch(
   (newValue) => {
     if (attrs.multiple) {
       runtimeValue.value = newValue?.length
-        ? newValue.map((val) => attrs.__optionsMap[val].__path)
+        ? newValue.map((val) =>
+            attrs.__optionsMap?.[val] ? attrs.__optionsMap[val].__path : []
+          )
         : [];
     } else {
       runtimeValue.value = attrs.__optionsMap[newValue]
